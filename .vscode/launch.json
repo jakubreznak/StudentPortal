@@ -31,6 +31,24 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
-        }
+        },
+        {
+            "name": "Launch ng serve & Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "preLaunchTask": "npm: start",
+            "url": "https://localhost:4200/#",
+      
+            "webRoot": "${workspaceFolder}/client",
+            
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+              "webpack:/*": "${webRoot}/*",
+              "/./*": "${webRoot}/*",
+              "/src/*": "${webRoot}/*",
+              "/*": "*",
+              "/./~/*": "${webRoot}/node_modules/*"
+            }
+          },
     ]
 }

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { error } from '@angular/compiler/src/util';
 import { Component, OnInit } from '@angular/core';
+import { Student } from './models/student';
+import { AccountService } from './Services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -11,21 +13,15 @@ export class AppComponent implements OnInit {
   title = 'Student portal';
   students: any;
 
-  constructor(private http: HttpClient){}
+  constructor(private accountService: AccountService){}
   
   ngOnInit() {
-    this.getUsers();
+    this.setCurrentStudent();
   }
 
-  getUsers(){
-    this.http.get('https://localhost:5001/api/students').subscribe(
-      response => {
-        this.students = response;
-      },
-      error => {
-        console.log(error);
-      }
-    );
+  setCurrentStudent() {
+    const student: Student = JSON.parse(localStorage.getItem('student'));
+    this.accountService.setCurrentStudent(student);
   }
 
 }

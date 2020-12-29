@@ -2,14 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StudentsController : ControllerBase
+    public class StudentsController : BaseApiController
     {
         private readonly DataContext _context;
         public StudentsController(DataContext context)
@@ -23,6 +22,7 @@ namespace API.Controllers
             return await _context.Students.ToListAsync();
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {

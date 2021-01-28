@@ -1,4 +1,4 @@
 export interface Student {
-    studentName: string;
+    name: string;
     token: string;
 }

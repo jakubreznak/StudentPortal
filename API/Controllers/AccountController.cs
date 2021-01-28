@@ -65,8 +65,9 @@ namespace API.Controllers
 
             foreach(var predmet in predmety.predmetOboru)
             {
-                if(!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka)))
-                {
+                if(!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborIdno)))
+                {   
+                    predmet.oborIdNum = oborIdno;
                     _context.Predmets.Add(predmet);
                 }
             }

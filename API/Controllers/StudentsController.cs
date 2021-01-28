@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +23,19 @@ namespace API.Controllers
             return await _context.Students.ToListAsync();
         }
 
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudent(int id)
+        [HttpGet("{name}")]
+        public async Task<ActionResult<UserDTO>> GetStudent(string name)
         {
-            return await _context.Students.FindAsync(id);
+            var student =  await _context.Students.SingleOrDefaultAsync(p => p.name == name);
+            return new UserDTO()
+            {
+                ID = student.ID,
+                name = student.name,
+                upolNumber = student.upolNumber,
+                oborIdno = student.oborIdno,
+                rocnikRegistrace = student.rocnikRegistrace,
+                datumRegistrace = student.datumRegistrace
+            };
         }
     }
 }

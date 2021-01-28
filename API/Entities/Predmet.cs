@@ -15,5 +15,6 @@ namespace API.Entities
         public string vyukaZS { get; set; } 
         public string rozsah { get; set; } 
         public string typZk { get; set; } 
+        public int? oborIdNum { get; set; }
     }
 }

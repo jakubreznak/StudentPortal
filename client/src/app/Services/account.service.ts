@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import {map} from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { Student } from '../models/student';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  baseUrl = "https://localhost:5001/api/";
+  baseUrl = environment.apiUrl;
   private currentStudentSource = new ReplaySubject<Student>(1);
   currentStudent$ = this.currentStudentSource.asObservable();
 
@@ -43,5 +45,9 @@ export class AccountService {
   logout() {
     localStorage.removeItem('student');
     this.currentStudentSource.next(null);
+  }
+
+  getUser(name: string) {
+    return this.http.get<User>(this.baseUrl + 'students/' + name);
   }
 }

@@ -1,5 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { Predmet } from '../models/predmet';
+import { Student } from '../models/student';
+import { User } from '../models/user';
+import { AccountService } from '../Services/account.service';
+import { PredmetyService } from '../Services/predmety.service';
 
 @Component({
   selector: 'app-predmety-list',
@@ -8,9 +14,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PredmetyListComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  predmety: Predmet[];
+  student: Student;
+
+  constructor(private predmetService: PredmetyService, private accountService: AccountService) { 
+    this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
+  }
 
   ngOnInit(): void {
+    this.loadPredmety();
+  }
+
+  loadPredmety() {
+    this.accountService.getUser(this.student.name).subscribe(user =>
+      this.predmetService.getPredmetyByObor(user.oborIdno).subscribe(predmety =>
+        this.predmety = predmety));
+    
   }
 
 }

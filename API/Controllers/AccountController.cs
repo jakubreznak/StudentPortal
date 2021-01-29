@@ -12,6 +12,7 @@ using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -63,7 +64,7 @@ namespace API.Controllers
             jsonResponse = await response.Content.ReadAsStringAsync();
             RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
 
-            foreach(var predmet in predmety.predmetOboru)
+            foreach(var predmet in predmety.predmetOboru.Where(( coordinate, index ) => index % 2 == 0 ))
             {
                 if(!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborIdno)))
                 {   

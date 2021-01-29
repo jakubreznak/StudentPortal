@@ -20,6 +20,6 @@ export class PredmetyService {
   }
 
   getPredmet(id: number) {
-    return this.http.get<Predmet>(this.baseUrl + 'predmety/' + id);
+    return this.http.get<Predmet>(this.baseUrl + 'predmety/getbyid/' + id);
   }
 }

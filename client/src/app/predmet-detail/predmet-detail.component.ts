@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Predmet } from '../models/predmet';
+import { PredmetyService } from '../Services/predmety.service';
 
 @Component({
   selector: 'app-predmet-detail',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PredmetDetailComponent implements OnInit {
 
-  constructor() { }
+  predmet: Predmet;
+
+  constructor(private predmetService: PredmetyService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.loadPredmet();
+  }
+
+  loadPredmet() {
+    this.predmetService.getPredmet(Number(this.route.snapshot.paramMap.get('id'))).subscribe(predmet =>
+      this.predmet = predmet);
   }
 
 }

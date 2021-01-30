@@ -1,1 +1,17 @@
-<p>{{predmet.nazev}}</p>
+<div class="container">
+    <h3 *ngIf="predmet != null">{{predmet.nazev}}</h3>
+    <ul>
+        <li class="nav-item">
+            <a class="nav-link" routerLink='/materialy' routerLinkActive='active'>Materiály</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Diskuze</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link " href="#">Hodnocení</a>
+        </li>
+    </ul>
+    <a class="btn btn-success my-2 my-sm-0">Přidat</a>
+</div>
+
+<hr>

@@ -32,4 +32,15 @@ export class PredmetyListComponent implements OnInit {
     
   }
 
+  getBackgroundColor(predmetStatut: string){
+    switch (predmetStatut) {
+      case 'A':
+        return '#de5269';
+      case 'B':
+        return '#6093C0';
+      case 'C':
+        return '#67e5ab';
+    }
+  }
+
 }

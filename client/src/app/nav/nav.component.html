@@ -1,20 +1,22 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container">
-        <a class="navbar-brand" routerLink='/'>Student portal</a>
+        <ng-container *ngIf="accountService.currentStudent$ | async; else homeComp">
+            <a class="navbar-brand" [routerLink]="'/predmety'">Student portal</a>
+          </ng-container>
+          
+          <ng-template #homeComp>
+            <a class="navbar-brand" [routerLink]="'/'">Student portal</a>
+          </ng-template>          
         <ul class="navbar-nav mr-auto">
-        <ng-container *ngIf="accountService.currentStudent$ | async">
-            <li class="nav-item">
-                <a class="nav-link" routerLink='/materialy' routerLinkActive='active'>Materiály</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Diskuze</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " href="#">Hodnocení</a>
-            </li>
-        </ng-container>
-        </ul>
-
+            <ng-container *ngIf="accountService.currentStudent$ | async">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink='/predmety' routerLinkActive='active'>Přeměty</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Diskuze</a>
+                </li>
+            </ng-container>
+            </ul>
         <div class="dropdown" *ngIf="accountService.currentStudent$ | async as user" dropdown>
             <a class="dropdown-toggle text-light" dropdownToggle>{{user.name}}</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>

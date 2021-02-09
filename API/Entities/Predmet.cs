@@ -1,6 +1,12 @@
+using System.Collections.Generic;
+
 namespace API.Entities
 {
     public class Predmet    {
+        public Predmet()
+        {
+            this.Files = new List<Soubor>();
+        }        
         public int ID { get; set; }
         public string zkratka { get; set; } 
         public string katedra { get; set; } 
@@ -16,5 +22,6 @@ namespace API.Entities
         public string rozsah { get; set; } 
         public string typZk { get; set; } 
         public int? oborIdNum { get; set; }
+        public ICollection<Soubor> Files { get; set; } 
     }
 }

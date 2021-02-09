@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace API.Controllers
 {
@@ -68,8 +69,10 @@ namespace API.Controllers
             {
                 if(!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborIdno)))
                 {   
+                    Predmet novyPredmet = new Predmet();
                     predmet.oborIdNum = oborIdno;
-                    _context.Predmets.Add(predmet);
+                    novyPredmet = predmet;
+                    _context.Predmets.Add(novyPredmet);
                 }
             }
 

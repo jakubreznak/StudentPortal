@@ -1,9 +1,9 @@
 <div class="container">
-    <h3 *ngIf="predmet != null">{{predmet.nazev}}</h3>
+    <h2 *ngIf="predmet != null">{{predmet.nazev}}</h2>
     <div class="pills">
         <tabset type="pills">
             <tab heading="Materiály" id="tab1">
-                Materiály
+                <app-materialy [predmet]="predmet"></app-materialy>
             </tab>
             <tab heading="Diskuze">
                 Diskuze
@@ -13,6 +13,4 @@
             </tab>
         </tabset>
     </div>
-    
-    <a class="btn btn-success my-2 my-sm-0">Přidat</a>
 </div>

@@ -14,4 +14,12 @@ export interface Predmet {
     rozsah: string;
     typZk: string;
     oborIdNum?: number;
+    files: Soubor[];
+  }
+
+  interface Soubor {
+    id: number;
+    url: string;
+    fileName: string;
+    extension: string;
   }

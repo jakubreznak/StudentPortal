@@ -1,1 +1,18 @@
-<p>materialy works!</p>
+<div *ngIf="predmet != null" class="list-group">
+    <input type="file" name="file" id="file" class="inputfile" (change)="onFilesSelected($event)">
+    <label class="btn btn-success" for="file">Přidat</label>
+   
+    <div *ngIf="predmet.files.length == 0">
+        <p>Buďte první kdo přidá materiál k tomuto předmětu.</p>
+    </div>
+    <div *ngIf="predmet.files.length > 0">
+        <ul>
+            <li *ngFor="let soubor of predmet.files" class="list-group-item border">
+                <div class="nazev-stahnout">
+                    <span><p>{{soubor.fileName}}</p></span>
+                    <span class="stahnout"><a class="btn btn-success" href="{{soubor.url}}">Stáhnout</a></span>
+                </div>
+            </li>  
+        </ul>
+    </div>
+</div>

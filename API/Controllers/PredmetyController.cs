@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using API.Interfaces;
 using API.DTOs;
+using System.IO;
 
 namespace API.Controllers
 {
@@ -49,12 +50,18 @@ namespace API.Controllers
 
             var result = await _fileService.AddFileAsync(file);
 
+            string fileName = file.FileName;
+            string extension = Path.GetExtension(fileName);
+            fileName = fileName.Substring(0, fileName.Length - extension.Length);
+
             if (result.Error != null) return BadRequest();
 
             var soubor = new Soubor
             {
                 Url = result.SecureUrl.AbsoluteUri,
-                PublicID = result.PublicId
+                PublicID = result.PublicId,
+                FileName = fileName,
+                Extension = extension
             };
 
             predmet.Files.Add(soubor);

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using API.Interfaces;
 using API.DTOs;
 using System.IO;
+using System;
 
 namespace API.Controllers
 {
@@ -61,7 +62,8 @@ namespace API.Controllers
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicID = result.PublicId,
                 FileName = fileName,
-                Extension = extension
+                Extension = extension,
+                DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy")
             };
 
             predmet.Files.Add(soubor);

@@ -22,4 +22,5 @@ export interface Predmet {
     url: string;
     fileName: string;
     extension: string;
+    dateAdded: string;
   }

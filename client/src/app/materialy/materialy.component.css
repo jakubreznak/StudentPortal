@@ -45,3 +45,8 @@ p {
 	position: absolute;
 	z-index: -1;
 }
+
+.date {
+    font-size: 1em;
+    font-weight: 500;
+}

@@ -1,0 +1,32 @@
+<div *ngIf="topic !=null">
+    <h2>{{topic.name}}</h2>
+
+    <div class="form">
+        <form #commentForm="ngForm" (ngSubmit)="postComment()" autocomplete="off">
+            <div class="row">
+                <div class="form-group col-10">
+                    <input type="text" class="form-control" name="answer"
+                    [(ngModel)]="text" placeholder="odpověď" required >
+                </div>
+                <div class="form-group col-md-auto">
+                    <button class="btn btn-success mr-2" type="submit">Odpovědět</button>
+                </div>
+            </div>       
+        </form>
+    </div>
+    
+    <div *ngIf="topic.comments.length > 0">
+        <div class="list-group">
+            <ul>
+                <li *ngFor="let comment of topic.comments" class="list-group-item border">
+                    <p>{{comment.text}}</p>
+                    <p>{{comment.studentName}} - {{comment.created}}</p>
+                </li>  
+            </ul>
+        </div>
+    </div>
+    <div class="prvni" *ngIf="topic.comments.length == 0">
+        <p>Buďte první kdo přidá odpověď.</p>
+    </div>
+</div>
+

@@ -7,9 +7,9 @@
     </div>
     <div *ngIf="predmet.files.length > 0">
         <ul>
-            <li *ngFor="let soubor of predmet.files" class="list-group-item border">
+            <li *ngFor="let soubor of predmet.files.reverse()" class="list-group-item border">
                 <div class="nazev-stahnout">
-                    <span><p>{{soubor.fileName}}</p><br><p class="date">{{soubor.dateAdded}}</p></span>
+                    <span><p>{{soubor.fileName}}</p><br><p class="date">{{soubor.dateAdded}} - {{soubor.extension}}</p></span>
                     <span class="stahnout"><a class="btn btn-success" href="{{soubor.url}}">Stáhnout</a></span>
                 </div>
             </li>  

@@ -3,10 +3,10 @@
     <div class="pills">
         <tabset type="pills">
             <tab heading="Materiály" id="tab1">
-                <app-materialy [predmet]="predmet"></app-materialy>
+                <app-materialy *ngIf="predmet" [predmet]="predmet"></app-materialy>
             </tab>
             <tab heading="Diskuze">
-                Diskuze
+                <app-diskuze *ngIf="predmet" [predmet]="predmet"></app-diskuze>
             </tab>
             <tab heading="Hodnocení">
                 Hodnocení

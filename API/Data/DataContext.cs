@@ -11,5 +11,6 @@ namespace API.Data
 
         public DbSet<Student> Students { get; set; }
         public DbSet<Predmet> Predmets { get; set; }
+        public DbSet<Topic> Topics { get; set; }
     }
 }

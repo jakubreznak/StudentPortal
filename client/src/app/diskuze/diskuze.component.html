@@ -1,0 +1,34 @@
+<div *ngIf="topics != null">
+    <div *ngIf="predmet == null">
+        <h2>Obecná diskuze</h2>
+    </div>
+    
+    <div class="form">
+        <form #registerForm="ngForm" (ngSubmit)="postTopic()" autocomplete="off">
+            <div class="row">
+                <div class="form-group col-10">
+                    <input type="text" class="form-control" name="name"
+                    [(ngModel)]="topicName" placeholder="nové téma" required >
+                </div>
+                <div class="form-group col-md-auto">
+                    <button class="btn btn-success mr-2" type="submit">Přidat</button>
+                </div>
+            </div>       
+        </form>
+    </div>
+    
+    <div *ngIf="topics.length > 0">
+        <div class="list-group">
+            <a  *ngFor="let topic of topics" class="list-group-item-action list-group-item border" [routerLink]="topic.id">
+                <div class="nazev-rocnik">
+                    {{topic.name}}
+                    <p>{{topic.studentName}} - {{topic.created}}</p>
+                </div>
+            </a>  
+        </div>
+    </div>
+    <div class="prvni" *ngIf="topics.length == 0">
+        <p>Buďte první kdo přidá téma v této diskuzi.</p>
+    </div>
+</div>
+

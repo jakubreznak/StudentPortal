@@ -5,15 +5,15 @@
           </ng-container>
           
           <ng-template #homeComp>
-            <a class="navbar-brand" [routerLink]="'/'">Student portal</a>
+            <a class="navbar-brand">Student portal</a>
           </ng-template>          
         <ul class="navbar-nav mr-auto">
             <ng-container *ngIf="accountService.currentStudent$ | async">
                 <li class="nav-item">
-                    <a class="nav-link" routerLink='/predmety' routerLinkActive='active'>Přeměty</a>
+                    <a class="nav-link" routerLink='/predmety' routerLinkActive='active'>Předměty</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Diskuze</a>
+                    <a class="nav-link" routerLink='/diskuze' routerLinkActive='active'>Diskuze</a>
                 </li>
             </ng-container>
             </ul>

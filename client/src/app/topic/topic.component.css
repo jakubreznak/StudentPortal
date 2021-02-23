@@ -1,0 +1,13 @@
+li {
+    word-wrap: break-word;
+    margin-top: 0.5em;
+}
+
+ul {
+    padding: 0;
+}
+
+form {
+    margin-top: 2em;
+    margin-bottom: .3em;
+}

@@ -32,27 +32,30 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("getbyid/{id}")]
-        public ActionResult<Predmet> GetPredmet(int id)
+        public async Task<ActionResult<Predmet>> GetPredmet(int id)
         {
-            return  _context.Predmets.Include("Files").FirstOrDefault(x => x.ID == id);
+            return await  _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == id);
         }
 
         [HttpGet]
         [Route("getbyobor/{idObor}")]
         public async Task<ActionResult<IEnumerable<Predmet>>> GetPredmetyByObor(int idObor)
         {
-            return await _context.Predmets.Where(p => p.oborIdNum == idObor).ToListAsync();
+            return await _context.Predmets.Where(p => p.oborIdNum == idObor).OrderByDescending(p => p.doporucenyRocnik.HasValue)
+            .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToListAsync();
         }
 
         [HttpPost("add-file/{predmetId}")]
-        public async Task<ActionResult<SouborDTO>> AddFile(IFormFile file, int predmetId)
+        public async Task<ActionResult<List<Soubor>>> AddFile(IFormFile file, int predmetId)
         {
-            var predmet = await _context.Predmets.FindAsync(predmetId);
+            var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == predmetId);
+            if(predmet == null)
+                return BadRequest();
 
             var result = await _fileService.AddFileAsync(file);
 
             string fileName = file.FileName;
-            string extension = Path.GetExtension(fileName);
+            string extension = Path.GetExtension(fileName).Substring(1).ToUpper();
             fileName = fileName.Substring(0, fileName.Length - extension.Length);
 
             if (result.Error != null) return BadRequest();
@@ -69,13 +72,7 @@ namespace API.Controllers
             predmet.Files.Add(soubor);
             if (await _context.SaveChangesAsync() > 0)
             {
-                SouborDTO souborDto = new SouborDTO
-                {
-                    Url = soubor.Url,
-                    PublicID = soubor.PublicID
-                };
-
-                return souborDto;
+                return predmet.Files;
             }
             return BadRequest();
 

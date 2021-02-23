@@ -17,7 +17,7 @@ export interface Predmet {
     files: Soubor[];
   }
 
-  interface Soubor {
+  export interface Soubor {
     id: number;
     url: string;
     fileName: string;

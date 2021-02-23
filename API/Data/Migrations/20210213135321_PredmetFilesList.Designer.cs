@@ -3,43 +3,20 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210213135321_PredmetFilesList")]
+    partial class PredmetFilesList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.0");
-
-            modelBuilder.Entity("API.Entities.Comment", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("studentName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("text")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("topicID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("topicID");
-
-                    b.ToTable("Comment");
-                });
 
             modelBuilder.Entity("API.Entities.Predmet", b =>
                 {
@@ -157,40 +134,6 @@ namespace API.Data.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("API.Entities.Topic", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("predmetID")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("studentName")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Topics");
-                });
-
-            modelBuilder.Entity("API.Entities.Comment", b =>
-                {
-                    b.HasOne("API.Entities.Topic", "topic")
-                        .WithMany("comments")
-                        .HasForeignKey("topicID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("topic");
-                });
-
             modelBuilder.Entity("API.Entities.Soubor", b =>
                 {
                     b.HasOne("API.Entities.Predmet", "Predmet")
@@ -205,11 +148,6 @@ namespace API.Data.Migrations
             modelBuilder.Entity("API.Entities.Predmet", b =>
                 {
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("API.Entities.Topic", b =>
-                {
-                    b.Navigation("comments");
                 });
 #pragma warning restore 612, 618
         }

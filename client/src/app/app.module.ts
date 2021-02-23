@@ -14,6 +14,8 @@ import { MaterialyComponent } from './materialy/materialy.component';
 import { PredmetyListComponent } from './predmety-list/predmety-list.component';
 import { PredmetDetailComponent } from './predmet-detail/predmet-detail.component';
 import { SharedModule } from './modules/shared.module';
+import { DiskuzeComponent } from './diskuze/diskuze.component';
+import { TopicComponent } from './topic/topic.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { SharedModule } from './modules/shared.module';
     RegisterComponent,
     MaterialyComponent,
     PredmetyListComponent,
-    PredmetDetailComponent
+    PredmetDetailComponent,
+    DiskuzeComponent,
+    TopicComponent
   ],
   imports: [
     BrowserModule,

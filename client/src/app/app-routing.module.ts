@@ -17,6 +17,7 @@ const routes: Routes = [
       {path: 'predmety', component: PredmetyListComponent},
       {path: 'predmety/:id', component: PredmetDetailComponent},
       {path: 'diskuze', component: DiskuzeComponent},
+      {path: 'diskuze/:topicid', component: TopicComponent},
       {path: 'predmety/:predmetid/:topicid', component: TopicComponent}
     ]
   },

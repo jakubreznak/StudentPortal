@@ -1,3 +1,12 @@
 h1 {
     margin-bottom: 1em;
 }
+
+
+@media only screen and (min-width: 1100px) {
+    .registrace {
+        margin: auto;
+        width: 60%;
+    }
+  }
+

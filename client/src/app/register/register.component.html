@@ -9,6 +9,10 @@
         <input type="text" class="form-control" name="password"
         [(ngModel)]="model.password" placeholder="heslo">
     </div>
+    <div class="form-group">
+        <input type="text" class="form-control" name="upolNumber"
+        [(ngModel)]="model.upolNumber" placeholder="identifikační číslo (např. R18140)">
+    </div>
     <div class="form-group text-center">
         <button class="btn btn-success mr-2" type="submit">Registrovat</button>
         <button class="btn btn-success mr-2" (click)="cancel()" type="button">Zrušit</button>

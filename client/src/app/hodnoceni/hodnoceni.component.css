@@ -1,0 +1,27 @@
+li {
+    word-wrap: break-word;
+    margin-top: 0.5em;
+}
+
+ul {
+    padding: 0;
+}
+
+.form {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.ohodnoceni {
+    text-align: center;
+    font-size: 5em;
+    font-weight: 800;
+}
+
+button {
+    margin-top: 1em;
+}
+
+.button {
+    text-align: right;
+}

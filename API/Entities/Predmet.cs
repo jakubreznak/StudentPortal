@@ -3,7 +3,11 @@ using System.Collections.Generic;
 namespace API.Entities
 {
     public class Predmet    {
-        public Predmet() => this.Files = new List<Soubor>();
+        public Predmet()
+        {
+            this.Files = new List<Soubor>();
+            this.Hodnocenis = new List<Hodnoceni>();
+        } 
         public int ID { get; set; }
         public string zkratka { get; set; } 
         public string katedra { get; set; } 
@@ -20,5 +24,6 @@ namespace API.Entities
         public string typZk { get; set; } 
         public int? oborIdNum { get; set; }
         public List<Soubor> Files { get; set; } 
+        public List<Hodnoceni> Hodnocenis { get; set; }
     }
 }

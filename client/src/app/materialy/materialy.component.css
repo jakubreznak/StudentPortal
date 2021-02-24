@@ -15,7 +15,6 @@
   }
 
 .nazev-stahnout {
-  display: flex;
   width: 100%;
   height: auto;
   justify-content: space-between;
@@ -50,3 +49,14 @@ p {
     font-size: 1em;
     font-weight: 500;
 }
+
+li {
+    word-wrap: break-word;
+}
+
+
+@media only screen and (min-width: 768px) {
+    .nazev-stahnout{
+        display: flex;
+    }
+  }

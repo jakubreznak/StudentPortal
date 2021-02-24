@@ -9,7 +9,7 @@
                 <app-diskuze *ngIf="predmet" [predmet]="predmet"></app-diskuze>
             </tab>
             <tab heading="Hodnocení">
-                Hodnocení
+                <app-hodnoceni *ngIf="predmet" [predmet]="predmet"></app-hodnoceni>
             </tab>
         </tabset>
     </div>

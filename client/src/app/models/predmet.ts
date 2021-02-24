@@ -24,3 +24,11 @@ export interface Predmet {
     extension: string;
     dateAdded: string;
   }
+
+  export interface Hodnoceni {
+    id: number;
+    text: string;
+    rating: number;
+    created: string;
+    predmet: Predmet;
+  }

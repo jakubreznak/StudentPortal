@@ -1,0 +1,48 @@
+<div *ngIf="hodnoceni != null">
+
+    <div *ngIf="cislo != null && cislo > 0" class="ohodnoceni">
+        <p>{{cislo}}/10</p>
+    </div>
+
+    <div class="form">
+        <form #commentForm="ngForm" (ngSubmit)="rate()" autocomplete="off">
+            <div class="form-group">
+                <input type="text" class="form-control" name="rate"
+                [(ngModel)]="model.text" placeholder="názor (nepovinné)">
+            </div>
+            <select class="custom-select" required name="cislo"
+                [(ngModel)]="model.cislo">
+                <option selected disabled hidden value="x">vyberte ohodnocení</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+            <div class="button">
+                <button class="btn btn-success mr-2" type="submit">Hodnotit</button>
+            </div>
+        </form>
+    </div>
+
+    <div *ngIf="hodnoceni.length > 0">
+        <div class="list-group">
+            <ul>
+                <ng-container *ngFor="let comment of hodnoceni">
+                    <li *ngIf="comment.text.length != 0" class="list-group-item border">
+                        <p>{{comment.text}}</p>
+                        <p>{{comment.created}}</p>
+                    </li>  
+                </ng-container>
+            </ul>
+        </div>
+    </div>
+    <div class="prvni" *ngIf="hodnoceni.length == 0">
+        <p>Buďte první kdo přidá hodnocení.</p>
+    </div>
+</div>

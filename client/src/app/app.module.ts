@@ -16,6 +16,7 @@ import { PredmetDetailComponent } from './predmet-detail/predmet-detail.componen
 import { SharedModule } from './modules/shared.module';
 import { DiskuzeComponent } from './diskuze/diskuze.component';
 import { TopicComponent } from './topic/topic.component';
+import { HodnoceniComponent } from './hodnoceni/hodnoceni.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TopicComponent } from './topic/topic.component';
     PredmetyListComponent,
     PredmetDetailComponent,
     DiskuzeComponent,
-    TopicComponent
+    TopicComponent,
+    HodnoceniComponent
   ],
   imports: [
     BrowserModule,

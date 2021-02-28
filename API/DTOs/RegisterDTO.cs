@@ -6,8 +6,11 @@ namespace API.DTOs
     {
         [Required]
         public string name { get; set; }
+        
         [Required]
         public string password { get; set; }
+
+        [Required]
         public string upolNumber {get; set;}
     }
 }

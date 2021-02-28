@@ -24,6 +24,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{name}")]
+        [Authorize]
         public async Task<ActionResult<UserDTO>> GetStudent(string name)
         {
             var student =  await _context.Students.SingleOrDefaultAsync(p => p.name == name);

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { Student } from '../models/student';
 import { AccountService } from '../Services/account.service';
@@ -12,7 +13,7 @@ import { AccountService } from '../Services/account.service';
 export class NavComponent implements OnInit {
   model: any = {};
 
-  constructor(public accountService: AccountService ,private router: Router) { }
+  constructor(public accountService: AccountService ,private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -23,7 +24,7 @@ export class NavComponent implements OnInit {
         this.router.navigateByUrl('/predmety');
       }, error => 
       {
-        console.log(error);
+        this.toastr.error(error.error);
       })
   }
 

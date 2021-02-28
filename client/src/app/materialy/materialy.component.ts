@@ -20,8 +20,8 @@ export class MaterialyComponent implements OnInit {
   onFilesSelected(evt: Event) {
     const files: FileList = (evt.target as HTMLInputElement).files;
     const formData = new FormData();
-        const file = files[0];
-        formData.append('file', file, file.name);
+    const file = files[0];
+    formData.append('file', file, file.name);
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');

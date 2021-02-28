@@ -1,9 +1,11 @@
-<div class="list-group">
-    <a  *ngFor="let predmet of predmety" class="list-group-item-action list-group-item border" [routerLink]="predmet.id">
-        <div class="nazev-rocnik">
-            {{predmet.nazev}}    
-            <p>ročník: {{predmet.doporucenyRocnik}}</p>
-        </div>
-        <span [ngStyle]="{'background-color':getBackgroundColor(predmet.statut)}">{{predmet.statut}}</span>
-    </a>  
+<div class="container mt-5">
+    <div class="list-group">
+        <a  *ngFor="let predmet of predmety" class="list-group-item-action list-group-item border" [routerLink]="predmet.id">
+            <div class="nazev-rocnik">
+                {{predmet.nazev}}    
+                <p>ročník: {{predmet.doporucenyRocnik}}</p>
+            </div>
+            <span [ngStyle]="{'background-color':getBackgroundColor(predmet.statut)}">{{predmet.statut}}</span>
+        </a>  
+    </div>
 </div>

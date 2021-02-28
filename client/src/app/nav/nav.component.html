@@ -5,7 +5,7 @@
           </ng-container>
           
           <ng-template #homeComp>
-            <a class="navbar-brand">Student portal</a>
+            <a class="navbar-brand" [routerLink]="">Student portal</a>
           </ng-template>          
         <ul class="navbar-nav mr-auto">
             <ng-container *ngIf="accountService.currentStudent$ | async">

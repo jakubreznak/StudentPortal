@@ -32,6 +32,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("getbyid/{id}")]
+        [Authorize]
         public async Task<ActionResult<Predmet>> GetPredmet(int id)
         {
             return await  _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == id);
@@ -46,10 +47,14 @@ namespace API.Controllers
         }
 
         [HttpPost("add-file/{predmetId}")]
+        [Authorize]
         public async Task<ActionResult<List<Soubor>>> AddFile(IFormFile file, int predmetId)
         {
+            if(file.Length > 30000000)
+                return BadRequest("Příliš velký soubor. (max. 30MB)");
+
             var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == predmetId);
-            if(predmet == null)
+            if(predmet == null || file.Length > 30000000)
                 return BadRequest();
 
             var result = await _fileService.AddFileAsync(file);

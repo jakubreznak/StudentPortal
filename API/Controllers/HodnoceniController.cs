@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{idPredmet}")]
+        [Authorize]
         public async Task<ActionResult<List<Hodnoceni>>> GetPredmet(int idPredmet)
         {
             var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
@@ -24,6 +26,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{idPredmet}/{cislo}")]
+        [Authorize]
         public async Task<ActionResult<List<Hodnoceni>>> PostRating(int idPredmet, int cislo, [FromBody] string text)
         {
             if(cislo < 1 || cislo > 10) return BadRequest();

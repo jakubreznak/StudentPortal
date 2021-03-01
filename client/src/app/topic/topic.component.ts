@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Topic } from '../models/topic';
 import { DiskuzeService } from '../Services/diskuze.service';
 
@@ -13,7 +14,7 @@ export class TopicComponent implements OnInit {
   topic: Topic;
   text: string;
 
-  constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute) { }
+  constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.loadTopic();
@@ -26,7 +27,10 @@ export class TopicComponent implements OnInit {
 
   postComment(){
     this.diskuzeService.postComment(this.topic.id, JSON.stringify(this.text)).subscribe(topic =>
-      this.topic = topic);
+      {
+        this.topic = topic;
+        this.toastr.success("Komentář přidán.");
+      });
   }
 
 }

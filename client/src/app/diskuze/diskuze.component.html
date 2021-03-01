@@ -1,15 +1,17 @@
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div *ngIf="topics != null">
         <div *ngIf="predmet == null">
             <h2>Obecná diskuze</h2>
         </div>
         
         <div class="form">
-            <form #registerForm="ngForm" (ngSubmit)="postTopic()" autocomplete="off">
+            <form [formGroup]='diskuzeForm' (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="row">
                     <div class="form-group col-10">
-                        <input type="text" class="form-control" name="name"
-                        [(ngModel)]="topicName" placeholder="nové téma" required >
+                        <input
+                        [class.is-invalid]='diskuzeForm.get("topicName").errors && diskuzeForm.get("topicName").touched'
+                        type="text" class="form-control" formControlName="topicName" placeholder="nové téma" required >
+                        <div class="invalid-feedback">Prosím vyplňte název tématu.</div>
                     </div>
                     <div class="form-group col-md-auto">
                         <button class="btn btn-success mr-2" type="submit">Přidat</button>

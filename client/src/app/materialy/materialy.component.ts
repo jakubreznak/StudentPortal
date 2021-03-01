@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { Predmet, Soubor } from '../models/predmet';
 
@@ -11,7 +12,7 @@ import { Predmet, Soubor } from '../models/predmet';
 export class MaterialyComponent implements OnInit {
   @Input() predmet: Predmet;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private toastr: ToastrService) { }
   baseUrl = environment.apiUrl;
   
   ngOnInit(): void {
@@ -29,6 +30,7 @@ export class MaterialyComponent implements OnInit {
      .post<Soubor[]>(this.baseUrl + 'predmety/add-file/' + this.predmet.id, formData, { headers })
      .subscribe(files => {
         this.predmet.files = files;
+        this.toastr.success("Materiál přidán.");
      });
   }
 }

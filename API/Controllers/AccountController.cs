@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace API.Controllers
 {
@@ -38,21 +39,25 @@ namespace API.Controllers
             if (await NameExists(registerDTO.name))
                 return BadRequest("Existuje již uživatel s tímto jménem.");
 
+            Regex r = new Regex("^[a-zA-Z]{1}[0-9]{5}$");
+            if(!r.IsMatch(registerDTO.upolNumber) || registerDTO.upolNumber == null) return BadRequest("Špatný tvar osobního čísla.");
+
             var student = new Student
             {
                 name = registerDTO.name.ToLower(),
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.password)),
                 passwordSalt = hmac.Key,
-                upolNumber = registerDTO.upolNumber,
+                upolNumber = registerDTO.upolNumber.ToUpper(),
                 datumRegistrace = DateTime.Now
             };
 
             //GET oborIdno a rocnik z UPOL API
             var response = await _httpClient
-                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + registerDTO.upolNumber + "&outputFormat=JSON");
+                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + student.upolNumber + "&outputFormat=JSON");
             
             string jsonResponse = await response.Content.ReadAsStringAsync();
             Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
+            if(!data.planInfo.Any()) return BadRequest("Student s tímto osobním číslem neexistuje");
             int oborIdno = data.planInfo[0].oborIdno;
             int rocnik = ExtractNumber(data.planInfo[0].nazev);
 

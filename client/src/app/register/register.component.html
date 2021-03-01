@@ -1,20 +1,36 @@
-<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+<form [formGroup]='registerForm' (ngSubmit)="registerForm.valid && register()" autocomplete="off">
     <h2 class="text-center text-primary mt-5">Registrace</h2>
     <hr>
     <div class="form-group">
-        <input type="text" class="form-control" name="name"
-        [(ngModel)]="model.name" placeholder="jméno">
+        <input 
+        [class.is-invalid]='registerForm.get("name").errors && registerForm.get("name").touched'
+        type="text" class="form-control" formControlName='name' placeholder="jméno">
+        <div class="invalid-feedback">Prosím vyplňte jméno.</div>
     </div>
     <div class="form-group">
-        <input type="password" class="form-control" name="password"
-        [(ngModel)]="model.password" placeholder="heslo">
+        <input 
+        [class.is-invalid]='registerForm.get("password").errors && registerForm.get("password").touched'
+        type="password" class="form-control" formControlName='password' placeholder="heslo">
+        <div *ngIf="registerForm.get('password').hasError('required')" class="invalid-feedback">Prosím vyplňte heslo.</div>
+        <div *ngIf="registerForm.get('password').hasError('minlength')" class="invalid-feedback">Minimálně 8 znaků.</div>
     </div>
     <div class="form-group">
-        <input type="text" class="form-control" name="upolNumber"
-        [(ngModel)]="model.upolNumber" placeholder="osobní číslo (např. R18140)">
+        <input 
+        [class.is-invalid]='registerForm.get("confirmPassword").errors && registerForm.get("confirmPassword").touched'
+        type="password" class="form-control" formControlName='confirmPassword' placeholder="kontrola hesla">
+        <div *ngIf="registerForm.get('confirmPassword').hasError('required')" class="invalid-feedback">Prosím vyplňte kontrolu hesla.</div>
+        <div *ngIf="registerForm.get('confirmPassword').hasError('isMatching')" class="invalid-feedback">Musí být stejné jako heslo.</div>   
+    </div>
+    <div class="form-group">
+        <input 
+        [class.is-invalid]='registerForm.get("upolNumber").errors && registerForm.get("upolNumber").touched'
+        type="text" class="form-control" formControlName='upolNumber' placeholder="osobní číslo (např. R18140)">
+        <div *ngIf="registerForm.get('upolNumber').hasError('required')" class="invalid-feedback">Prosím vyplňte své osobní číslo.</div>
+        <div *ngIf="registerForm.get('upolNumber').hasError('pattern')" class="invalid-feedback">Musí být ve tvaru A12345 (písmeno a 5 čísel).</div>
     </div>
     <div class="form-group text-center">
-        <button class="btn btn-success mr-2" type="submit">Registrovat</button>
+        <button [disabled]='!registerForm.valid' class="btn btn-success mr-2" type="submit">Registrovat</button>
         <button class="btn btn-success mr-2" (click)="cancel()" type="button">Zrušit</button>
     </div>
 </form>
+<p>* osobní číslo naleznete na stránce STAGu po přihlášení v sekci Moje studium</p>

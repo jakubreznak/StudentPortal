@@ -25,16 +25,16 @@
             </div>
         </div>
 
-        <form *ngIf="(accountService.currentStudent$ | async) === null" #loginForm="ngForm" class="form-inline mt-2 mt-md-0" (ngSubmit)="login()" autocomplete="off">
+        <form *ngIf="(accountService.currentStudent$ | async) === null" [formGroup]='loginForm' class="form-inline mt-2 mt-md-0" (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
             <input 
-                name="name"
-                [(ngModel)]="model.name"
+                [class.is-invalid]='loginForm.get("name").errors && loginForm.get("name").touched'
+                formControlName='name'
                 class="form-control mr-sm-2" 
                 type="text" 
                 placeholder="jméno">
             <input 
-                name="password"
-                [(ngModel)]="model.password"
+                [class.is-invalid]='loginForm.get("password").errors && loginForm.get("password").touched'
+                formControlName='password'
                 class="form-control mr-sm-2" 
                 type="password" 
                 placeholder="heslo">

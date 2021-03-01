@@ -20,8 +20,8 @@
             <div class="list-group">
                 <ul>
                     <li *ngFor="let comment of topic.comments" class="list-group-item border">
-                        <p>{{comment.text}}</p>
-                        <p>{{comment.studentName}} - {{comment.created}}</p>
+                        <p class="komentar">{{comment.text}}</p>
+                        <p class="info">{{comment.studentName}} - {{comment.created}}</p>
                     </li>  
                 </ul>
             </div>

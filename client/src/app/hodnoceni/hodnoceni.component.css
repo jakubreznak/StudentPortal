@@ -25,3 +25,17 @@ button {
 .button {
     text-align: right;
 }
+
+.komentar {
+    font-weight: 500;
+    font-size: 1.2em;
+}
+
+.info {
+    font-size: .9em;
+}
+
+.prvni p {
+    font-size: 1.6em;
+    font-weight: 600;
+}

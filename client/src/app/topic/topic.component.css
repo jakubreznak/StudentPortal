@@ -11,3 +11,12 @@ form {
     margin-top: 2em;
     margin-bottom: .3em;
 }
+
+.komentar {
+    font-weight: 500;
+    font-size: 1.2em;
+}
+
+.info {
+    font-size: .9em;
+}

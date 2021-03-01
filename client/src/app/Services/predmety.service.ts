@@ -10,7 +10,6 @@ import { Predmet } from '../models/predmet';
 })
 export class PredmetyService {
   baseUrl = environment.apiUrl;
-  predmety: Predmet[] = [];
 
   constructor(private http: HttpClient) { }
 
@@ -19,14 +18,7 @@ export class PredmetyService {
   }
 
   getPredmetyByObor(idObor: number){
-    if (this.predmety.length > 0) return of(this.predmety);
-    return this.http.get<Predmet[]>(this.baseUrl + 'predmety/getbyobor/' + idObor).pipe(
-      map(predmety =>
-        {
-          this.predmety = predmety;
-          return predmety;
-        })
-    );
+    return this.http.get<Predmet[]>(this.baseUrl + 'predmety/getbyobor/' + idObor);
   }
 
   getPredmet(id: number) {

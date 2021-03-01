@@ -3,6 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Hodnoceni, Predmet } from '../models/predmet';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-hodnoceni',
@@ -14,27 +16,44 @@ export class HodnoceniComponent implements OnInit {
   baseUrl = environment.apiUrl;
   hodnoceni: Hodnoceni[];
   cislo: number;
-  model: any = {};
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json'
     })
   };
+  cisla: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  hodnoceniForm: FormGroup;
 
-  constructor(private http: HttpClient) { 
-    this.model.cislo = 'x'
+  constructor(private http: HttpClient, private toastr: ToastrService) { 
   }
 
   ngOnInit(): void {
     this.loadHodnoceni();
+    this.initializeForm();
+  }
+
+  initializeForm() {
+    this.hodnoceniForm = new FormGroup({
+      text: new FormControl(''),
+      cislo: new FormControl('', Validators.required)
+    })
+  }
+
+  validateBeforeSubmit(){
+    if(this.hodnoceniForm.valid){
+      this.rate();
+    }else{
+      this.hodnoceniForm.markAllAsTouched();
+    }
   }
 
   rate(){
-    this.http.post<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + this.model.cislo,
-    JSON.stringify(this.model.text), this.httpOptions).subscribe(hodnoceni =>
+    this.http.post<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + this.hodnoceniForm.value.cislo,
+    JSON.stringify(this.hodnoceniForm.value.text || ""), this.httpOptions).subscribe(hodnoceni =>
       {
         this.hodnoceni = hodnoceni;
         this.cislo = this.getCislo(hodnoceni);
+        this.toastr.success("Hodnocení přidáno.");
       });
   }
 

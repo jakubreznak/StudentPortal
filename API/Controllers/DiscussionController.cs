@@ -44,7 +44,7 @@ namespace API.Controllers
         public async Task<ActionResult<Topic>> NewTopic (string predmetID, string studentName, [FromBody] string topicName)
         {
 
-            if(studentName == null || topicName == null)
+            if(studentName == null || topicName == null || topicName.Length == 0)
                 return BadRequest();
 
             var topic = new Topic

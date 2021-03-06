@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-white">
     <div class="container">
         <ng-container *ngIf="accountService.currentStudent$ | async; else homeComp">
             <a class="navbar-brand" [routerLink]="'/predmety'">Student portal</a>
@@ -18,7 +18,7 @@
             </ng-container>
             </ul>
         <div class="dropdown" *ngIf="accountService.currentStudent$ | async as user" dropdown>
-            <a class="dropdown-toggle text-light" dropdownToggle>{{user.name}}</a>
+            <a class="dropdown-toggle text-dark" dropdownToggle>{{user.name}}</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
                 <!--<a class="dropdown-item">Upravit profil</a> -->
                 <a class="dropdown-item" (click)="logout()">Odhlásit se</a>

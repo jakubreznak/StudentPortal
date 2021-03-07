@@ -15,9 +15,7 @@ namespace API.Extensions
         {
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IFileService, FileService>();
-            services.AddDbContext<DataContext>(options => 
-            {                
+            services.AddScoped<IFileService, FileService>();               
                 services.AddDbContext<DataContext>(options =>
                 {
                     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -45,9 +43,6 @@ namespace API.Extensions
                     }
                     options.UseNpgsql(connStr);
                 });
-
-            });
-
             return services;
         }
     }

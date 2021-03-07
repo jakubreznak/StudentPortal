@@ -4,7 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import {map} from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Student } from '../models/student';
-import { User } from '../models/user';
+
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +20,8 @@ export class AccountService {
     return this.http.post(this.baseUrl + 'account/login', model).pipe(
       map((response: Student) => {
         const student = response;
-        if(student)
-          localStorage.setItem('student', JSON.stringify(student));
-          this.currentStudentSource.next(student);
+        if(student)         
+        this.setCurrentStudent(student);
       })
     )
   }
@@ -31,14 +30,17 @@ export class AccountService {
     return this.http.post(this.baseUrl + 'account/register', model).pipe(
       map((student: Student) => {
         if(student) {
-          localStorage.setItem('student', JSON.stringify(student));
-          this.currentStudentSource.next(student);
+          this.setCurrentStudent(student);
         }
       })
     )
   }
 
   setCurrentStudent(student: Student){
+    student.roles = [];
+    const roles = this.getDecodedToken(student.token).role;
+    Array.isArray(roles) ? student.roles = roles : student.roles.push(roles);
+    localStorage.setItem('student', JSON.stringify(student));
     this.currentStudentSource.next(student);
   }
 
@@ -47,7 +49,11 @@ export class AccountService {
     this.currentStudentSource.next(null);
   }
 
-  getUser(name: string) {
-    return this.http.get<User>(this.baseUrl + 'students/' + name);
+  getOborIdByUsername(name: string) {
+    return this.http.get<number>(this.baseUrl + 'students/' + name);
+  }
+
+  getDecodedToken(token){
+    return JSON.parse(atob(token.split('.')[1]));
   }
 }

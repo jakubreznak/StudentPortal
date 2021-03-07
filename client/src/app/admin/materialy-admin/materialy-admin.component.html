@@ -1,0 +1,13 @@
+<div class="container mt-5">
+    <div *ngIf="soubory">
+        <div class="list-group">
+            <ul>
+                <li *ngFor="let soubor of soubory" class="list-group-item border">
+                    <p class="komentar">{{soubor.fileName}}</p>
+                    <button (click)='deleteSoubor(soubor.id)' type="button" class="btn btn-danger">Smazat</button>
+                </li>  
+            </ul>
+        </div>
+    </div>
+</div>
+

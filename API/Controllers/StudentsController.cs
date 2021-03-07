@@ -4,6 +4,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,31 +13,20 @@ namespace API.Controllers
     public class StudentsController : BaseApiController
     {
         private readonly DataContext _context;
-        public StudentsController(DataContext context)
+        private readonly UserManager<Student> _userManager;
+        public StudentsController(DataContext context, UserManager<Student> userManager)
         {
+            _userManager = userManager;
             _context = context;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
-        {
-            return await _context.Students.ToListAsync();
         }
 
         [HttpGet("{name}")]
         [Authorize]
-        public async Task<ActionResult<UserDTO>> GetStudent(string name)
+        public async Task<ActionResult<int>> GetOborIdByStudentName(string name)
         {
-            var student =  await _context.Students.SingleOrDefaultAsync(p => p.name == name);
-            return new UserDTO()
-            {
-                ID = student.ID,
-                name = student.name,
-                upolNumber = student.upolNumber,
-                oborIdno = student.oborIdno,
-                rocnikRegistrace = student.rocnikRegistrace,
-                datumRegistrace = student.datumRegistrace
-            };
+            var student = await _userManager.Users.SingleOrDefaultAsync(p => p.UserName == name);
+            if(student == null) return BadRequest();
+            return student.oborIdno;
         }
     }
 }

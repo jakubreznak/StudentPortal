@@ -1,0 +1,14 @@
+li {
+    word-wrap: break-word;
+    margin-top: 0.5em;
+}
+
+ul {
+    padding: 0;
+}
+
+.komentar {
+    font-weight: 500;
+    font-size: 1.2em;
+    color: black;
+}

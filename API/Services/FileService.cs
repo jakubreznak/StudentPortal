@@ -36,5 +36,11 @@ namespace API.Services
             }
             return uploadResult;
         }
+
+        public async Task<DeletionResult> RemoveFileAsync(string publicID)
+        {
+            var deletionParams = new DeletionParams(publicID);
+            return await cloudinary.DestroyAsync(deletionParams);
+        }
     }
 }

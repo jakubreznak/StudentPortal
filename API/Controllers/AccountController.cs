@@ -15,38 +15,40 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
         private readonly ITokenService _tokenService;
         private readonly HttpClient _httpClient;
+        private readonly UserManager<Student> _userManager;
+        private readonly SignInManager<Student> _signInManager;
+        private readonly DataContext _context;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(UserManager<Student> userManager, SignInManager<Student> signInManager,
+        DataContext context, ITokenService tokenService)
         {
-            _tokenService = tokenService;
             _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _tokenService = tokenService;
             _httpClient = new HttpClient();
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<StudentDTO>> Register(RegisterDTO registerDTO)
         {
-            using var hmac = new HMACSHA512();
-
             if (await NameExists(registerDTO.name))
                 return BadRequest("Existuje již uživatel s tímto jménem.");
 
             Regex r = new Regex("^[a-zA-Z]{1}[0-9]{5}$");
-            if(!r.IsMatch(registerDTO.upolNumber) || registerDTO.upolNumber == null) return BadRequest("Špatný tvar osobního čísla.");
+            if (!r.IsMatch(registerDTO.upolNumber) || registerDTO.upolNumber == null) return BadRequest("Špatný tvar osobního čísla.");
 
             var student = new Student
             {
-                name = registerDTO.name.ToLower(),
-                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDTO.password)),
-                passwordSalt = hmac.Key,
+                UserName = registerDTO.name.ToLower(),
                 upolNumber = registerDTO.upolNumber.ToUpper(),
                 datumRegistrace = DateTime.Now
             };
@@ -54,10 +56,10 @@ namespace API.Controllers
             //GET oborIdno a rocnik z UPOL API
             var response = await _httpClient
                 .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + student.upolNumber + "&outputFormat=JSON");
-            
+
             string jsonResponse = await response.Content.ReadAsStringAsync();
             Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
-            if(!data.planInfo.Any()) return BadRequest("Student s tímto osobním číslem neexistuje");
+            if (!data.planInfo.Any()) return BadRequest("Student s tímto osobním číslem neexistuje");
             int oborIdno = data.planInfo[0].oborIdno;
             int rocnik = ExtractNumber(data.planInfo[0].nazev);
 
@@ -70,10 +72,10 @@ namespace API.Controllers
             jsonResponse = await response.Content.ReadAsStringAsync();
             RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
 
-            foreach(var predmet in predmety.predmetOboru.Where(( coordinate, index ) => index % 2 == 0 ))
+            foreach (var predmet in predmety.predmetOboru.Where((coordinate, index) => index % 2 == 0))
             {
-                if(!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborIdno)))
-                {   
+                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborIdno)))
+                {
                     Predmet novyPredmet = new Predmet();
                     predmet.oborIdNum = oborIdno;
                     novyPredmet = predmet;
@@ -81,51 +83,48 @@ namespace API.Controllers
                 }
             }
 
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.CreateAsync(student, registerDTO.password);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            var roleResult = await _userManager.AddToRoleAsync(student, "Member");
+            if(!roleResult.Succeeded) return BadRequest(result.Errors);
 
             return new StudentDTO
             {
-                name = student.name,
-                token = _tokenService.CreateToken(student)
+                name = student.UserName,
+                token = await _tokenService.CreateToken(student)
             };
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<StudentDTO>> Login(LoginDTO loginDTO)
         {
-            var student = await _context.Students.FirstOrDefaultAsync(s => s.name == loginDTO.name);
+            var student = await _userManager.Users.FirstOrDefaultAsync(s => s.UserName == loginDTO.name.ToLower());
 
             if (student == null)
                 return Unauthorized("Uživatel s tímto jménem neexistuje.");
 
-            using var hmac = new HMACSHA512(student.passwordSalt);
-
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.password));
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != student.passwordHash[i])
-                    return Unauthorized("Špatné heslo.");
-            }
+            var result = await _signInManager.CheckPasswordSignInAsync(student, loginDTO.password, false);
+            if (!result.Succeeded) return Unauthorized("Špatné heslo.");
 
             return new StudentDTO
             {
-                name = student.name,
-                token = _tokenService.CreateToken(student)
+                name = student.UserName,
+                token = await _tokenService.CreateToken(student)
             };
         }
 
         private async Task<bool> NameExists(string name)
         {
-            return await _context.Students.AnyAsync(x => x.name == name.ToLower());
+            return await _userManager.Users.AnyAsync(x => x.UserName == name.ToLower());
         }
 
         private int ExtractNumber(string text)
         {
             int i = 0;
-            while(i < text.Length)
+            while (i < text.Length)
             {
-                if(Char.IsDigit(text[i]))
+                if (Char.IsDigit(text[i]))
                 {
                     return int.Parse(text[i].ToString());
                 }

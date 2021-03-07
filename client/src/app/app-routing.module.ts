@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminComponent } from './admin/admin.component';
 import { DiskuzeComponent } from './diskuze/diskuze.component';
+import { AdminGuard } from './guards/admin.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { PredmetDetailComponent } from './predmet-detail/predmet-detail.component';
@@ -18,7 +20,8 @@ const routes: Routes = [
       {path: 'predmety/:id', component: PredmetDetailComponent},
       {path: 'diskuze', component: DiskuzeComponent},
       {path: 'diskuze/:topicid', component: TopicComponent},
-      {path: 'predmety/:predmetid/:topicid', component: TopicComponent}
+      {path: 'predmety/:predmetid/:topicid', component: TopicComponent},
+      {path: 'admin', component: AdminComponent, canActivate: [AdminGuard]}
     ]
   },
   {path: '**', component: HomeComponent, pathMatch: 'full'}

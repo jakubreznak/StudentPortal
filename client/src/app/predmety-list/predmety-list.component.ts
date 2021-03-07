@@ -26,8 +26,8 @@ export class PredmetyListComponent implements OnInit {
   }
 
   loadPredmety() {
-    this.accountService.getUser(this.student.name).subscribe(user =>
-      this.predmetService.getPredmetyByObor(user.oborIdno).subscribe(predmety =>
+    this.accountService.getOborIdByUsername(this.student.name).subscribe(oborId =>
+      this.predmetService.getPredmetyByObor(oborId).subscribe(predmety =>
         this.predmety = predmety));
     
   }

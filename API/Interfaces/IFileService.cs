@@ -7,5 +7,6 @@ namespace API.Interfaces
     public interface IFileService
     {
          Task<RawUploadResult> AddFileAsync(IFormFile file);
+         Task<DeletionResult> RemoveFileAsync(string publicID);
     }
 }

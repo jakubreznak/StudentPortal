@@ -1,0 +1,13 @@
+<div class="container mt-5">
+    <div *ngIf="hodnoceni">
+        <div class="list-group">
+            <ul>
+                <li *ngFor="let hodnoceno of hodnoceni" class="list-group-item border">
+                    <p class="komentar">{{hodnoceno.text}}</p>
+                    <button (click)='deleteHodnoceni(hodnoceno.id)' type="button" class="btn btn-danger">Smazat</button>
+                </li>  
+            </ul>
+        </div>
+    </div>
+</div>
+

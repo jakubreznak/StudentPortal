@@ -1,0 +1,12 @@
+<div class="container mt-5">
+        <div *ngIf="studentNames">
+            <div class="list-group">
+                <ul>
+                    <li *ngFor="let studentName of studentNames" class="list-group-item border">
+                        <p class="komentar">{{studentName}}</p>
+                        <button (click)='deleteStudent(studentName)' type="button" class="btn btn-danger">Smazat</button>
+                    </li>  
+                </ul>
+            </div>
+        </div>
+</div>

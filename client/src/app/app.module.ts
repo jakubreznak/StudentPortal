@@ -20,6 +20,14 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './interceptors/loading.interceptor';
+import { AdminComponent } from './admin/admin.component';
+import { RoleDirective } from './directives/role.directive';
+import { StudentiAdminComponent } from './admin/studenti-admin/studenti-admin.component';
+import { DiskuzeAdminComponent } from './admin/diskuze-admin/diskuze-admin.component';
+import { KomentareAdminComponent } from './admin/komentare-admin/komentare-admin.component';
+import { HodnoceniAdminComponent } from './admin/hodnoceni-admin/hodnoceni-admin.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { MaterialyAdminComponent } from './admin/materialy-admin/materialy-admin.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +40,14 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
     PredmetDetailComponent,
     DiskuzeComponent,
     TopicComponent,
-    HodnoceniComponent
+    HodnoceniComponent,
+    AdminComponent,
+    RoleDirective,
+    StudentiAdminComponent,
+    DiskuzeAdminComponent,
+    KomentareAdminComponent,
+    HodnoceniAdminComponent,
+    MaterialyAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +58,7 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
     ReactiveFormsModule,
     SharedModule,
     NgxSpinnerModule,
+    TabsModule.forRoot(),
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'
     })

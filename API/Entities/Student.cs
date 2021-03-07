@@ -1,16 +1,15 @@
 using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Entities
 {
-    public class Student
+    public class Student : IdentityUser<int>
     {
-        public int ID { get; set; }
-        public string name { get; set; }
-        public byte[] passwordHash { get; set; }
-        public byte[] passwordSalt {get; set;}
         public string upolNumber { get; set; }
         public int oborIdno { get; set; }
         public int rocnikRegistrace { get; set; }
         public DateTime datumRegistrace { get; set; }
+        public ICollection<AppUserRole> UserRoles { get; set; }
     }
 }

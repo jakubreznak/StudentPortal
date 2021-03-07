@@ -6,7 +6,11 @@
     padding-right: .85em;
 }
 
-.navbar-dark .navbar-brand {
+.navbar-brand {
     color: black;
     font-weight: 800;
+}
+
+a {
+    color: black;
 }

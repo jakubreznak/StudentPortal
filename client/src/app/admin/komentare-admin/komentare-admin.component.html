@@ -1,0 +1,13 @@
+<div class="container mt-5">
+    <div *ngIf="comments">
+        <div class="list-group">
+            <ul>
+                <li *ngFor="let comment of comments" class="list-group-item border">
+                    <p class="komentar">{{comment.text}}</p>
+                    <button (click)='deleteComment(comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                </li>  
+            </ul>
+        </div>
+    </div>
+</div>
+

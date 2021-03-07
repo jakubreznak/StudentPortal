@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Data;
 using API.Entities;
 using API.HelpClass;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,8 +22,10 @@ namespace API
             var host = CreateHostBuilder(args).Build();
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<DataContext>();
             var userManager = services.GetRequiredService<UserManager<Student>>();
             var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+            await context.Database.MigrateAsync();
             await Seed.SeedUsersAndRoles(userManager, roleManager);
             host.Run();
         }

@@ -14,3 +14,9 @@
 a {
     color: black;
 }
+
+.active {
+    color: rgb(0, 0, 0);
+    background: rgba(233, 233, 233, 0.7);
+    border-radius: 5px;
+  }

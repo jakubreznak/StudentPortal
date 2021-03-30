@@ -23,7 +23,7 @@
         <div class="dropdown" *ngIf="accountService.currentStudent$ | async as user" dropdown>
             <a class="dropdown-toggle text-dark" dropdownToggle>{{user.name}}</a>
             <div class="dropdown-menu dropdown-menu-right mt-3" *dropdownMenu>
-                <!--<a class="dropdown-item">Upravit profil</a> -->
+                <a class="dropdown-item" routerLink='/profile'>Upravit profil</a>
                 <a class="dropdown-item" (click)="logout()">Odhlásit se</a>
             </div>
         </div>

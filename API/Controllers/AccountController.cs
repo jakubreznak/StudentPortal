@@ -16,6 +16,8 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -46,42 +48,17 @@ namespace API.Controllers
             Regex r = new Regex("^[a-zA-Z]{1}[0-9]{5}$");
             if (!r.IsMatch(registerDTO.upolNumber) || registerDTO.upolNumber == null) return BadRequest("Špatný tvar osobního čísla.");
 
+            registerDTO.upolNumber = registerDTO.upolNumber.ToUpper();
             var student = new Student
             {
                 UserName = registerDTO.name.ToLower(),
-                upolNumber = registerDTO.upolNumber.ToUpper(),
+                upolNumber = registerDTO.upolNumber,
                 datumRegistrace = DateTime.Now
             };
 
-            //GET oborIdno a rocnik z UPOL API
-            var response = await _httpClient
-                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + student.upolNumber + "&outputFormat=JSON");
-
-            string jsonResponse = await response.Content.ReadAsStringAsync();
-            Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
-            if (!data.planInfo.Any()) return BadRequest("Student s tímto osobním číslem neexistuje");
-            int oborIdno = data.planInfo[0].oborIdno;
-            int rocnik = ExtractNumber(data.planInfo[0].nazev);
-
-            student.oborIdno = oborIdno;
-            student.rocnikRegistrace = rocnik;
-
-            //GET predmety oboru, zkontrolovat zda uz vsechny jsou v databazi
-            response = await _httpClient
-                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + oborIdno + "&outputFormat=JSON");
-            jsonResponse = await response.Content.ReadAsStringAsync();
-            RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
-
-            foreach (var predmet in predmety.predmetOboru.Where((coordinate, index) => index % 2 == 0))
-            {
-                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborIdno)))
-                {
-                    Predmet novyPredmet = new Predmet();
-                    predmet.oborIdNum = oborIdno;
-                    novyPredmet = predmet;
-                    _context.Predmets.Add(novyPredmet);
-                }
-            }
+            student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
+            if(student == null)
+                return BadRequest("Student s tímto osobním číslem neexistuje.");
 
             var result = await _userManager.CreateAsync(student, registerDTO.password);
             if (!result.Succeeded) return BadRequest(result.Errors);
@@ -112,6 +89,54 @@ namespace API.Controllers
                 name = student.UserName,
                 token = await _tokenService.CreateToken(student)
             };
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<StudentDTO>> ChangeUpolNumber([FromBody] string upolNumber)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+            student = await GetPredmetyFromUpol(upolNumber.ToUpper(), student);
+
+            if(student == null)
+                return BadRequest("Student s tímto osobním číslem neexistuje.");
+
+            var result = await _userManager.UpdateAsync(student);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            return Ok();
+        }
+
+        private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student)
+        {
+            //GET oborIdno a rocnik z UPOL API
+            var response = await _httpClient
+                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + upolNumber + "&outputFormat=JSON");
+
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+            Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
+            if (!data.planInfo.Any()) return null;
+            student.oborIdno = data.planInfo[0].oborIdno;
+            student.rocnikRegistrace = ExtractNumber(data.planInfo[0].nazev);
+
+            //GET predmety oboru, zkontrolovat zda uz vsechny jsou v databazi
+            response = await _httpClient
+                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + student.oborIdno + "&outputFormat=JSON");
+            jsonResponse = await response.Content.ReadAsStringAsync();
+            RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
+
+            foreach (var predmet in predmety.predmetOboru.Where((coordinate, index) => index % 2 == 0))
+            {
+                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == student.oborIdno)))
+                {
+                    Predmet novyPredmet = new Predmet();
+                    predmet.oborIdNum = student.oborIdno;
+                    novyPredmet = predmet;
+                    _context.Predmets.Add(novyPredmet);
+                }
+            }
+            return student;
         }
 
         private async Task<bool> NameExists(string name)

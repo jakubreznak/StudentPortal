@@ -28,6 +28,7 @@ import { KomentareAdminComponent } from './admin/komentare-admin/komentare-admin
 import { HodnoceniAdminComponent } from './admin/hodnoceni-admin/hodnoceni-admin.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MaterialyAdminComponent } from './admin/materialy-admin/materialy-admin.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { MaterialyAdminComponent } from './admin/materialy-admin/materialy-admin
     DiskuzeAdminComponent,
     KomentareAdminComponent,
     HodnoceniAdminComponent,
-    MaterialyAdminComponent
+    MaterialyAdminComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

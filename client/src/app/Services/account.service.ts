@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -13,6 +13,11 @@ export class AccountService {
   baseUrl = environment.apiUrl;
   private currentStudentSource = new ReplaySubject<Student>(1);
   currentStudent$ = this.currentStudentSource.asObservable();
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json'
+    })
+  };
 
   constructor(private http: HttpClient) { }
 
@@ -34,6 +39,10 @@ export class AccountService {
         }
       })
     )
+  }
+
+  updateUpolNumber(upolNumber : string){
+    return this.http.put(this.baseUrl + 'account', upolNumber, this.httpOptions);
   }
 
   setCurrentStudent(student: Student){

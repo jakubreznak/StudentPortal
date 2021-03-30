@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { PredmetDetailComponent } from './predmet-detail/predmet-detail.component';
 import { PredmetyListComponent } from './predmety-list/predmety-list.component';
+import { ProfileComponent } from './profile/profile.component';
 import { TopicComponent } from './topic/topic.component';
 
 const routes: Routes = [
@@ -21,6 +22,7 @@ const routes: Routes = [
       {path: 'diskuze', component: DiskuzeComponent},
       {path: 'diskuze/:topicid', component: TopicComponent},
       {path: 'predmety/:predmetid/:topicid', component: TopicComponent},
+      {path: 'profile', component: ProfileComponent},
       {path: 'admin', component: AdminComponent, canActivate: [AdminGuard]}
     ]
   },

@@ -85,5 +85,20 @@ namespace API.Controllers
 
         }
 
+        [Authorize]
+        [HttpDelete("{predmetID}/{souborID}")]
+        public async Task<ActionResult<Soubor>> DeleteMaterial(int predmetID, int souborID)
+        {
+            var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(p => p.ID == predmetID);
+            var soubor = predmet.Files.FirstOrDefault(s => s.ID == souborID);
+            predmet.Files.Remove(soubor);
+            if(await _context.SaveChangesAsync() <= 0) return BadRequest();
+
+            var result = await _fileService.RemoveFileAsync(soubor.PublicID);
+            if (result.Error != null) return BadRequest();
+
+            return soubor;
+        }
+
     }
 }

@@ -12,6 +12,9 @@
                     <span><p>{{soubor.fileName}}</p><br><p class="date">{{soubor.dateAdded}} - {{soubor.extension}}</p></span>
                     <span class="stahnout"><a class="btn btn-success" href="{{soubor.url}}">Stáhnout</a></span>
                 </div>
+                <div *ngIf="soubor.studentName == student.name">
+                    <button (click)='deleteMaterial(predmet.id, soubor.id)' type="button" class="btn btn-danger">Smazat</button>
+                </div>
             </li>  
         </ul>
     </div>

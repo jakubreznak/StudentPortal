@@ -11,6 +11,7 @@ using API.Interfaces;
 using API.DTOs;
 using System.IO;
 using System;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -71,7 +72,8 @@ namespace API.Controllers
                 PublicID = result.PublicId,
                 FileName = fileName,
                 Extension = extension,
-                DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy")
+                DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
+                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
             };
 
             predmet.Files.Add(soubor);
@@ -82,5 +84,6 @@ namespace API.Controllers
             return BadRequest();
 
         }
+
     }
 }

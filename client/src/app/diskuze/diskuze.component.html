@@ -22,12 +22,17 @@
         
         <div *ngIf="topics.length > 0">
             <div class="list-group">
-                <a  *ngFor="let topic of topics" class="list-group-item-action list-group-item border" [routerLink]="topic.id">
-                    <div class="nazev-rocnik">
-                        {{topic.name}}
-                        <p>{{topic.studentName}} - {{topic.created}}</p>
+                <div *ngFor="let topic of topics" class="list-group-item-action list-group-item border">
+                    <a [routerLink]="topic.id">
+                        <div class="nazev-rocnik">
+                            {{topic.name}}
+                            <p>{{topic.studentName}} - {{topic.created}}</p>
+                        </div>
+                    </a>
+                    <div *ngIf="topic.studentName == student.name">
+                        <button (click)='deleteTopic(topic.id)' type="button" class="btn btn-danger">Smazat</button>
                     </div>
-                </a>  
+                </div>  
             </div>
         </div>
         <div class="prvni" *ngIf="topics.length == 0">

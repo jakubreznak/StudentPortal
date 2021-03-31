@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
@@ -35,6 +37,7 @@ namespace API.Controllers
 
             var hodnoceni = new Hodnoceni
             {
+                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 text = text,
                 rating = cislo,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy")
@@ -45,6 +48,23 @@ namespace API.Controllers
             if(await _context.SaveChangesAsync() > 0)
             {
                 return predmet.Hodnocenis;
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{idPredmet}/{hodnoceniID}")]
+        [Authorize]
+        public async Task<ActionResult<Hodnoceni>> DeleteRating(int idPredmet, int hodnoceniID)
+        {
+            var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
+
+            var hodnoceni = predmet.Hodnocenis.FirstOrDefault(h => h.ID == hodnoceniID);
+
+            predmet.Hodnocenis.Remove(hodnoceni);
+
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return hodnoceni;
             }
             return BadRequest();
         }

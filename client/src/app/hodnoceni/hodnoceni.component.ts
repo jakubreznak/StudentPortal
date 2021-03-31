@@ -5,6 +5,9 @@ import { Hodnoceni, Predmet } from '../models/predmet';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { take } from 'rxjs/operators';
+import { Student } from '../models/student';
+import { AccountService } from '../Services/account.service';
 
 @Component({
   selector: 'app-hodnoceni',
@@ -23,8 +26,10 @@ export class HodnoceniComponent implements OnInit {
   };
   cisla: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   hodnoceniForm: FormGroup;
+  student: Student;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { 
+  constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService) { 
+    this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
   }
 
   ngOnInit(): void {
@@ -64,6 +69,15 @@ export class HodnoceniComponent implements OnInit {
         this.hodnoceni = hodnoceni;
         this.cislo = this.getCislo(hodnoceni);
       });
+  }
+
+  deleteRating(hodnoceniID){
+    this.http.delete<Hodnoceni>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + hodnoceniID).subscribe(hodnoceni =>
+      {
+        this.hodnoceni = this.hodnoceni.filter(h => h.id != hodnoceni.id);
+        this.toastr.success("Hodnocení bylo úspěšně odebráno.");
+      }
+      );
   }
 
   getCislo(hodnoceni: Hodnoceni[]){

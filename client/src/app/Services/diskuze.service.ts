@@ -28,7 +28,7 @@ export class DiskuzeService {
 
   postTopic(predmetID: string, topicName: string){
     return this.http.
-      post<Topic>(this.baseUrl + 'discussion/' + predmetID + '/' + this.student.name, topicName, this.httpOptions);
+      post<Topic>(this.baseUrl + 'discussion/' + predmetID, topicName, this.httpOptions);
   }
 
   getTopic(id: number){
@@ -36,6 +36,14 @@ export class DiskuzeService {
   }
 
   postComment(topicId: number, text: string){
-    return this.http.post<Topic>(this.baseUrl + 'discussion/comment/' + topicId + '/' + this.student.name, text, this.httpOptions);
+    return this.http.post<Topic>(this.baseUrl + 'discussion/comment/' + topicId, text, this.httpOptions);
+  }
+
+  deleteComment(topicID, commentID){
+    return this.http.delete<Topic>(this.baseUrl + 'discussion/comment/' + topicID + '/' + commentID);
+  }
+
+  deleteTopic(topicID){
+    return this.http.delete<Topic>(this.baseUrl + 'discussion/' + topicID);
   }
 }

@@ -45,6 +45,10 @@ export class AccountService {
     return this.http.put(this.baseUrl + 'account', upolNumber, this.httpOptions);
   }
 
+  deleteAccount(){
+    return this.http.delete(this.baseUrl + 'account');
+  }
+
   setCurrentStudent(student: Student){
     student.roles = [];
     const roles = this.getDecodedToken(student.token).role;

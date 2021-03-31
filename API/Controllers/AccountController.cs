@@ -108,6 +108,22 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [Authorize]
+        public async Task<ActionResult> DeleteMyAcoount()
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
+            if(student == null)
+                return BadRequest("Nastala chyba.");
+
+            var result = await _userManager.DeleteAsync(student);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            return Ok();
+        }
+
         private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student)
         {
             //GET oborIdno a rocnik z UPOL API

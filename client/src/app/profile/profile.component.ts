@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../Services/account.service';
 
@@ -12,7 +13,7 @@ export class ProfileComponent implements OnInit {
 
   profileForm: FormGroup;
 
-  constructor(private accountService: AccountService, private toastr: ToastrService) { }
+  constructor(private accountService: AccountService, private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -22,6 +23,17 @@ export class ProfileComponent implements OnInit {
     this.profileForm = new FormGroup({
       idNumber: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]{1}[+ 0-9]{5}$')])
     })
+  }
+
+  deleteAccount() {
+    this.accountService.deleteAccount().subscribe(result =>
+      {
+        this.accountService.logout();
+        this.router.navigateByUrl('/');
+        this.toastr.success("Účet byl úspěšně smazán.");
+      }, error => {
+        this.toastr.error(error.error);
+      });
   }
 
   validateBeforeSubmit(){

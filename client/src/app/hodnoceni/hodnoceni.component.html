@@ -35,6 +35,9 @@
                         <li *ngIf="comment.text.length != 0" class="list-group-item border">
                             <p class="komentar">{{comment.text}}</p>
                             <p class="info">{{comment.created}}</p>
+                            <div *ngIf="comment.studentName == student.name">
+                                <button (click)='deleteRating(comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                            </div>
                         </li>  
                     </ng-container>
                 </ul>

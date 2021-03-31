@@ -22,6 +22,9 @@
                     <li *ngFor="let comment of topic.comments" class="list-group-item border">
                         <p class="komentar">{{comment.text}}</p>
                         <p class="info">{{comment.studentName}} - {{comment.created}}</p>
+                        <div *ngIf="comment.studentName == student.name">
+                            <button (click)='deleteComment(topic.id, comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                        </div>
                     </li>  
                 </ul>
             </div>

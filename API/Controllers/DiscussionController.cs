@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
@@ -39,18 +40,18 @@ namespace API.Controllers
             return await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == id);
         }
 
-        [HttpPost("{predmetID}/{studentName}")]
+        [HttpPost("{predmetID}")]
         [Authorize]
-        public async Task<ActionResult<Topic>> NewTopic (string predmetID, string studentName, [FromBody] string topicName)
+        public async Task<ActionResult<Topic>> NewTopic (string predmetID, [FromBody] string topicName)
         {
 
-            if(studentName == null || topicName == null || topicName.Length == 0)
+            if(topicName == null || topicName.Length == 0)
                 return BadRequest();
 
             var topic = new Topic
             {
                 predmetID = predmetID ?? String.Empty,
-                studentName = studentName,
+                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 name = topicName,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy")
             };
@@ -61,11 +62,11 @@ namespace API.Controllers
             return topic;
         }
 
-        [HttpPost("comment/{topicID}/{name}")]
+        [HttpPost("comment/{topicID}")]
         [Authorize]
-        public async Task<ActionResult<Topic>> PostComment (int? topicID, string name, [FromBody] string text)
+        public async Task<ActionResult<Topic>> PostComment (int? topicID, [FromBody] string text)
         {
-            if(topicID == null || text == null || name == null)
+            if(topicID == null || text == null)
                 return BadRequest();
 
             var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
@@ -77,7 +78,7 @@ namespace API.Controllers
                 topicID = topicID.Value,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
                 text = text,
-                studentName = name
+                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             };
 
             topic.comments.Add(comment);
@@ -86,6 +87,43 @@ namespace API.Controllers
                 return topic;
             }
             return BadRequest();
+        }
+
+        [HttpDelete("comment/{topicID}/{commentID}")]
+        [Authorize]
+        public async Task<ActionResult<Topic>> DeleteComment (int topicID, int commentID)
+        {
+            var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
+            if(topic == null)
+                return BadRequest();
+
+            var comment = topic.comments.FirstOrDefault(c => c.ID == commentID);
+            if(comment == null)
+                return BadRequest();
+
+            topic.comments.Remove(comment);
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return topic;
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{topicID}")]
+        [Authorize]
+        public async Task<ActionResult<Topic>> DeleteTopic (int topicID)
+        {
+            var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
+            if(topic == null)
+                return BadRequest();
+
+            if(topic.comments.Any())
+                return BadRequest("Nelze smazat téma  u kterého jsou odpovědi.");
+
+            _context.Topics.Remove(topic);
+            await _context.SaveChangesAsync();
+
+            return topic;
         }
     }
 }

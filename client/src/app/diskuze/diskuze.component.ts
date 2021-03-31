@@ -2,8 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs/operators';
 import { Predmet } from '../models/predmet';
+import { Student } from '../models/student';
 import { Topic } from '../models/topic';
+import { AccountService } from '../Services/account.service';
 import { DiskuzeService } from '../Services/diskuze.service';
 
 @Component({
@@ -16,8 +19,11 @@ export class DiskuzeComponent implements OnInit {
   topics: Topic[];
   topicName: string;
   diskuzeForm: FormGroup;
+  student: Student;
 
-  constructor(private diskuzeService: DiskuzeService, private toastr: ToastrService) { }
+  constructor(private diskuzeService: DiskuzeService, private toastr: ToastrService, private accountService: AccountService) { 
+    this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
+  }
 
   ngOnInit(): void {
       this.loadTopics();
@@ -66,5 +72,15 @@ export class DiskuzeComponent implements OnInit {
           this.toastr.error(error.error);
         });
     }
+  }
+
+  deleteTopic(topicID){
+    this.diskuzeService.deleteTopic(topicID).subscribe(topic =>
+      {
+        this.toastr.success("Téma odebráno.");
+        this.topics = this.topics.filter(t => t.id != topic.id);
+      }, error => {
+        this.toastr.error(error.error);
+      });
   }
 }

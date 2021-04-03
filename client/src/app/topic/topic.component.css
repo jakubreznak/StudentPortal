@@ -12,6 +12,12 @@ form {
     margin-bottom: .3em;
 }
 
+textarea{
+    outline: none;
+    resize: none;
+    height: 7em;
+}
+
 .komentar {
     font-weight: 500;
     font-size: 1.2em;
@@ -19,4 +25,12 @@ form {
 
 .info {
     font-size: .9em;
+}
+
+h5 {
+    margin-top: 3em;
+}
+
+.list-group {
+    margin-top: 3em;
 }

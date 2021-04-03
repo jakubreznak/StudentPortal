@@ -8,8 +8,8 @@
         <div class="form">
             <form [formGroup]='hodnoceniForm' ngNativeValidate (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="form-group">
-                    <input
-                    type="text" class="form-control" formControlName='text' placeholder="názor (nepovinné)">
+                    <textarea
+                    type="text" class="form-control" formControlName='text' placeholder="názor (nepovinné)"></textarea>
                 </div>
 
                 <select
@@ -31,7 +31,7 @@
         <div *ngIf="hodnoceni.length > 0">
             <div class="list-group">
                 <ul>
-                    <ng-container *ngFor="let comment of hodnoceni">
+                    <ng-container *ngFor="let comment of hodnoceni.reverse()">
                         <li *ngIf="comment.text.length != 0" class="list-group-item border">
                             <p class="komentar">{{comment.text}}</p>
                             <p class="info">{{comment.created}}</p>

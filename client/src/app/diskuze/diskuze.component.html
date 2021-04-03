@@ -22,7 +22,7 @@
         
         <div *ngIf="topics.length > 0">
             <div class="list-group">
-                <div *ngFor="let topic of topics" class="list-group-item-action list-group-item border">
+                <div *ngFor="let topic of topics.reverse()" class="list-group-item-action list-group-item border">
                     <a [routerLink]="topic.id">
                         <div class="nazev-rocnik">
                             {{topic.name}}

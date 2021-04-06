@@ -36,7 +36,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<Predmet>> GetPredmet(int id)
         {
-            return await  _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == id);
+            return await _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == id);
         }
 
         [HttpGet]
@@ -47,42 +47,85 @@ namespace API.Controllers
             .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToListAsync();
         }
 
-        [HttpPost("add-file/{predmetId}")]
+        [HttpPost("add-file/{predmetId}/{nazevMaterial}")]
         [Authorize]
-        public async Task<ActionResult<List<Soubor>>> AddFile(IFormFile file, int predmetId)
+        public async Task<ActionResult<List<Soubor>>> AddFile(List<IFormFile> files, int predmetId, string nazevMaterial)
         {
-            if(file.Length > 30000000)
-                return BadRequest("Příliš velký soubor. (max. 30MB)");
+            if (files == null || files.Count == 0 || nazevMaterial.Length <= 0)
+                return BadRequest("Nebyl vybrán žádný soubor nebo nebyl zadán název.");
 
             var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == predmetId);
-            if(predmet == null || file.Length > 30000000)
+            if (predmet == null)
                 return BadRequest();
 
-            var result = await _fileService.AddFileAsync(file);
+            if(predmet.Files.Any(f => f.FileName == nazevMaterial))
+                return BadRequest("Studijní materiál s tímto názvem již u tohoto předmětu existuje.");
 
-            string fileName = file.FileName;
-            string extension = Path.GetExtension(fileName).Substring(1).ToUpper();
-            fileName = fileName.Substring(0, fileName.Length - extension.Length);
-
-            if (result.Error != null) return BadRequest();
-
-            var soubor = new Soubor
+            if (files.Count == 1)
             {
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicID = result.PublicId,
-                FileName = fileName,
-                Extension = extension,
-                DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
-                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-            };
+                if (files[0].Length > 30000000)
+                    return BadRequest("Příliš velký soubor. (max. 30MB)");
 
-            predmet.Files.Add(soubor);
-            if (await _context.SaveChangesAsync() > 0)
+                var result = await _fileService.AddFileAsync(files[0], "");
+                if (result.Error != null) return BadRequest();
+
+                string extension = Path.GetExtension(files[0].FileName).Substring(1).ToUpper();
+
+                var soubor = new Soubor
+                {
+                    Url = result.SecureUrl.AbsoluteUri,
+                    PublicID = result.PublicId,
+                    FileName = nazevMaterial,
+                    Extension = extension,
+                    DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
+                    studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                };
+
+                predmet.Files.Add(soubor);
+                if (await _context.SaveChangesAsync() > 0)
+                {
+                    return predmet.Files;
+                }
+                return BadRequest();
+            }
+            else if (files.Count > 1 && files.Count <= 50)
             {
-                return predmet.Files;
+                List<string> filesPublicID = new List<string>();
+                string tag = predmetId.ToString() + '|' + nazevMaterial;
+
+                long size = files.Sum(f => f.Length);
+                if (size > 30000000)
+                    return BadRequest("Soubory mohou mít dohromady maximálně 30 MB.");
+
+                foreach (var file in files)
+                {
+                    var result = await _fileService.AddFileAsync(file, tag);
+                    filesPublicID.Add(result.PublicId);
+                    if (result.Error != null) return BadRequest();
+                }
+
+                var archiveResult = await _fileService.GenerateArchiveURLAsync(tag);
+
+                foreach(string publicID in filesPublicID)
+                {
+                    await _fileService.RemoveFileAsync(publicID);
+                }
+
+                var soubor = new Soubor
+                {
+                    Url = archiveResult.SecureUrl,
+                    PublicID = archiveResult.PublicId,
+                    FileName = nazevMaterial,
+                    Extension = "ZIP",
+                    DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
+                    studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                };
+
+                predmet.Files.Add(soubor);
+                if (await _context.SaveChangesAsync() > 0)
+                    return predmet.Files;
             }
             return BadRequest();
-
         }
 
         [Authorize]
@@ -92,7 +135,7 @@ namespace API.Controllers
             var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(p => p.ID == predmetID);
             var soubor = predmet.Files.FirstOrDefault(s => s.ID == souborID);
             predmet.Files.Remove(soubor);
-            if(await _context.SaveChangesAsync() <= 0) return BadRequest();
+            if (await _context.SaveChangesAsync() <= 0) return BadRequest();
 
             var result = await _fileService.RemoveFileAsync(soubor.PublicID);
             if (result.Error != null) return BadRequest();

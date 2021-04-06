@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -17,6 +18,7 @@ export class MaterialyComponent implements OnInit {
   @Input() predmet: Predmet;
   student: Student;
   baseUrl = environment.apiUrl;
+  materialForm: FormGroup;
 
   constructor(private httpClient: HttpClient, private toastr: ToastrService, private predmetService: PredmetyService,
      private accountService: AccountService) { 
@@ -24,22 +26,44 @@ export class MaterialyComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    this.initializeForm();
   }
 
-  onFilesSelected(evt: Event) {
-    const files: FileList = (evt.target as HTMLInputElement).files;
+  initializeForm() {
+    this.materialForm = new FormGroup({
+      name: new FormControl('', [Validators.required, Validators.maxLength(200)]),
+      file: new FormControl('', Validators.required),
+    })
+  }
+
+  postMaterial(){
     const formData = new FormData();
-    const file = files[0];
-    formData.append('file', file, file.name);
+
+    this.materialForm.get('file').value.forEach((f) => formData.append('files', f));
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
     this.httpClient
-     .post<Soubor[]>(this.baseUrl + 'predmety/add-file/' + this.predmet.id, formData, { headers })
+     .post<Soubor[]>(this.baseUrl + 'predmety/add-file/' + this.predmet.id + '/' + this.materialForm.get('name').value, formData, { headers })
      .subscribe(files => {
         this.predmet.files = files;
-        this.toastr.success("Materiál přidán.");
-     });
+        this.toastr.success("Materiál byl úspěšně přidán.");
+      }, error => {
+        this.toastr.error(error.error);
+      });
+  }
+
+  onFilesSelected(evt: Event) {
+    const files: FileList = (evt.target as HTMLInputElement).files;
+    var selectedFiles:File[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      selectedFiles.push(files[i]);
+    }
+
+    this.materialForm.patchValue({
+      file: selectedFiles
+    })
   }
 
   deleteMaterial(predmetID, souborID){

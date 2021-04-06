@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.HelpClass;
 using API.Interfaces;
@@ -22,7 +23,7 @@ namespace API.Services
             this.cloudinary = new Cloudinary(acc);
         }
 
-        public async Task<RawUploadResult> AddFileAsync(IFormFile file)
+        public async Task<RawUploadResult> AddFileAsync(IFormFile file, string tag)
         {
             var uploadResult = new RawUploadResult();
             if (file.Length > 0)
@@ -30,17 +31,49 @@ namespace API.Services
                 using var stream = file.OpenReadStream();
                 var uploadParams = new RawUploadParams()
                 {
-                    File = new FileDescription(file.FileName, stream)
+                    File = new FileDescription(file.FileName, stream),
+                    Tags = tag
                 };
                 uploadResult = await this.cloudinary.UploadAsync(uploadParams);
             }
             return uploadResult;
         }
 
-        public async Task<DeletionResult> RemoveFileAsync(string publicID)
+        public async Task<DelResResult> RemoveFileAsync(string publicID)
         {
-            var deletionParams = new DeletionParams(publicID);
-            return await cloudinary.DestroyAsync(deletionParams);
+            List<string> publicIDs = new List<string>();
+            publicIDs.Add(publicID);
+            var deletionParams = new DelResParams()
+            {
+                PublicIds = publicIDs,
+                ResourceType = ResourceType.Raw
+            };
+            var result = await this.cloudinary.DeleteResourcesAsync(deletionParams);
+
+            if (result.Deleted[publicID] == "deleted")
+                return result;
+            else
+                deletionParams.ResourceType = ResourceType.Image;
+
+            result = await this.cloudinary.DeleteResourcesAsync(deletionParams);
+            if (result.Deleted[publicID] == "deleted")
+                return result;
+            else
+                deletionParams.ResourceType = ResourceType.Video;
+
+            return result = await this.cloudinary.DeleteResourcesAsync(deletionParams);
+
+        }
+
+        public async Task<ArchiveResult> GenerateArchiveURLAsync(string tag)
+        {
+            List<string> tags = new List<string>();
+            tags.Add(tag);
+            var archiveParams = new ArchiveParams(){};
+            archiveParams.ResourceType("all");
+            archiveParams = archiveParams.Tags(tags);
+            var archiveResult = await this.cloudinary.CreateZipAsync(archiveParams);
+            return archiveResult;
         }
     }
 }

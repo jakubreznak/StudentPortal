@@ -46,6 +46,12 @@ namespace API
             });
             services.AddIdentityServices(Configuration);
 
+            services.AddHsts(options =>
+            {
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromMinutes(15);
+            });
+
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
             services.Configure<ForwardedHeadersOptions>(options =>
             {
@@ -63,6 +69,10 @@ namespace API
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
+            }
+            else
+            {
+                app.UseHsts();
             }
 
             app

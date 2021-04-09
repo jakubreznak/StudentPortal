@@ -110,7 +110,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Authorize]
-        public async Task<ActionResult> DeleteMyAcoount()
+        public async Task<ActionResult> DeleteMyAccount()
         {
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);

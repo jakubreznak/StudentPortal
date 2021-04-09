@@ -49,7 +49,7 @@ namespace API
             services.AddHsts(options =>
             {
                 options.IncludeSubDomains = true;
-                options.MaxAge = TimeSpan.FromMinutes(15);
+                options.MaxAge = TimeSpan.FromMinutes(60);
             });
 
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });

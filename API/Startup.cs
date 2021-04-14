@@ -49,7 +49,7 @@ namespace API
             services.AddHsts(options =>
             {
                 options.IncludeSubDomains = true;
-                options.MaxAge = TimeSpan.FromMinutes(60);
+                options.MaxAge = TimeSpan.FromDays(730);
             });
 
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
@@ -76,6 +76,16 @@ namespace API
                 .UseForwardedHeaders()
                 .UseHsts();
             }
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "DENY");
+                context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
+                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+
+                await next();
+            });
 
             app
             .UseForwardedHeaders()

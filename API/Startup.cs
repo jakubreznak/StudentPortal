@@ -72,7 +72,9 @@ namespace API
             }
             else
             {
-                app.UseHsts();
+                app
+                .UseForwardedHeaders()
+                .UseHsts();
             }
 
             app

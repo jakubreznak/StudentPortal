@@ -72,6 +72,7 @@ namespace API
             }
             else
             {
+                app.UseHsts();
                 app
                 .UseForwardedHeaders()
                 .UseHsts();
@@ -82,7 +83,7 @@ namespace API
                 context.Response.Headers.Add("X-Frame-Options", "DENY");
                 context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
                 context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-                //context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+                context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.w3.org/2000/svg ");
 
                 await next();
             });

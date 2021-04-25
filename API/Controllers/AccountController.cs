@@ -78,7 +78,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<StudentDTO>> Login(LoginDTO loginDTO)
         {
-            var student = await _userManager.Users.FirstOrDefaultAsync(s => s.UserName == loginDTO.name.ToLower());
+            var student = await _userManager.Users.FirstOrDefaultAsync(s => s.UserName == RemoveAccents(loginDTO.name.ToLower()));
 
             if (student == null)
                 return Unauthorized("Uživatel s tímto jménem neexistuje.");

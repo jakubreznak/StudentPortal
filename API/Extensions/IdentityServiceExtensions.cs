@@ -16,7 +16,8 @@ namespace API.Extensions
             services.AddIdentityCore<Student>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequiredLength = 8;
+                opt.Password.RequiredLength = 6;
+                opt.Password.RequireUppercase = false;
             })
                 .AddRoles<AppRole>()
                 .AddRoleManager<RoleManager<AppRole>>()

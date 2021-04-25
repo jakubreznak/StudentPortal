@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace API.Controllers
 {
@@ -42,7 +43,8 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<StudentDTO>> Register(RegisterDTO registerDTO)
         {
-            if (await NameExists(registerDTO.name))
+
+            if (await NameExists(registerDTO.name = RemoveAccents(registerDTO.name)))
                 return BadRequest("Existuje již uživatel s tímto jménem.");
 
             Regex r = new Regex("^[a-zA-Z]{1}[0-9]{5}$");
@@ -57,14 +59,14 @@ namespace API.Controllers
             };
 
             student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
-            if(student == null)
+            if (student == null)
                 return BadRequest("Student s tímto osobním číslem neexistuje.");
 
             var result = await _userManager.CreateAsync(student, registerDTO.password);
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded) return BadRequest("Jméno studenta obsahuje nějaký nepovolený znak.");
 
             var roleResult = await _userManager.AddToRoleAsync(student, "Member");
-            if(!roleResult.Succeeded) return BadRequest(result.Errors);
+            if (!roleResult.Succeeded) return BadRequest(result.Errors);
 
             return new StudentDTO
             {
@@ -99,7 +101,7 @@ namespace API.Controllers
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
             student = await GetPredmetyFromUpol(upolNumber.ToUpper(), student);
 
-            if(student == null)
+            if (student == null)
                 return BadRequest("Student s tímto osobním číslem neexistuje.");
 
             var result = await _userManager.UpdateAsync(student);
@@ -115,7 +117,7 @@ namespace API.Controllers
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
 
-            if(student == null)
+            if (student == null)
                 return BadRequest("Nastala chyba.");
 
             var result = await _userManager.DeleteAsync(student);
@@ -172,6 +174,25 @@ namespace API.Controllers
                 i++;
             }
             return 0;
+        }
+
+        private string RemoveAccents(string username)
+        {
+            string result = username.Replace(" ", string.Empty);
+
+            var normalizedString = result.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
     }
 }

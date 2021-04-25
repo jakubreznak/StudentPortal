@@ -23,8 +23,8 @@ export class RegisterComponent implements OnInit {
   initializeForm() {
     this.registerForm = new FormGroup({
       name: new FormControl('', Validators.required),
-      password: new FormControl('', [Validators.required, Validators.pattern("^((?=.*[a-z])(?=.*[A-Z])(?=.*?[0-9])).{1,}$"),
-        Validators.minLength(8)]),
+      password: new FormControl('', [Validators.required, Validators.pattern("^((?=.*[a-z])(?=.*?[0-9])).{1,}$"),
+        Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required, this.matchValues('password')]),
       upolNumber: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]{1}[+ 0-9]{5}$')])
     })

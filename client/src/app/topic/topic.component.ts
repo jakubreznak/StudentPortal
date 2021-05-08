@@ -37,6 +37,7 @@ export class TopicComponent implements OnInit {
         this.topic = topic;
         this.toastr.success("Komentář přidán.");
       });
+    this.text = "";
   }
 
   deleteComment(topicID, commentID){

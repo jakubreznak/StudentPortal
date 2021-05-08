@@ -72,6 +72,7 @@ export class DiskuzeComponent implements OnInit {
           this.toastr.error(error.error);
         });
     }
+    this.diskuzeForm.reset();
   }
 
   deleteTopic(topicID){

@@ -51,6 +51,7 @@ export class MaterialyComponent implements OnInit {
       }, error => {
         this.toastr.error(error.error);
       });
+    this.materialForm.reset();
   }
 
   onFilesSelected(evt: Event) {

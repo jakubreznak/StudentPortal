@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
       password: new FormControl('', [Validators.required, Validators.pattern("^((?=.*[a-z])(?=.*?[0-9])).{1,}$"),
         Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required, this.matchValues('password')]),
-      upolNumber: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]{1}[+ 0-9]{5}$')])
+      upolNumber: new FormControl('', Validators.required)
     })
     this.registerForm.controls.password.valueChanges.subscribe(() => {
       this.registerForm.controls.confirmPassword.updateValueAndValidity();

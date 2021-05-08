@@ -30,7 +30,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Topic>>> GetTopicsByPredmet(string id)
         {
-            return await _context.Topics.Where(t => t.predmetID == id).ToListAsync();
+            return await _context.Topics.Include("comments").Where(t => t.predmetID == id).ToListAsync();
         }
 
         [HttpGet("topic/{id}")]
@@ -76,7 +76,7 @@ namespace API.Controllers
             var comment = new Comment
             {
                 topicID = topicID.Value,
-                created = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
+                created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
                 text = text,
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             };

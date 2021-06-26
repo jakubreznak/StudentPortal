@@ -34,10 +34,16 @@ namespace API.Controllers
             if(cislo < 1 || cislo > 10) return BadRequest();
 
             var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
+            var studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if(predmet.Hodnocenis.Any(x => x.studentName == studentName))
+            {
+                return BadRequest("K předmětu lze přidat pouze jedno hodnocení.");
+            }
 
             var hodnoceni = new Hodnoceni
             {
-                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                studentName = studentName,
                 text = text,
                 rating = cislo,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy")

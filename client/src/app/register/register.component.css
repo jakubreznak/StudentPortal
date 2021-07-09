@@ -1,3 +1,8 @@
 form {
     margin-top: 1em;
 }
+
+.attention {
+    color: rgb(180, 12, 12);
+    font-weight: bold;
+}

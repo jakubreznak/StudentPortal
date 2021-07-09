@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
 
   initializeForm() {
     this.profileForm = new FormGroup({
-      idNumber: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]{1}[+ 0-9]{5}$')])
+      idNumber: new FormControl('', Validators.required)
     })
   }
 

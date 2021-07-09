@@ -8,7 +8,6 @@
                         [class.is-invalid]='profileForm.get("idNumber").errors && profileForm.get("idNumber").touched'
                         type="text" class="form-control" formControlName="idNumber" placeholder="nové osobní číslo" required >
                         <div *ngIf="profileForm.get('idNumber').hasError('required')" class="invalid-feedback">Prosím vyplňte nové osobní číslo.</div>
-                        <div *ngIf="profileForm.get('idNumber').hasError('pattern')" class="invalid-feedback">Musí být ve tvaru A12345 (písmeno a 5 čísel).</div>
                     </div>
                     <div class="form-group col-md-auto">
                         <button class="btn btn-success mr-2" type="submit">Změnit</button>
@@ -16,6 +15,7 @@
                 </div>       
             </form>
         </div>
+        <p class='attention'>pro změnu svého osbního čísla je nutné být ve vnitřní síti UP</p>
 
         <h3>Zrušení svého účtu:</h3>
         <button (click)='deleteAccount()' type="button" class="btn btn-danger">Smazat účet</button>

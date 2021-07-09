@@ -130,7 +130,7 @@ namespace API.Controllers
         {
             //GET oborIdno a rocnik z UPOL API
             var response = await _httpClient
-                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + upolNumber + "&outputFormat=JSON");
+                .GetAsync("https://stagservices.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + upolNumber + "&outputFormat=JSON");
 
             string jsonResponse = await response.Content.ReadAsStringAsync();
             Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
@@ -140,7 +140,7 @@ namespace API.Controllers
 
             //GET predmety oboru, zkontrolovat zda uz vsechny jsou v databazi
             response = await _httpClient
-                .GetAsync("https://stag-ws.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + student.oborIdno + "&outputFormat=JSON");
+                .GetAsync("https://stagservices.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + student.oborIdno + "&outputFormat=JSON");
             jsonResponse = await response.Content.ReadAsStringAsync();
             RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
 

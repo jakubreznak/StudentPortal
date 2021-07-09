@@ -47,3 +47,8 @@
   h3 {
     margin-top: 2em;
   }
+
+  .attention {
+    color: rgb(180, 12, 12);
+    font-weight: bold;
+}

@@ -45,7 +45,7 @@ export class AccountService {
   register(model: RegisterForm){
 
     return this.http
-    .get<RootPlanInfo>("https://localhost:4200/api/services/rest2/programy/getPlanyStudenta?osCislo=" + model.upolNumber.toUpperCase().trim() + "&outputFormat=JSON")
+    .get<RootPlanInfo>("https://stagservices.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + model.upolNumber.toUpperCase().trim() + "&outputFormat=JSON")
     .pipe(map(response => 
       {
         if(response.planInfo[0] == null)
@@ -55,7 +55,7 @@ export class AccountService {
         this.plan = response.planInfo[0];
         this.rocnikRegistrace = Number(this.plan.nazev.replace(/[^0-9]/g, ''));
         this.http
-        .get<RootPredmety>("https://localhost:4200/api/services/rest2/predmety/getPredmetyByObor?oborIdno=" + this.plan.oborIdno + "&outputFormat=JSON")
+        .get<RootPredmety>("https://stagservices.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + this.plan.oborIdno + "&outputFormat=JSON")
         .subscribe(response =>
           {
             this.predmety = response.predmetOboru.filter((e, i) => i % 2 === 2 - 1);

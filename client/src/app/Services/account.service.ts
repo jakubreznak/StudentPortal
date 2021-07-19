@@ -1,8 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ReplaySubject } from 'rxjs';
 import {map} from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { PlanInfo, RootPlanInfo } from '../models/helpModels/planInfo';
+import { PredmetOboru, RootPredmety } from '../models/helpModels/predmetOboru';
+import { RegisterDTO } from '../models/helpModels/registerDTO';
+import { RegisterForm } from '../models/helpModels/registerForm';
 import { Student } from '../models/student';
 
 
@@ -18,8 +24,13 @@ export class AccountService {
       'Content-Type':  'application/json'
     })
   };
+  plan : PlanInfo;
+  predmety : PredmetOboru[];
+  oborIdno : number;
+  rocnikRegistrace : number;
+  registerDTO: RegisterDTO = {name: "", password: "",upolNumber: "", oborIdno: 0, rocnikRegistrace: 0, predmety: [] };
 
-  constructor(private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private toastr: ToastrService) { }
 
   login(model: any) {
     return this.http.post(this.baseUrl + 'account/login', model).pipe(
@@ -31,14 +42,49 @@ export class AccountService {
     )
   }
 
-  register(model: any){
-    return this.http.post(this.baseUrl + 'account/register', model).pipe(
-      map((student: Student) => {
-        if(student) {
-          this.setCurrentStudent(student);
+  register(model: RegisterForm){
+
+    return this.http
+    .get<RootPlanInfo>("https://localhost:4200/api/services/rest2/programy/getPlanyStudenta?osCislo=" + model.upolNumber.toUpperCase().trim() + "&outputFormat=JSON")
+    .pipe(map(response => 
+      {
+        if(response.planInfo[0] == null)
+        {
+          return 1;
         }
-      })
-    )
+        this.plan = response.planInfo[0];
+        this.rocnikRegistrace = Number(this.plan.nazev.replace(/[^0-9]/g, ''));
+        this.http
+        .get<RootPredmety>("https://localhost:4200/api/services/rest2/predmety/getPredmetyByObor?oborIdno=" + this.plan.oborIdno + "&outputFormat=JSON")
+        .subscribe(response =>
+          {
+            this.predmety = response.predmetOboru.filter((e, i) => i % 2 === 2 - 1);
+            this.registerDTO.name = model.name;
+            this.registerDTO.password = model.password;
+            this.registerDTO.upolNumber = model.upolNumber;
+            this.registerDTO.predmety = this.predmety;
+            this.registerDTO.rocnikRegistrace = this.rocnikRegistrace;
+            this.registerDTO.oborIdno = this.plan.oborIdno;
+
+            return this.http.post(this.baseUrl + 'account/register', this.registerDTO).subscribe(
+              (student: Student) => {
+                if(student) {
+                  this.setCurrentStudent(student);
+                  this.router.navigateByUrl('/predmety');
+                }
+                else{
+                  return 2;
+                }
+              }
+            );
+          });
+      }));
+
+    //   this.router.navigateByUrl('/predmety');
+    // }, error => {
+    //   this.toastr.error(error.error);
+    // })
+        
   }
 
   updateUpolNumber(upolNumber : string){

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using API.Entities;
 
 namespace API.DTOs
 {
@@ -12,5 +14,14 @@ namespace API.DTOs
 
         [Required]
         public string upolNumber {get; set;}
+
+        [Required]
+        public List<Predmet> predmety {get; set;}
+        
+        [Required]
+        public int oborIdno { get; set; }
+        
+        [Required]
+        public int rocnikRegistrace { get; set; }
     }
 }

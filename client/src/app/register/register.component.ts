@@ -40,14 +40,23 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    this.accountService.register(this.registerForm.value).subscribe(response => {
-      this.router.navigateByUrl('/predmety');
-    }, error => {
-      this.toastr.error(error.error);
-    })
+    this.accountService.register(this.registerForm.value).subscribe(response => 
+      {
+        if(response == 1)
+        {
+          this.toastr.error("K tomuto osobnímu číslu neexistuje žádný obor.");
+        }
+        else if(response == 2)
+        {
+          this.toastr.error("Existuje již uživatel s tímto jménem. Nebo se ve jménu nachází nepovolený znak.");
+        }
+        console.log(response);
+      })
   }
 
   cancel() {
     this.cancelRegister.emit(false);
   }
+
+
 }

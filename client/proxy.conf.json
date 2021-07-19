@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "https://stag-ws.upol.cz/ws",
+      "target": "https://stagservices.upol.cz/ws",
       "secure": true,
       "changeOrigin": true,
       "pathRewrite": {

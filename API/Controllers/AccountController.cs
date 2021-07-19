@@ -47,20 +47,30 @@ namespace API.Controllers
             if (await NameExists(registerDTO.name = RemoveAccents(registerDTO.name)))
                 return BadRequest("Existuje již uživatel s tímto jménem.");
 
-            // Regex r = new Regex("^[a-zA-Z]{1}[0-9]{5}$");
-            // if (!r.IsMatch(registerDTO.upolNumber) || registerDTO.upolNumber == null) return BadRequest("Špatný tvar osobního čísla.");
-
             registerDTO.upolNumber = registerDTO.upolNumber.ToUpper().Trim();
             var student = new Student
             {
                 UserName = registerDTO.name.ToLower(),
                 upolNumber = registerDTO.upolNumber,
-                datumRegistrace = DateTime.Now
+                datumRegistrace = DateTime.Now,
+                oborIdno = registerDTO.oborIdno,
+                rocnikRegistrace = registerDTO.rocnikRegistrace
             };
 
-            student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
-            if (student == null)
-                return BadRequest("Student s tímto osobním číslem neexistuje.");
+            // student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
+            // if (student == null)
+            //     return BadRequest("Student s tímto osobním číslem neexistuje.");
+
+            foreach (var predmet in registerDTO.predmety)
+            {
+                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == student.oborIdno)))
+                {
+                    Predmet novyPredmet = new Predmet();
+                    predmet.oborIdNum = student.oborIdno;
+                    novyPredmet = predmet;
+                    _context.Predmets.Add(novyPredmet);
+                }
+            }
 
             var result = await _userManager.CreateAsync(student, registerDTO.password);
             if (!result.Succeeded) return BadRequest("Jméno studenta obsahuje nějaký nepovolený znak.");
@@ -126,7 +136,7 @@ namespace API.Controllers
             return Ok();
         }
 
-        private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student)
+        private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student) //nepouziva se
         {
             //GET oborIdno a rocnik z UPOL API
             var response = await _httpClient

@@ -56,7 +56,7 @@ export class AccountService {
         this.plan = response.planInfo[0];
         this.rocnikRegistrace = Number(this.plan.nazev.replace(/[^0-9]/g, ''));
         this.http
-        .get<RootPredmety>(this.upolBaseUrl + "services/rest2/predmety/getPredmetyByObor?oborIdno=" + this.plan.oborIdno + "&outputFormat=JSON")
+        .get<RootPredmety>(this.upolBaseUrl + "/services/rest2/predmety/getPredmetyByObor?oborIdno=" + this.plan.oborIdno + "&outputFormat=JSON")
         .subscribe(response =>
           {
             this.predmety = response.predmetOboru.filter((e, i) => i % 2 === 2 - 1);

@@ -36,21 +36,21 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  validateBeforeSubmit(){
-    if(this.profileForm.valid){
-      this.updateUpolNumber();
-    }else{
-      this.profileForm.markAllAsTouched();
-    }
-  }
+  // validateBeforeSubmit(){
+  //   if(this.profileForm.valid){
+  //     this.updateUpolNumber();
+  //   }else{
+  //     this.profileForm.markAllAsTouched();
+  //   }
+  // }
 
-  updateUpolNumber(){
-    this.accountService.updateUpolNumber(JSON.stringify(this.profileForm.value.idNumber)).subscribe(result =>
-      {
-        this.toastr.success("Profil upraven.");
-      }, error => {
-        this.toastr.error(error.error);
-      });;
-  }
+  // updateUpolNumber(){
+  //   this.accountService.updateUpolNumber(JSON.stringify(this.profileForm.value.idNumber)).subscribe(result =>
+  //     {
+  //       this.toastr.success("Profil upraven.");
+  //     }, error => {
+  //       this.toastr.error(error.error);
+  //     });;
+  // }
 
 }

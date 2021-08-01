@@ -61,12 +61,14 @@ namespace API.Controllers
             if(predmet.Files.Any(f => f.FileName == nazevMaterial))
                 return BadRequest("Studijní materiál s tímto názvem již u tohoto předmětu existuje.");
 
+            string cloudinaryFileName = predmet.nazev + " - " + nazevMaterial;
+
             if (files.Count == 1)
             {
                 if (files[0].Length > 30000000)
                     return BadRequest("Příliš velký soubor. (max. 30MB)");
 
-                var result = await _fileService.AddFileAsync(files[0], "");
+                var result = await _fileService.AddFileAsync(files[0], "", cloudinaryFileName);
                 if (result.Error != null) return BadRequest();
 
                 string extension = Path.GetExtension(files[0].FileName).Substring(1).ToUpper();
@@ -104,7 +106,7 @@ namespace API.Controllers
                     if (result.Error != null) return BadRequest();
                 }
 
-                var archiveResult = await _fileService.GenerateArchiveURLAsync(tag);
+                var archiveResult = await _fileService.GenerateArchiveURLAsync(tag, cloudinaryFileName);
 
                 foreach(string publicID in filesPublicID)
                 {

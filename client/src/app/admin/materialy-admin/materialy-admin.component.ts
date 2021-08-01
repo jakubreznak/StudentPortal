@@ -30,8 +30,6 @@ export class MaterialyAdminComponent implements OnInit {
       {
         this.soubory = r;
         this.toastr.success("Soubor smazán.");
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 

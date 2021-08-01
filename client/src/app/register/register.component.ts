@@ -46,11 +46,6 @@ export class RegisterComponent implements OnInit {
         {
           this.toastr.error("K tomuto osobnímu číslu neexistuje žádný obor.");
         }
-        else if(response == 2)
-        {
-          this.toastr.error("Existuje již uživatel s tímto jménem. Nebo se ve jménu nachází nepovolený znak.");
-        }
-        console.log(response);
       })
   }
 

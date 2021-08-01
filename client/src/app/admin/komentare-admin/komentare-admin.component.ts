@@ -29,8 +29,6 @@ export class KomentareAdminComponent implements OnInit {
       {
         this.comments = r;
         this.toastr.success("Komentář smazán.");
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 

@@ -23,6 +23,23 @@ namespace API.Services
             this.cloudinary = new Cloudinary(acc);
         }
 
+        public async Task<RawUploadResult> AddFileAsync(IFormFile file, string tag, string cloudinaryFileName)
+        {
+            var uploadResult = new RawUploadResult();
+            if (file.Length > 0)
+            {
+                using var stream = file.OpenReadStream();
+                var uploadParams = new RawUploadParams()
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Tags = tag,
+                    PublicId = cloudinaryFileName
+                };
+                uploadResult = await this.cloudinary.UploadAsync(uploadParams);
+            }
+            return uploadResult;
+        }
+
         public async Task<RawUploadResult> AddFileAsync(IFormFile file, string tag)
         {
             var uploadResult = new RawUploadResult();
@@ -32,7 +49,7 @@ namespace API.Services
                 var uploadParams = new RawUploadParams()
                 {
                     File = new FileDescription(file.FileName, stream),
-                    Tags = tag
+                    Tags = tag,
                 };
                 uploadResult = await this.cloudinary.UploadAsync(uploadParams);
             }
@@ -65,13 +82,14 @@ namespace API.Services
 
         }
 
-        public async Task<ArchiveResult> GenerateArchiveURLAsync(string tag)
+        public async Task<ArchiveResult> GenerateArchiveURLAsync(string tag, string cloudinaryFileName)
         {
             List<string> tags = new List<string>();
             tags.Add(tag);
             var archiveParams = new ArchiveParams(){};
             archiveParams.ResourceType("all");
             archiveParams = archiveParams.Tags(tags);
+            archiveParams.TargetPublicId(cloudinaryFileName);
             var archiveResult = await this.cloudinary.CreateZipAsync(archiveParams);
             return archiveResult;
         }

@@ -59,8 +59,6 @@ export class HodnoceniComponent implements OnInit {
         this.hodnoceni = hodnoceni;
         this.cislo = this.getCislo(hodnoceni);
         this.toastr.success("Hodnocení přidáno.");
-      }, error => {
-        this.toastr.error(error.error);
       });
     this.hodnoceniForm.reset();
   }
@@ -78,6 +76,7 @@ export class HodnoceniComponent implements OnInit {
     this.http.delete<Hodnoceni>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + hodnoceniID).subscribe(hodnoceni =>
       {
         this.hodnoceni = this.hodnoceni.filter(h => h.id != hodnoceni.id);
+        this.cislo = this.getCislo(this.hodnoceni);
         this.toastr.success("Hodnocení bylo úspěšně odebráno.");
       }
       );

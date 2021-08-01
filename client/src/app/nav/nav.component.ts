@@ -40,9 +40,6 @@ export class NavComponent implements OnInit {
     this.accountService.login(this.loginForm.value).subscribe(response =>
       {
         this.router.navigateByUrl('/predmety');
-      }, error => 
-      {
-        this.toastr.error(error.error);
       })
   }
 

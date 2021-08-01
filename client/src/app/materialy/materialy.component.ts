@@ -48,8 +48,6 @@ export class MaterialyComponent implements OnInit {
      .subscribe(files => {
         this.predmet.files = files;
         this.toastr.success("Materiál byl úspěšně přidán.");
-      }, error => {
-        this.toastr.error(error.error);
       });
     this.materialForm.reset();
   }
@@ -72,8 +70,6 @@ export class MaterialyComponent implements OnInit {
       {
         this.toastr.success("Studijní materiál úspěšně odebrán.");
         this.predmet.files = this.predmet.files.filter(s => s.id != soubor.id);
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 }

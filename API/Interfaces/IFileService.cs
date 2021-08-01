@@ -6,8 +6,9 @@ namespace API.Interfaces
 {
     public interface IFileService
     {
+         Task<RawUploadResult> AddFileAsync(IFormFile file, string tag, string cloudinaryFileName);
          Task<RawUploadResult> AddFileAsync(IFormFile file, string tag);
          Task<DelResResult> RemoveFileAsync(string publicID);
-         Task<ArchiveResult> GenerateArchiveURLAsync(string tag);
+         Task<ArchiveResult> GenerateArchiveURLAsync(string tag, string cloudinaryFileName);
     }
 }

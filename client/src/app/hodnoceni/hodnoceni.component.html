@@ -32,8 +32,9 @@
             <div class="list-group">
                 <ul>
                     <ng-container *ngFor="let comment of hodnoceni.reverse()">
-                        <li *ngIf="comment.text.length != 0" class="list-group-item border">
+                         <li  class="list-group-item border"> <!-- *ngIf="comment.text.length != 0" -->
                             <p class="komentar">{{comment.text}}</p>
+                            <p class="komentar">{{comment.rating}}/10</p>
                             <p class="info">{{comment.created}}</p>
                             <div *ngIf="comment.studentName == student.name">
                                 <button (click)='deleteRating(comment.id)' type="button" class="btn btn-danger">Smazat</button>
@@ -44,7 +45,7 @@
             </div>
         </div>
         <div class="prvni" *ngIf="hodnoceni.length == 0">
-            <p>Buďte první kdo přidá hodnocení.</p>
+            <p>Buďte první kdo přidá hodnocení. 1 - nejhorší, 10 - nejlepší</p>
         </div>
     </div>
     

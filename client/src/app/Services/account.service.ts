@@ -79,13 +79,7 @@ export class AccountService {
               }
             );
           });
-      }));
-
-    //   this.router.navigateByUrl('/predmety');
-    // }, error => {
-    //   this.toastr.error(error.error);
-    // })
-        
+      }));        
   }
 
   updateUpolNumber(upolNumber : string){

@@ -29,6 +29,7 @@ import { HodnoceniAdminComponent } from './admin/hodnoceni-admin/hodnoceni-admin
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MaterialyAdminComponent } from './admin/materialy-admin/materialy-admin.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ProfileComponent } from './profile/profile.component';
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

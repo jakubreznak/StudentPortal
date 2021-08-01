@@ -31,8 +31,6 @@ export class StudentiAdminComponent implements OnInit {
       {
         this.studentNames = r;
         this.toastr.success("Student smazán.");
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 }

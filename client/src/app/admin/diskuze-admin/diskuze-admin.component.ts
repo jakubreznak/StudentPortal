@@ -31,8 +31,6 @@ export class DiskuzeAdminComponent implements OnInit {
       {
         this.topics = r;
         this.toastr.success("Téma smazáno.");
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 }

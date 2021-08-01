@@ -30,8 +30,6 @@ export class HodnoceniAdminComponent implements OnInit {
       {
         this.hodnoceni = r;
         this.toastr.success("Hodnocení smazáno.");
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 

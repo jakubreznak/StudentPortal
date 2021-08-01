@@ -60,16 +60,12 @@ export class DiskuzeComponent implements OnInit {
         {
           this.topics.push(topic);
           this.toastr.success("Téma přidáno.");
-        }, error => {
-          this.toastr.error(error.error);
         });
     }else{
       this.diskuzeService.postTopic(this.predmet.id.toString(), JSON.stringify(this.diskuzeForm.value.topicName)).subscribe(topic =>
         {
           this.topics.push(topic);
           this.toastr.success("Téma přidáno.");
-        }, error => {
-          this.toastr.error(error.error);
         });
     }
     this.diskuzeForm.reset();
@@ -80,8 +76,6 @@ export class DiskuzeComponent implements OnInit {
       {
         this.toastr.success("Téma odebráno.");
         this.topics = this.topics.filter(t => t.id != topic.id);
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 }

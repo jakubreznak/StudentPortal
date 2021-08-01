@@ -31,8 +31,6 @@ export class ProfileComponent implements OnInit {
         this.accountService.logout();
         this.router.navigateByUrl('/');
         this.toastr.success("Účet byl úspěšně smazán.");
-      }, error => {
-        this.toastr.error(error.error);
       });
   }
 

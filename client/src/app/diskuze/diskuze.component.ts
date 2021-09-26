@@ -32,7 +32,7 @@ export class DiskuzeComponent implements OnInit {
 
   initializeForm() {
     this.diskuzeForm = new FormGroup({
-      topicName: new FormControl('', Validators.required)
+      topicName: new FormControl('', [Validators.required, Validators.maxLength(200)])
     })
   }
 
@@ -60,15 +60,16 @@ export class DiskuzeComponent implements OnInit {
         {
           this.topics.push(topic);
           this.toastr.success("Téma přidáno.");
+          this.diskuzeForm.reset();
         });
     }else{
       this.diskuzeService.postTopic(this.predmet.id.toString(), JSON.stringify(this.diskuzeForm.value.topicName)).subscribe(topic =>
         {
           this.topics.push(topic);
           this.toastr.success("Téma přidáno.");
+          this.diskuzeForm.reset();
         });
-    }
-    this.diskuzeForm.reset();
+    }    
   }
 
   deleteTopic(topicID){

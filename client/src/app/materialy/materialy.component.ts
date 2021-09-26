@@ -48,8 +48,8 @@ export class MaterialyComponent implements OnInit {
      .subscribe(files => {
         this.predmet.files = files;
         this.toastr.success("Materiál byl úspěšně přidán.");
-      });
-    this.materialForm.reset();
+        this.materialForm.reset();
+      });    
   }
 
   onFilesSelected(evt: Event) {

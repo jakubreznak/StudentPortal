@@ -54,6 +54,9 @@ namespace API.Controllers
             if (files == null || files.Count == 0 || nazevMaterial.Length <= 0)
                 return BadRequest("Nebyl vybrán žádný soubor nebo nebyl zadán název.");
 
+            if (nazevMaterial.Length > 200)
+                return BadRequest("Název materiálu může mít maximálně 200 znaků.");
+
             var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == predmetId);
             if (predmet == null)
                 return BadRequest();

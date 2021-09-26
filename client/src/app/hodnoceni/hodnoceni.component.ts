@@ -59,8 +59,8 @@ export class HodnoceniComponent implements OnInit {
         this.hodnoceni = hodnoceni;
         this.cislo = this.getCislo(hodnoceni);
         this.toastr.success("Hodnocení přidáno.");
-      });
-    this.hodnoceniForm.reset();
+        this.hodnoceniForm.reset();
+      });    
   }
 
   loadHodnoceni(){

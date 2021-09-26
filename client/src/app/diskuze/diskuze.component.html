@@ -11,7 +11,10 @@
                         <input
                         [class.is-invalid]='diskuzeForm.get("topicName").errors && diskuzeForm.get("topicName").touched'
                         type="text" class="form-control" formControlName="topicName" placeholder="nové téma" required >
-                        <div class="invalid-feedback">Prosím vyplňte název tématu.</div>
+                        <div *ngIf="diskuzeForm.get('topicName').hasError('required')"
+                        class="invalid-feedback">Prosím vyplňte název tématu.</div>
+                        <div *ngIf="diskuzeForm.get('topicName').hasError('maxlength')"
+                        class="invalid-feedback">Název materiálu může mít maximálně 200 znaků.</div>
                     </div>
                     <div class="form-group col-md-auto">
                         <button class="btn btn-success mr-2" type="submit">Přidat</button>

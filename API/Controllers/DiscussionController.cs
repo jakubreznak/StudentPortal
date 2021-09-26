@@ -48,6 +48,9 @@ namespace API.Controllers
             if(topicName == null || topicName.Length == 0)
                 return BadRequest();
 
+            if(topicName.Length > 200)
+                return BadRequest("Název tématu může mít maximálně 200 znaků.");
+
             var topic = new Topic
             {
                 predmetID = predmetID ?? String.Empty,
@@ -68,6 +71,9 @@ namespace API.Controllers
         {
             if(topicID == null || text == null)
                 return BadRequest();
+            
+            if(text.Length > 2000)
+                return BadRequest("Text je příliš dlouhý, maximálně 2000 znaků.");
 
             var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
             if(topic == null)

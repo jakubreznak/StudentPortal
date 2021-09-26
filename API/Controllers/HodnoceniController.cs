@@ -33,6 +33,9 @@ namespace API.Controllers
         {
             if(cislo < 1 || cislo > 10) return BadRequest();
 
+            if(text.Length > 2000)
+                return BadRequest("Text je příliš dlouhý, maximálně 2000 znaků.");
+
             var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
             var studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

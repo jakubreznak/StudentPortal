@@ -139,6 +139,10 @@ namespace API.Controllers
         {
             var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(p => p.ID == predmetID);
             var soubor = predmet.Files.FirstOrDefault(s => s.ID == souborID);
+
+            if(soubor.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění smazat tento studijní materiál.");
+
             predmet.Files.Remove(soubor);
             if (await _context.SaveChangesAsync() <= 0) return BadRequest();
 

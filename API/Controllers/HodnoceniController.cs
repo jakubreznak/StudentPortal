@@ -69,6 +69,9 @@ namespace API.Controllers
 
             var hodnoceni = predmet.Hodnocenis.FirstOrDefault(h => h.ID == hodnoceniID);
 
+            if(hodnoceni.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění smazat toto hodnocení.");
+
             predmet.Hodnocenis.Remove(hodnoceni);
 
             if(await _context.SaveChangesAsync() > 0)

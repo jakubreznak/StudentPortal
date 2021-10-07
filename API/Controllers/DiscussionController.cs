@@ -106,6 +106,9 @@ namespace API.Controllers
             var comment = topic.comments.FirstOrDefault(c => c.ID == commentID);
             if(comment == null)
                 return BadRequest();
+            
+            if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění smazat tento komentář.");
 
             topic.comments.Remove(comment);
             if(await _context.SaveChangesAsync() > 0)
@@ -123,8 +126,11 @@ namespace API.Controllers
             if(topic == null)
                 return BadRequest();
 
+            if(topic.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění smazat toto téma.");
+
             if(topic.comments.Any())
-                return BadRequest("Nelze smazat téma  u kterého jsou odpovědi.");
+                return BadRequest("Nelze smazat téma u kterého jsou odpovědi.");
 
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();

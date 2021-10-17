@@ -46,4 +46,8 @@ export class DiskuzeService {
   deleteTopic(topicID){
     return this.http.delete<Topic>(this.baseUrl + 'discussion/' + topicID);
   }
+
+  editComment(topicID: number, commentID: number, text: string){
+  return this.http.put<Topic>(this.baseUrl + 'discussion/comment/' + topicID + '/' + commentID, text, this.httpOptions);
+}
 }

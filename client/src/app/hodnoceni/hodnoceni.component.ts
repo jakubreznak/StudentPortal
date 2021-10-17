@@ -27,6 +27,9 @@ export class HodnoceniComponent implements OnInit {
   cisla: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   hodnoceniForm: FormGroup;
   student: Student;
+  idIsEditing: number;
+  textIsEditing: string;
+  editForm: FormGroup;
 
   constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService) { 
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
@@ -41,6 +44,12 @@ export class HodnoceniComponent implements OnInit {
     this.hodnoceniForm = new FormGroup({
       text: new FormControl(''),
       cislo: new FormControl('', Validators.required)
+    })
+  }
+
+  initializeEditForm() {
+    this.editForm = new FormGroup({
+      text: new FormControl('')
     })
   }
 
@@ -92,6 +101,27 @@ export class HodnoceniComponent implements OnInit {
     } else{
       return 0;
     }
+  }
+
+  editRating(hodnoceniID, hodnoceniText){
+    this.textIsEditing = hodnoceniText;
+    this.idIsEditing = hodnoceniID;
+    this.initializeEditForm();
+  }
+
+  saveEdit(hodnoceniID){
+    this.http.put<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + hodnoceniID,
+    JSON.stringify(this.editForm.value.text || ""), this.httpOptions).subscribe(hodnoceni =>
+    {
+      this.hodnoceni = hodnoceni;
+      this.toastr.success("Hodnocení bylo úspěšně upraveno.");
+      this.cancelEdit();
+    });
+  }
+
+  cancelEdit()
+  {
+    this.idIsEditing = NaN;
   }
 
 }

@@ -80,5 +80,27 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpPut("{idPredmet}/{hodnoceniID}")]
+        [Authorize]
+        public async Task<ActionResult<List<Hodnoceni>>> EditRating(int idPredmet, int hodnoceniID, [FromBody] string text)
+        {
+            if(text.Length > 2000)
+                return BadRequest("Text je příliš dlouhý, maximálně 2000 znaků.");
+
+            var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
+            var hodnoceni = predmet.Hodnocenis.FirstOrDefault(h => h.ID == hodnoceniID);
+
+            if(hodnoceni.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění upravovat toto hodnocení.");
+
+            hodnoceni.text = text;
+
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return predmet.Hodnocenis;
+            }
+            return BadRequest("Nebyly provedeny žádné změny.");
+        }
     }
 }

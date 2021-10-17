@@ -7,11 +7,27 @@
             <div class="list-group">
                 <ul>
                     <li *ngFor="let comment of topic.comments" class="list-group-item border">
-                        <p class="komentar">{{comment.text}}</p>
-                        <p class="info">{{comment.studentName}} - {{comment.created}}</p>
-                        <div *ngIf="comment.studentName == student.name">
-                            <button (click)='deleteComment(topic.id, comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                        <div *ngIf="this.idIsEditing != comment.id" class="koment">
+                            <p class="komentar">{{comment.text}}</p>
+                            <p class="info">{{comment.studentName}} - {{comment.created}}</p>
+                            <div *ngIf="comment.studentName == student.name">
+                                <button (click)='editComment(comment.id, comment.text)' type="button" class="btn btn-primary">Upravit</button>
+                                <button (click)='deleteComment(topic.id, comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                            </div>
                         </div>
+                        <div *ngIf="this.idIsEditing == comment.id" class="editace">
+                            <form [formGroup]='editForm' ngNativeValidate (ngSubmit)="saveEdit(topic.id, comment.id)" autocomplete="off">
+                                <div class="form-group">
+                                    <textarea
+                                    type="text" class="form-control" formControlName='text' [(ngModel)]='textIsEditing'></textarea>
+                                </div>
+                
+                                <div class="button">
+                                    <button class="btn btn-info mr-2" (click)='cancelEdit()' type="button">Zrušit</button>
+                                    <button [disabled]='!editForm.valid' class="btn btn-success mr-2" type="submit">Uložit</button>
+                                </div>
+                            </form>
+                        </div>      
                     </li>  
                 </ul>
             </div>
@@ -21,14 +37,15 @@
         </div>
         <h5>Přidat komentář:</h5>
         <div class="form">
-            <form #commentForm="ngForm" (ngSubmit)="postComment()" autocomplete="off">
+            <form [formGroup]='commentForm' ngNativeValidate (ngSubmit)="postComment()" autocomplete="off">
                 <div class="row">
-                    <div class="form-group col-10">
-                        <textarea class="form-control" name="answer"
-                        [(ngModel)]="text" placeholder="odpověď" required ></textarea>
+                    <div class="form-group col-10">                        
+                        <textarea
+                        class="form-control" formControlName='text'
+                        placeholder="odpověď" ></textarea>
                     </div>
                     <div class="form-group col-md-auto">
-                        <button class="btn btn-success mr-2" type="submit">Odpovědět</button>
+                        <button [disabled]='!commentForm.valid' class="btn btn-success mr-2" type="submit">Odpovědět</button>
                     </div>
                 </div>       
             </form>

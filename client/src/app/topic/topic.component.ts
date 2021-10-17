@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
@@ -17,12 +18,17 @@ export class TopicComponent implements OnInit {
   topic: Topic;
   text: string;
   student: Student;
+  idIsEditing: number;
+  textIsEditing: string;
+  editForm: FormGroup;
+  commentForm: FormGroup;
 
   constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
    }
 
   ngOnInit(): void {
+    this.initializeCommentForm();
     this.loadTopic();
   }
 
@@ -31,12 +37,18 @@ export class TopicComponent implements OnInit {
       this.topic = topic);
   }
 
+  initializeCommentForm() {
+    this.commentForm = new FormGroup({
+      text: new FormControl('', [Validators.required, Validators.minLength(1)])
+    })
+  }
+
   postComment(){
-    this.diskuzeService.postComment(this.topic.id, JSON.stringify(this.text)).subscribe(topic =>
+    this.diskuzeService.postComment(this.topic.id, JSON.stringify(this.commentForm.value.text)).subscribe(topic =>
       {
         this.topic = topic;
         this.toastr.success("Komentář přidán.");
-        this.text = "";
+        this.initializeCommentForm();
       });
   }
 
@@ -46,6 +58,32 @@ export class TopicComponent implements OnInit {
         this.topic = topic
         this.toastr.success("Komentář odebrán.");
       });
+  }
+
+  initializeEditForm() {
+    this.editForm = new FormGroup({
+      text: new FormControl('',[Validators.required, Validators.minLength(1)])
+    })
+  }
+
+  editComment(commentID, commentText){
+    this.textIsEditing = commentText;
+    this.idIsEditing = commentID;
+    this.initializeEditForm();
+  }
+
+  saveEdit(topicID, commentID){
+    this.diskuzeService.editComment(topicID, commentID, JSON.stringify(this.editForm.value.text)).subscribe(topic =>
+    {
+      this.topic = topic;
+      this.toastr.success("Komentář byl úspěšně upraven.");
+      this.cancelEdit();
+    });
+  }
+
+  cancelEdit()
+  {
+    this.idIsEditing = NaN;
   }
 
 }

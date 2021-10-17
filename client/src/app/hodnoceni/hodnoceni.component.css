@@ -45,3 +45,7 @@ textarea{
     resize: none;
     height: 7em;
 }
+
+.btn-primary{
+    margin-right: 1em;
+}

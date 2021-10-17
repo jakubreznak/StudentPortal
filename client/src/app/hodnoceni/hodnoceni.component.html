@@ -33,12 +33,28 @@
                 <ul>
                     <ng-container *ngFor="let comment of hodnoceni.reverse()">
                          <li  class="list-group-item border"> <!-- *ngIf="comment.text.length != 0" -->
-                            <p class="komentar">{{comment.text}}</p>
-                            <p class="komentar">{{comment.rating}}/10</p>
-                            <p class="info">{{comment.created}}</p>
-                            <div *ngIf="comment.studentName == student.name">
-                                <button (click)='deleteRating(comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                            <div *ngIf="this.idIsEditing != comment.id" class="koment">
+                                <p class="komentar">{{comment.text}}</p>
+                                <p class="komentar">{{comment.rating}}/10</p>
+                                <p class="info">{{comment.created}}</p>
+                                <div *ngIf="comment.studentName == student.name">
+                                    <button (click)='editRating(comment.id, comment.text)' type="button" class="btn btn-primary">Upravit</button>
+                                    <button (click)='deleteRating(comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                                </div>
                             </div>
+                            <div *ngIf="this.idIsEditing == comment.id" class="editace">
+                                <form [formGroup]='editForm' ngNativeValidate (ngSubmit)="saveEdit(comment.id)" autocomplete="off">
+                                    <div class="form-group">
+                                        <textarea
+                                        type="text" class="form-control" formControlName='text' [(ngModel)]='textIsEditing'></textarea>
+                                    </div>
+                    
+                                    <div class="button">
+                                        <button class="btn btn-info mr-2" (click)='cancelEdit()' type="button">Zrušit</button>
+                                        <button class="btn btn-success mr-2" type="submit">Uložit</button>
+                                    </div>
+                                </form>
+                            </div>                            
                         </li>  
                     </ng-container>
                 </ul>

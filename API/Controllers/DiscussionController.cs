@@ -137,5 +137,32 @@ namespace API.Controllers
 
             return topic;
         }
+
+        [HttpPut("comment/{topicID}/{commentID}")]
+        [Authorize]
+        public async Task<ActionResult<Topic>> EditComment(int topicID, int commentID, [FromBody] string text)
+        {
+            if(text.Length > 2000)
+                return BadRequest("Text je příliš dlouhý, maximálně 2000 znaků.");
+
+            var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
+            if(topic == null)
+                return BadRequest();
+
+            var comment = topic.comments.FirstOrDefault(c => c.ID == commentID);
+            if(comment == null)
+                return BadRequest();
+            
+            if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění upravit tento komentář.");
+
+            comment.text = text;
+
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return topic;
+            }
+            return BadRequest("Nebyly provedeny žádné změny.");
+        }
     }
 }

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
+using API.Entities._HelpEntities;
 
 namespace API.Controllers
 {
@@ -115,6 +116,22 @@ namespace API.Controllers
                 return BadRequest("Student s tímto osobním číslem neexistuje.");
 
             var result = await _userManager.UpdateAsync(student);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            return Ok();
+        }
+
+        [HttpPut("password")]
+        [Authorize]
+        public async Task<ActionResult<StudentDTO>> ChangePassword([FromBody] NewPassword password)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
+            var res = await _signInManager.CheckPasswordSignInAsync(student, password.oldPassword, false);
+            if (!res.Succeeded) return BadRequest("Špatné staré heslo.");
+
+            var result = await _userManager.ChangePasswordAsync(student, password.oldPassword, password.newPassword);
             if (!result.Succeeded) return BadRequest(result.Errors);
 
             return Ok();

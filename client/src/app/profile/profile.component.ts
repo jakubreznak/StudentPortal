@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../Services/account.service';
@@ -12,6 +12,7 @@ import { AccountService } from '../Services/account.service';
 export class ProfileComponent implements OnInit {
 
   profileForm: FormGroup;
+  changePasswordForm: FormGroup;
 
   constructor(private accountService: AccountService, private toastr: ToastrService, private router: Router) { }
 
@@ -20,9 +21,25 @@ export class ProfileComponent implements OnInit {
   }
 
   initializeForm() {
+    this.changePasswordForm = new FormGroup({
+      oldPassword: new FormControl('', Validators.required),
+      newPassword: new FormControl('', [Validators.required, Validators.pattern("^((?=.*[a-z])(?=.*?[0-9])).{1,}$"),
+        Validators.minLength(6)]),
+      confirmNewPassword: new FormControl('', [Validators.required, this.matchValues('newPassword')])
+    })
+    this.changePasswordForm.controls.newPassword.valueChanges.subscribe(() => {
+      this.changePasswordForm.controls.confirmNewPassword.updateValueAndValidity();
+    })
+
     this.profileForm = new FormGroup({
       idNumber: new FormControl('', Validators.required)
     })
+  }
+
+  matchValues(matchTo: string): ValidatorFn {
+    return (control: AbstractControl) => {
+      return control?.value === control?.parent?.controls[matchTo].value ? null : {isMatching: true}
+    }
   }
 
   deleteAccount() {
@@ -32,6 +49,13 @@ export class ProfileComponent implements OnInit {
         this.router.navigateByUrl('/');
         this.toastr.success("Účet byl úspěšně smazán.");
       });
+  }
+
+  changePassword() {
+    this.accountService.changePassword(this.changePasswordForm.value).subscribe(result =>
+      {
+        this.toastr.success("Heslo bylo úspěšně změněno.");
+      })
   }
 
   // validateBeforeSubmit(){

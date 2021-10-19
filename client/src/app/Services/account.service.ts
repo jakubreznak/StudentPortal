@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ReplaySubject } from 'rxjs';
 import {map} from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { NewPassword } from '../models/helpModels/newPassword';
 import { PlanInfo, RootPlanInfo } from '../models/helpModels/planInfo';
 import { PredmetOboru, RootPredmety } from '../models/helpModels/predmetOboru';
 import { RegisterDTO } from '../models/helpModels/registerDTO';
@@ -41,6 +42,10 @@ export class AccountService {
         this.setCurrentStudent(student);
       })
     )
+  }
+
+  changePassword(model: NewPassword){
+    return this.http.put(this.baseUrl + 'account/password', model);
   }
 
   register(model: RegisterForm){

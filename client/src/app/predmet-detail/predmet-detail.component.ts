@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Predmet } from '../models/predmet';
 import { PredmetyService } from '../Services/predmety.service';
@@ -11,6 +12,8 @@ import { PredmetyService } from '../Services/predmety.service';
 export class PredmetDetailComponent implements OnInit {
 
   predmet: Predmet;
+  predmetNazev: string;
+  predmetId: number = Number(this.route.snapshot.paramMap.get('id'));
 
   constructor(private predmetService: PredmetyService, private route: ActivatedRoute) { }
 
@@ -19,8 +22,12 @@ export class PredmetDetailComponent implements OnInit {
   }
 
   loadPredmet() {
-    this.predmetService.getPredmet(Number(this.route.snapshot.paramMap.get('id'))).subscribe(predmet =>
+    this.predmetService.getPredmet(this.predmetId).subscribe(predmet =>
       this.predmet = predmet);
+    this.predmetService.getPredmetName(this.predmetId).subscribe(predmet =>
+      {
+        this.predmetNazev = predmet.nazev;
+      });
   }
 
 }

@@ -51,6 +51,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("getname/{id}")]
+        [Authorize]
+        public async Task<ActionResult<Predmet>> GetPredmetName(int id)
+        {
+            return await _context.Predmets.FirstOrDefaultAsync(x => x.ID == id);
+        }
+
+        [HttpGet]
         [Route("getbyobor/{idObor}")]
         public async Task<ActionResult<IEnumerable<Predmet>>> GetPredmetyByObor(int idObor)
         {

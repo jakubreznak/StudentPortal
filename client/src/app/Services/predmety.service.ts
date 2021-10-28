@@ -25,6 +25,10 @@ export class PredmetyService {
     return this.http.get<Predmet>(this.baseUrl + 'predmety/getbyid/' + id);
   }
 
+  getPredmetName(id: number) {
+    return this.http.get<Predmet>(this.baseUrl + 'predmety/getname/' + id);
+  }
+
   deleteMaterial(predmetID, souborID){
     return this.http.delete<Soubor>(this.baseUrl + 'predmety/' + predmetID + '/' + souborID);
   }

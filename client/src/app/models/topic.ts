@@ -4,6 +4,7 @@ export interface Topic {
     predmetID: string;
     studentName: string;
     created: string;
+    createdDateTime: string;
     comments: Comment[];
 }
 

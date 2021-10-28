@@ -3,10 +3,10 @@
         <a class="btn btn-secondary mr-2 mb-3" routerLink="..">Zpět</a>
         <h2>{{topic.name}}</h2>
         
-        <div *ngIf="topic.comments.length > 0">
+        <div *ngIf="pagedComments.length > 0">
             <div class="list-group">
                 <ul>
-                    <li *ngFor="let comment of topic.comments" class="list-group-item border">
+                    <li *ngFor="let comment of pagedComments" class="list-group-item border">
                         <div *ngIf="this.idIsEditing != comment.id" class="koment">
                             <p class="komentar">{{comment.text}}</p>
                             <p class="info">{{comment.studentName}} - {{comment.created}}</p>
@@ -31,8 +31,22 @@
                     </li>  
                 </ul>
             </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                <pagination 
+                    [boundaryLinks]="true" 
+                    [totalItems]="pagination.totalItems"
+                    [itemsPerPage]="pagination.itemsPerPage"
+                    [(ngModel)]="pagination.currentPage"
+                    (pageChanged)="pageChanged($event)"
+                    previousText="&lsaquo;" 
+                    nextText="&rsaquo;" 
+                    firstText="&laquo;" 
+                    lastText="&raquo;"> 
+                </pagination>
+            </div> 
         </div>
-        <div class="prvni" *ngIf="topic.comments.length == 0">
+        <div class="prvni" *ngIf="pagedComments.length == 0">
             <p>Buďte první kdo přidá odpověď.</p>
         </div>
         <h5>Přidat komentář:</h5>

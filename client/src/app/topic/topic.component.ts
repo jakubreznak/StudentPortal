@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
+import { Pagination } from '../models/helpModels/pagination';
 import { Student } from '../models/student';
 import { Topic } from '../models/topic';
 import { AccountService } from '../Services/account.service';
@@ -22,6 +23,10 @@ export class TopicComponent implements OnInit {
   textIsEditing: string;
   editForm: FormGroup;
   commentForm: FormGroup;
+  pagination: Pagination;
+  pageNumber = 1;
+  pageSize = 10;
+  pagedComments: Comment[];
 
   constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
@@ -30,11 +35,27 @@ export class TopicComponent implements OnInit {
   ngOnInit(): void {
     this.initializeCommentForm();
     this.loadTopic();
+    this.loadComments();
   }
 
   loadTopic(){
-    this.diskuzeService.getTopic(Number(this.route.snapshot.paramMap.get('topicid'))).subscribe(topic =>
-      this.topic = topic);
+    this.diskuzeService.getTopic(Number(this.route.snapshot.paramMap.get('topicid'))).subscribe(response => {
+      this.topic = response;
+    });
+  }
+
+  loadComments(){
+    this.diskuzeService.getComments(Number(this.route.snapshot.paramMap.get('topicid')), this.pageNumber, this.pageSize).subscribe(response =>
+    {
+      this.pagedComments = response.result;
+      this.pagination = response.pagination;        
+    });
+  }
+
+  pageChanged(event: any){
+    this.pageNumber = event.page;
+    this.loadComments();
+    window.scrollTo(0, 0);
   }
 
   initializeCommentForm() {
@@ -46,16 +67,18 @@ export class TopicComponent implements OnInit {
   postComment(){
     this.diskuzeService.postComment(this.topic.id, JSON.stringify(this.commentForm.value.text)).subscribe(topic =>
       {
-        this.topic = topic;
+        this.loadComments();
         this.toastr.success("Komentář přidán.");
         this.initializeCommentForm();
       });
   }
 
   deleteComment(topicID, commentID){
-    this.diskuzeService.deleteComment(topicID, commentID).subscribe(topic =>
+    this.diskuzeService.deleteComment(topicID, commentID).subscribe(comment =>
       {
-        this.topic = topic
+        this.pageNumber = 1;
+        this.loadComments();
+        this.pagination.currentPage = 1;
         this.toastr.success("Komentář odebrán.");
       });
   }
@@ -78,6 +101,7 @@ export class TopicComponent implements OnInit {
       this.topic = topic;
       this.toastr.success("Komentář byl úspěšně upraven.");
       this.cancelEdit();
+      this.loadComments();
     });
   }
 

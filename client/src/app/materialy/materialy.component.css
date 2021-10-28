@@ -23,9 +23,14 @@
   padding: 1em;
 }
 
+.btn-danger{
+    margin-left: 16px;
+}
+
 p {
     font-size: 1.6em;
     font-weight: 600;
+    margin: 0;
 }
 
 .stahnout {

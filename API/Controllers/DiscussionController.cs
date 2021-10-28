@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using API.Extensions;
+using API.HelpClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,16 +30,35 @@ namespace API.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Topic>>> GetTopicsByPredmet(string id)
+        public async Task<ActionResult<IEnumerable<Topic>>> GetTopicsByPredmet(string id, [FromQuery] TopicParams topicParams)
         {
-            return await _context.Topics.Include("comments").Where(t => t.predmetID == id).ToListAsync();
+            var query = _context.Topics.Include("comments").Where(t => t.predmetID == id).OrderByDescending(x => x.createdDateTime).AsNoTracking();
+            var topics = await PagedList<Topic>.CreateAsync(query, topicParams.PageNumber, topicParams.PageSize);
+
+            Response.AddPaginationHeader(topics.CurrentPage, topics.PageSize, topics.TotalCount, topics.TotalPages);
+            return Ok(topics);
         }
 
         [HttpGet("topic/{id}")]
         [Authorize]
-        public async Task<ActionResult<Topic>> GetCommentsByTopic (int id)
+        public ActionResult<IEnumerable<Comment>> GetCommentsByTopic (int id, [FromQuery] CommentParams commentParams)
         {
-            return await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == id);
+            var comments = _context.Topics.Include("comments").FirstOrDefault(t => t.ID == id).comments;
+            for(int i = 0; i < comments.Count(); i++)
+            {
+                comments[i].topic = null;
+            }
+            var pagedComments = PagedList<Comment>.CreateFromList(comments, commentParams.PageNumber, commentParams.PageSize);
+
+            Response.AddPaginationHeader(pagedComments.CurrentPage, pagedComments.PageSize, pagedComments.TotalCount, pagedComments.TotalPages);
+            return Ok(pagedComments);
+        }
+
+        [HttpGet("topicInfo/{id}")]
+        [Authorize]
+        public async Task<ActionResult<Topic>> GetTopicInfo (int id)
+        {
+            return await _context.Topics.FirstOrDefaultAsync(t => t.ID == id);
         }
 
         [HttpPost("{predmetID}")]
@@ -56,7 +77,8 @@ namespace API.Controllers
                 predmetID = predmetID ?? String.Empty,
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 name = topicName,
-                created = DateTime.Now.ToString("dd'.'MM'.'yyyy")
+                created = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
+                createdDateTime = DateTime.Now
             };
 
             _context.Topics.Add(topic);
@@ -67,7 +89,7 @@ namespace API.Controllers
 
         [HttpPost("comment/{topicID}")]
         [Authorize]
-        public async Task<ActionResult<Topic>> PostComment (int? topicID, [FromBody] string text)
+        public async Task<ActionResult<Comment>> PostComment (int? topicID, [FromBody] string text)
         {
             if(topicID == null || text == null)
                 return BadRequest();
@@ -90,14 +112,14 @@ namespace API.Controllers
             topic.comments.Add(comment);
             if(await _context.SaveChangesAsync() > 0)
             {
-                return topic;
+                return Ok(comment);
             }
             return BadRequest();
         }
 
         [HttpDelete("comment/{topicID}/{commentID}")]
         [Authorize]
-        public async Task<ActionResult<Topic>> DeleteComment (int topicID, int commentID)
+        public async Task<ActionResult<Comment>> DeleteComment (int topicID, int commentID)
         {
             var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
             if(topic == null)
@@ -113,7 +135,7 @@ namespace API.Controllers
             topic.comments.Remove(comment);
             if(await _context.SaveChangesAsync() > 0)
             {
-                return topic;
+                return Ok(comment);
             }
             return BadRequest();
         }

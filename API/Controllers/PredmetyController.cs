@@ -12,6 +12,8 @@ using API.DTOs;
 using System.IO;
 using System;
 using System.Security.Claims;
+using API.HelpClass;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -34,9 +36,18 @@ namespace API.Controllers
         [HttpGet]
         [Route("getbyid/{id}")]
         [Authorize]
-        public async Task<ActionResult<Predmet>> GetPredmet(int id)
+        public ActionResult<IEnumerable<Soubor>> GetMaterialy(int id, [FromQuery] MaterialParameters materialParameters)
         {
-            return await _context.Predmets.Include("Files").FirstOrDefaultAsync(x => x.ID == id);
+            var files = _context.Predmets.Include("Files").FirstOrDefault(x => x.ID == id).Files.OrderByDescending(x => x.ID);
+            foreach(var file in files)
+            {
+                file.Predmet = null;
+            }
+            var pagedFiles = PagedList<Soubor>.CreateFromList(files, materialParameters.PageNumber, materialParameters.PageSize);
+
+            Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalCount);
+            return Ok(pagedFiles);
+
         }
 
         [HttpGet]

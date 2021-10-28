@@ -8,6 +8,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { Student } from '../models/student';
 import { AccountService } from '../Services/account.service';
+import { Pagination } from '../models/helpModels/pagination';
+import { getPaginatedResult, getPaginationHeaders } from '../Services/paginationHelper';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-hodnoceni',
@@ -30,8 +33,14 @@ export class HodnoceniComponent implements OnInit {
   idIsEditing: number;
   textIsEditing: string;
   editForm: FormGroup;
+  pagination: Pagination;
+  pageNumber = 1;
+  pageSize = 10;
+  pagedRatings: Hodnoceni[];
+  predmetId = Number(this.route.snapshot.paramMap.get('id'));
 
-  constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService) { 
+  constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService,
+    private route: ActivatedRoute) { 
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
   }
 
@@ -62,30 +71,45 @@ export class HodnoceniComponent implements OnInit {
   }
 
   rate(){
-    this.http.post<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + this.hodnoceniForm.value.cislo,
+    this.http.post<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmetId + '/' + this.hodnoceniForm.value.cislo,
     JSON.stringify(this.hodnoceniForm.value.text || ""), this.httpOptions).subscribe(hodnoceni =>
       {
-        this.hodnoceni = hodnoceni;
-        this.cislo = this.getCislo(hodnoceni);
+        this.pageNumber = 1;
+        this.loadHodnoceni();
+        this.pagination.currentPage = 1;
         this.toastr.success("Hodnocení přidáno.");
         this.hodnoceniForm.reset();
       });    
   }
 
   loadHodnoceni(){
-    
-    this.http.get<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id).subscribe(hodnoceni =>
-      {
-        this.hodnoceni = hodnoceni;
-        this.cislo = this.getCislo(hodnoceni);
-      });
+    let params = getPaginationHeaders(this.pageNumber, this.pageSize);
+
+    getPaginatedResult<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmetId, params, this.http)
+      .subscribe(response =>    
+        {
+          this.hodnoceni = response.result;
+          this.pagination = response.pagination;
+        });
+
+      this.http.get<number>(this.baseUrl + 'hodnoceni/cislo/' + this.predmetId).subscribe(response =>
+        {
+          this.cislo = response;
+        });
+  }
+
+  pageChanged(event: any){
+    this.pageNumber = event.page;
+    this.loadHodnoceni();
+    window.scrollTo(0, 0);
   }
 
   deleteRating(hodnoceniID){
-    this.http.delete<Hodnoceni>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + hodnoceniID).subscribe(hodnoceni =>
+    this.http.delete<Hodnoceni>(this.baseUrl + 'hodnoceni/' + this.predmetId + '/' + hodnoceniID).subscribe(hodnoceni =>
       {
-        this.hodnoceni = this.hodnoceni.filter(h => h.id != hodnoceni.id);
-        this.cislo = this.getCislo(this.hodnoceni);
+        this.pageNumber = 1;
+        this.loadHodnoceni();
+        this.pagination.currentPage = 1;        
         this.toastr.success("Hodnocení bylo úspěšně odebráno.");
       }
       );
@@ -113,7 +137,7 @@ export class HodnoceniComponent implements OnInit {
     this.http.put<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + hodnoceniID,
     JSON.stringify(this.editForm.value.text || ""), this.httpOptions).subscribe(hodnoceni =>
     {
-      this.hodnoceni = hodnoceni;
+      this.loadHodnoceni();
       this.toastr.success("Hodnocení bylo úspěšně upraveno.");
       this.cancelEdit();
     });

@@ -11,6 +11,7 @@ namespace API.Entities
         public string predmetID { get; set; }
         public string studentName { get; set; }
         public string created { get; set; }
+        public DateTime createdDateTime { get; set; }
         public List<Comment> comments { get; set; }
     }
 }

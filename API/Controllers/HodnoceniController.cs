@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using API.Extensions;
+using API.HelpClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +23,31 @@ namespace API.Controllers
 
         [HttpGet("{idPredmet}")]
         [Authorize]
-        public async Task<ActionResult<List<Hodnoceni>>> GetPredmet(int idPredmet)
+        public ActionResult<List<Hodnoceni>> GetPredmet(int idPredmet, [FromQuery] HodnoceniParams hodnoceniParams)
         {
-            var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
-            return predmet.Hodnocenis;
+            var hodnoceni = _context.Predmets.Include("Hodnocenis").FirstOrDefault(x => x.ID == idPredmet).Hodnocenis.OrderByDescending(x => x.ID);
+            foreach(var hod in hodnoceni)
+            {
+                hod.predmet = null;
+            }
+            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
+
+            Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages);
+            return Ok(pagedHodnoceni);
+        }
+
+        [HttpGet("cislo/{idPredmet}")]
+        [Authorize]
+        public ActionResult<int> GetRatingNumber(int idPredmet)
+        {
+            var hodnoceni = _context.Predmets.Include("Hodnocenis").FirstOrDefault(x => x.ID == idPredmet).Hodnocenis;
+            int ratingNumber = 0;
+            foreach(var hod in hodnoceni)
+            {
+                ratingNumber += hod.rating;
+            }
+
+            return Ok(Math.Ceiling((double) ratingNumber / hodnoceni.Count));
         }
 
         [HttpPost("{idPredmet}/{cislo}")]

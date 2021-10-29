@@ -60,10 +60,36 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("getbyobor/{idObor}")]
-        public async Task<ActionResult<IEnumerable<Predmet>>> GetPredmetyByObor(int idObor)
+        public async Task<ActionResult<IEnumerable<Predmet>>> GetPredmetyByObor(int idObor, [FromQuery] PredmetParams predmetParams)
         {
-            return await _context.Predmets.Where(p => p.oborIdNum == idObor).OrderByDescending(p => p.doporucenyRocnik.HasValue)
+            var predmety = await _context.Predmets.Where(p => p.oborIdNum == idObor).OrderByDescending(p => p.doporucenyRocnik.HasValue)
             .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToListAsync();
+
+            if(!String.IsNullOrEmpty(predmetParams.Nazev))
+            {
+                var words = predmetParams.Nazev.Split(' ');
+                List<Predmet> predmets = new List<Predmet>();
+                foreach(var word in words)
+                {
+                    predmets.AddRange(predmety.Where(x => x.nazev.ToLower().Contains(word.ToLower())));
+                }
+                predmety = predmets.Distinct().ToList();
+            }
+
+            if(predmetParams.Statut != "all")
+            {
+                predmety = predmety.Where(x => x.statut == predmetParams.Statut).ToList();
+            }            
+
+            if(predmetParams.Rocnik == 0 || predmetParams.Rocnik > 4)
+            {
+                return predmety;
+            }
+            else if(predmetParams.Rocnik == 4)
+            {
+                return Ok(predmety.Where(x => x.doporucenyRocnik == null));
+            }
+            return Ok(predmety.Where(x => x.doporucenyRocnik == predmetParams.Rocnik));
         }
 
         [HttpPost("add-file/{predmetId}/{nazevMaterial}")]

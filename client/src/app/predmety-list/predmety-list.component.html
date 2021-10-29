@@ -1,5 +1,38 @@
 <div class="container mt-5">
-    <div class="list-group">
+    <div class="container mt-3">
+        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadPredmety()" autocomplete="off">    
+            <div class="form-group px-2">
+                <label>Ročník: </label>
+                <select name="rocnik" style="width: 130px" [(ngModel)]="predmetyParams.rocnik" class="form-control ml-1">
+                    <option *ngFor="let rocnik of rocnikList" [value]="rocnik.value">
+                        {{rocnik.display}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group px-2">
+                <label>Statut: </label>
+                <select name="statut" style="width: 130px" [(ngModel)]="predmetyParams.statut" class="form-control ml-1">
+                    <option *ngFor="let statut of statutList" [value]="statut.value">
+                        {{statut.display}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group px-2">
+                <label>Název: </label>
+                <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+                    [(ngModel)]="predmetyParams.nazev">
+            </div>
+    
+            <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
+            <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+
+        </form>
+
+    <hr>
+    </div>
+    <div class="list-group mb-5">
         <a  *ngFor="let predmet of predmety" class="list-group-item-action list-group-item border" [routerLink]="predmet.id">
             <div class="nazev-rocnik">
                 {{predmet.nazev}}    

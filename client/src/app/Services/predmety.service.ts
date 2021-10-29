@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { PredmetyParams } from '../models/helpModels/predmetyParams';
 import { Predmet, Soubor } from '../models/predmet';
 
 @Injectable({
@@ -17,8 +18,14 @@ export class PredmetyService {
     return this.http.get<Predmet[]>(this.baseUrl + 'predmety');
   }
 
-  getPredmetyByObor(idObor: number){
-    return this.http.get<Predmet[]>(this.baseUrl + 'predmety/getbyobor/' + idObor);
+  getPredmetyByObor(idObor: number, predmetyParams: PredmetyParams){
+    let params = new HttpParams();
+
+    params = params.append('Rocnik', predmetyParams.rocnik.toString());
+    params = params.append('Statut', predmetyParams.statut);
+    params = params.append('Nazev', predmetyParams.nazev);
+
+    return this.http.get<Predmet[]>(this.baseUrl + 'predmety/getbyobor/' + idObor, { observe: 'body', params });
   }
 
   getPredmet(id: number) {

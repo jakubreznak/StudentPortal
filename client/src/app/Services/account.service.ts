@@ -88,7 +88,28 @@ export class AccountService {
   }
 
   updateUpolNumber(upolNumber : string){
-    return this.http.put(this.baseUrl + 'account', upolNumber, this.httpOptions);
+    return this.http
+    .get<RootPlanInfo>(this.upolBaseUrl + "/services/rest2/programy/getPlanyStudenta?osCislo=" + upolNumber.toUpperCase().trim() + "&outputFormat=JSON")
+    .pipe(map(response => 
+      {
+        if(response.planInfo[0] == null)
+        {
+          return 1;
+        }
+        this.plan = response.planInfo[0];
+        this.http
+        .get<RootPredmety>(this.upolBaseUrl + "/services/rest2/predmety/getPredmetyByObor?oborIdno=" + this.plan.oborIdno + "&outputFormat=JSON")
+        .subscribe(response =>
+          {
+            this.predmety = response.predmetOboru.filter((e, i) => i % 2 === 2 - 1);
+
+            return this.http.put(this.baseUrl + 'account/' + upolNumber + '/' + this.plan.oborIdno, this.predmety, this.httpOptions).subscribe(
+              response => {
+                
+              }
+            );
+          });
+      }));  
   }
 
   deleteAccount(){

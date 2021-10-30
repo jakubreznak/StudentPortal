@@ -104,21 +104,26 @@ namespace API.Controllers
             };
         }
 
-        [HttpPut]
+        [HttpPut("{upolNumber}/{oborId}")]
         [Authorize]
-        public async Task<ActionResult<StudentDTO>> ChangeUpolNumber([FromBody] string upolNumber)
+        public async Task<ActionResult<Student>> ChangeUpolNumber(string upolNumber, int oborId, [FromBody] Predmet[] predmety)
         {
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
-            student = await GetPredmetyFromUpol(upolNumber.ToUpper(), student);
 
             if (student == null)
                 return BadRequest("Student s tímto osobním číslem neexistuje.");
 
+            if(student.upolNumber == upolNumber)
+                return Ok(student);
+                
+            student.upolNumber = upolNumber;
+            student.oborIdno = oborId;
+
             var result = await _userManager.UpdateAsync(student);
             if (!result.Succeeded) return BadRequest(result.Errors);
 
-            return Ok();
+            return Ok(student);
         }
 
         [HttpPut("password")]

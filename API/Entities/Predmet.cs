@@ -7,6 +7,7 @@ namespace API.Entities
         {
             this.Files = new List<Soubor>();
             this.Hodnocenis = new List<Hodnoceni>();
+            this.Students = new List<Student>();
         } 
         public int ID { get; set; }
         public string zkratka { get; set; } 
@@ -25,5 +26,6 @@ namespace API.Entities
         public int? oborIdNum { get; set; }
         public List<Soubor> Files { get; set; } 
         public List<Hodnoceni> Hodnocenis { get; set; }
+        public List<Student> Students { get; set; }
     }
 }

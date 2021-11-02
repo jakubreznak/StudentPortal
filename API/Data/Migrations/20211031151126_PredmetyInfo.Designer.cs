@@ -3,15 +3,17 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211031151126_PredmetyInfo")]
+    partial class PredmetyInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,6 +171,44 @@ namespace API.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Predmets");
+                });
+
+            modelBuilder.Entity("API.Entities.PredmetInfo", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("katedra")
+                        .HasColumnType("text");
+
+                    b.Property<string>("nazev")
+                        .HasColumnType("text");
+
+                    b.Property<string>("rok")
+                        .HasColumnType("text");
+
+                    b.Property<string>("semestr")
+                        .HasColumnType("text");
+
+                    b.Property<string>("vyukaLS")
+                        .HasColumnType("text");
+
+                    b.Property<string>("vyukaZS")
+                        .HasColumnType("text");
+
+                    b.Property<string>("zkratka")
+                        .HasColumnType("text");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("PredmetInfos");
                 });
 
             modelBuilder.Entity("API.Entities.Soubor", b =>
@@ -397,21 +437,6 @@ namespace API.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PredmetStudent", b =>
-                {
-                    b.Property<int>("StudentsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("predmetyStudentaID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("StudentsId", "predmetyStudentaID");
-
-                    b.HasIndex("predmetyStudentaID");
-
-                    b.ToTable("PredmetStudent");
-                });
-
             modelBuilder.Entity("API.Entities.AppUserRole", b =>
                 {
                     b.HasOne("API.Entities.AppRole", "Role")
@@ -451,6 +476,13 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("predmet");
+                });
+
+            modelBuilder.Entity("API.Entities.PredmetInfo", b =>
+                {
+                    b.HasOne("API.Entities.Student", null)
+                        .WithMany("predmetyPridane")
+                        .HasForeignKey("StudentId");
                 });
 
             modelBuilder.Entity("API.Entities.Soubor", b =>
@@ -500,21 +532,6 @@ namespace API.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PredmetStudent", b =>
-                {
-                    b.HasOne("API.Entities.Student", null)
-                        .WithMany()
-                        .HasForeignKey("StudentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.Predmet", null)
-                        .WithMany()
-                        .HasForeignKey("predmetyStudentaID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("API.Entities.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -529,6 +546,8 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Student", b =>
                 {
+                    b.Navigation("predmetyPridane");
+
                     b.Navigation("UserRoles");
                 });
 

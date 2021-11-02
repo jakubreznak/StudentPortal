@@ -30,10 +30,19 @@ namespace API.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Topic>>> GetTopicsByPredmet(string id, [FromQuery] TopicParams topicParams)
+        public ActionResult<IEnumerable<Topic>> GetTopicsByPredmet(string id, [FromQuery] TopicParams topicParams)
         {
-            var query = _context.Topics.Include("comments").Where(t => t.predmetID == id).OrderByDescending(x => x.createdDateTime).AsNoTracking();
-            var topics = await PagedList<Topic>.CreateAsync(query, topicParams.PageNumber, topicParams.PageSize);
+            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == Convert.ToInt32(id));
+            var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();
+            List<Topic> topicsList = new List<Topic>(); 
+            foreach(var pred in predmety)
+            {
+                var topic = _context.Topics.Include(t => t.comments).Where(t => t.predmetID == pred.ID.ToString());
+                topicsList.AddRange(topic);
+            }
+            topicsList = topicsList.OrderByDescending(x => x.createdDateTime).ToList();
+
+            var topics = PagedList<Topic>.CreateFromList(topicsList, topicParams.PageNumber, topicParams.PageSize);
 
             Response.AddPaginationHeader(topics.CurrentPage, topics.PageSize, topics.TotalCount, topics.TotalPages);
             return Ok(topics);

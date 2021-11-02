@@ -5,7 +5,7 @@
     grid-gap: 1rem;
   }
 
-  a {
+  .a {
       font-weight: 600;
       font-size: 1.2em;
       border: 30px;
@@ -21,7 +21,6 @@
       font-weight: 500;
       font-size: 1em;
       padding: .7em;
-      color: rgb(255, 255, 255);
   }
 
   .nazev-rocnik {
@@ -35,4 +34,33 @@
     font-size: 1.6em;
     font-weight: 600;
     text-align: center; 
+  }
+
+  .added {
+    background-color: #28a745;
+    color: #28a745;
+  }
+
+  .added button {
+      visibility: hidden;
+  }
+
+  .vis{
+      color: white;
+      visibility: visible;
+      text-align: center;
+      font-size: 1.6em;
+      font-weight: 500;
+  }
+
+  .unv {
+      display: none;
+  }
+
+  .cent {
+      text-align: center;
+    }
+
+  .hid {
+      display: none;
   }

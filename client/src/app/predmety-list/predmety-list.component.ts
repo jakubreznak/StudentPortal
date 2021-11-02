@@ -18,7 +18,7 @@ export class PredmetyListComponent implements OnInit {
   predmety: Predmet[];
   student: Student;
   predmetyParams = new PredmetyParams();
-  statutList = [{value: 'all', display: 'Všechny'}, {value: 'A', display: 'A'}, {value: 'B', display: 'B'}, {value: 'C', display: 'C'}];
+  statutList = [{value: 'all', display: 'Všechny'}, {value: 'A', display: 'A'}, {value: 'B', display: 'B'}, {value: 'C', display: 'C'}, {value: 'bez', display: 'Bez statutu'}];
   rocnikList = [{value: 0, display: 'Všechny'}, {value: 1, display: '1'}, {value: 2, display: '2'}, {value: 3, display: '3'}, {value: 4, display: 'Bez ročníku'}];
 
   constructor(private predmetService: PredmetyService, private accountService: AccountService) { 
@@ -31,7 +31,7 @@ export class PredmetyListComponent implements OnInit {
 
   loadPredmety() {
     this.accountService.getOborIdByUsername(this.student.name).subscribe(oborId =>
-      this.predmetService.getPredmetyByObor(oborId, this.predmetyParams).subscribe(predmety =>
+      this.predmetService.getPredmetyStudenta(this.predmetyParams).subscribe(predmety =>
         this.predmety = predmety));    
   }
 

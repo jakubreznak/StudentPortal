@@ -1,4 +1,8 @@
-<div class="container mt-5">
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-success ml-1" [routerLink]="'../predmetyadd'"> Přidat předmět</button>
+    </div>
+    
     <div class="container mt-3">
         <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadPredmety()" autocomplete="off">    
             <div class="form-group px-2">
@@ -41,4 +45,5 @@
             <span [ngStyle]="{'background-color':getBackgroundColor(predmet.statut)}">{{predmet.statut}}</span>
         </a>  
     </div>
+    <p class="prvni" *ngIf="predmety?.length == 0">Žádný předmět neodpovídá filtrům.</p>
 </div>

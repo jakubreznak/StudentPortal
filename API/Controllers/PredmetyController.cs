@@ -14,6 +14,7 @@ using System;
 using System.Security.Claims;
 using API.HelpClass;
 using API.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Controllers
 {
@@ -21,10 +22,12 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly IFileService _fileService;
-        public PredmetyController(DataContext context, IFileService fileService)
+        private readonly UserManager<Student> _userManager;
+        public PredmetyController(DataContext context, IFileService fileService, UserManager<Student> userManager)
         {
             _context = context;
             _fileService = fileService;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -38,12 +41,18 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<IEnumerable<Soubor>> GetMaterialy(int id, [FromQuery] MaterialParameters materialParameters)
         {
-            var files = _context.Predmets.Include("Files").FirstOrDefault(x => x.ID == id).Files.OrderByDescending(x => x.ID);
-            foreach(var file in files)
+            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == id);
+            var predmety = _context.Predmets.Include(p => p.Files).Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka);
+            List<Soubor> soubory = new List<Soubor>(); 
+            foreach(var pred in predmety)
+            {
+                soubory.AddRange(pred.Files);
+            }
+            foreach(var file in soubory)
             {
                 file.Predmet = null;
             }
-            var pagedFiles = PagedList<Soubor>.CreateFromList(files, materialParameters.PageNumber, materialParameters.PageSize);
+            var pagedFiles = PagedList<Soubor>.CreateFromList(soubory, materialParameters.PageNumber, materialParameters.PageSize);
 
             Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalCount);
             return Ok(pagedFiles);
@@ -59,11 +68,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("getbyobor/{idObor}")]
-        public async Task<ActionResult<IEnumerable<Predmet>>> GetPredmetyByObor(int idObor, [FromQuery] PredmetParams predmetParams)
+        [Route("student")]
+        public ActionResult<IEnumerable<Predmet>> GetPredmetyStudenta([FromQuery] PredmetParams predmetParams)
         {
-            var predmety = await _context.Predmets.Where(p => p.oborIdNum == idObor).OrderByDescending(p => p.doporucenyRocnik.HasValue)
-            .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToListAsync();
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.Include("predmetyStudenta").FirstOrDefault(s => s.UserName == username);
+
+            var predmety = student.predmetyStudenta.OrderByDescending(p => p.doporucenyRocnik.HasValue)
+             .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToList();
 
             if(!String.IsNullOrEmpty(predmetParams.Nazev))
             {
@@ -76,9 +88,14 @@ namespace API.Controllers
                 predmety = predmets.Distinct().ToList();
             }
 
-            if(predmetParams.Statut != "all")
+            if(predmetParams.Statut != "all" && predmetParams.Statut != "bez")
             {
                 predmety = predmety.Where(x => x.statut == predmetParams.Statut).ToList();
+            }
+
+            if(predmetParams.Statut == "bez")
+            {
+                predmety = predmety.Where(x => string.IsNullOrEmpty(x.statut)).ToList();
             }            
 
             if(predmetParams.Rocnik == 0 || predmetParams.Rocnik > 4)
@@ -195,6 +212,102 @@ namespace API.Controllers
             if (result.Error != null) return BadRequest();
 
             return soubor;
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPut]
+        public async Task<ActionResult> UpdatePredmetyUpol([FromBody] PredmetInfo[] predmety)
+        {
+            var predmets = predmety.GroupBy(p => new { p.zkratka, p.katedra}).Select(g => g.FirstOrDefault());
+
+            foreach (var predmet in predmets)
+            {
+                if (!(await _context.Predmets.AnyAsync(p => p.zkratka == predmet.zkratka && p.katedra == predmet.katedra && p.statut == null && p.doporucenyRocnik == null)))
+                {
+                    var newPredmet = new Predmet();
+                    newPredmet.katedra = predmet.katedra;
+                    newPredmet.zkratka = predmet.zkratka;
+                    newPredmet.nazev = predmet.nazev;
+                    newPredmet.doporucenySemestr = predmet.semestr;
+                    newPredmet.vyukaLS = predmet.vyukaLS;
+                    newPredmet.vyukaZS = predmet.vyukaZS;
+
+                    await _context.Predmets.AddAsync(newPredmet);                    
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public async Task<ActionResult<IEnumerable<Predmet[]>>> GetPredmetyUniverzity([FromQuery] PredmetInfoParams predmetParams)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.Include("predmetyStudenta").FirstOrDefault(s => s.UserName == username);
+            var predmetyStudenta = student.predmetyStudenta.ToList();
+
+            var predmety = await _context.Predmets.Where(p => p.doporucenyRocnik == null && p.statut == null).OrderBy(p => p.nazev).ToListAsync();
+            predmety = predmety.Where(p => !predmetyStudenta.Any(x => x.katedra == p.katedra && x.zkratka == p.zkratka)).ToList();
+
+            if(!String.IsNullOrEmpty(predmetParams.Nazev))
+            {
+                predmety = predmety.Where(x => x.nazev.ToLower().Contains(predmetParams.Nazev.Trim().ToLower())).ToList();
+            }
+
+            if(!String.IsNullOrEmpty(predmetParams.Katedra))
+            {
+                predmety = predmety.Where(x => x.katedra.ToLower().Contains(predmetParams.Katedra.Trim().ToLower())).ToList();
+            }
+
+            if(!String.IsNullOrEmpty(predmetParams.Zkratka))
+            {
+                predmety = predmety.Where(x => x.zkratka.ToLower().Contains(predmetParams.Zkratka.Trim().ToLower())).ToList();
+            }
+
+            var pagedPredmety = PagedList<Predmet>.CreateFromList(predmety, predmetParams.PageNumber, predmetParams.PageSize);
+
+            Response.AddPaginationHeader(pagedPredmety.CurrentPage, pagedPredmety.PageSize, pagedPredmety.TotalCount, pagedPredmety.TotalPages);
+            return Ok(pagedPredmety);
+        }
+
+        [Authorize]
+        [HttpPut("add")]
+        public async Task<ActionResult> UpdatePredmetyUpol(Predmet predmet)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.Include("predmetyStudenta").FirstOrDefault(s => s.UserName == username);
+
+            if(!student.predmetyStudenta.Contains(predmet))
+            {
+                student.predmetyStudenta.Add(predmet);
+            }
+
+            await _userManager.UpdateAsync(student);
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("remove/{predmetID}")]
+        public async Task<ActionResult<Student>> RemovePredmet(int predmetID)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.Include(u => u.predmetyStudenta).FirstOrDefault(s => s.UserName == username);
+
+            var predmet = await _context.Predmets.Include(p => p.Students).FirstOrDefaultAsync(p => p.ID == predmetID);
+
+            student.predmetyStudenta.RemoveAll(x => x.ID == predmet.ID);
+            
+            predmet.Students.RemoveAll(s => s.Id == student.Id);
+
+            var result = await _userManager.UpdateAsync(student);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            _context.SaveChanges();
+
+            return student;
         }
 
     }

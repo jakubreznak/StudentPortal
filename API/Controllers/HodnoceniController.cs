@@ -25,7 +25,13 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<List<Hodnoceni>> GetPredmet(int idPredmet, [FromQuery] HodnoceniParams hodnoceniParams)
         {
-            var hodnoceni = _context.Predmets.Include("Hodnocenis").FirstOrDefault(x => x.ID == idPredmet).Hodnocenis.OrderByDescending(x => x.ID);
+            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == idPredmet);
+            var predmety = _context.Predmets.Include(p => p.Hodnocenis).Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka);
+            List<Hodnoceni> hodnoceni = new List<Hodnoceni>(); 
+            foreach(var pred in predmety)
+            {
+                hodnoceni.AddRange(pred.Hodnocenis);
+            }
             foreach(var hod in hodnoceni)
             {
                 hod.predmet = null;

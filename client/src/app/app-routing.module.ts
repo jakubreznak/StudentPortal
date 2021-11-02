@@ -6,6 +6,7 @@ import { AdminGuard } from './guards/admin.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { PredmetDetailComponent } from './predmet-detail/predmet-detail.component';
+import { PredmetyAddComponent } from './predmety-add/predmety-add.component';
 import { PredmetyListComponent } from './predmety-list/predmety-list.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TopicComponent } from './topic/topic.component';
@@ -23,6 +24,7 @@ const routes: Routes = [
       {path: 'diskuze/:topicid', component: TopicComponent},
       {path: 'predmety/:predmetid/:topicid', component: TopicComponent},
       {path: 'profile', component: ProfileComponent},
+      {path: 'predmetyadd', component: PredmetyAddComponent},
       {path: 'admin', component: AdminComponent, canActivate: [AdminGuard]}
     ]
   },

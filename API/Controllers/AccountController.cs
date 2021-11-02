@@ -70,6 +70,11 @@ namespace API.Controllers
                     predmet.oborIdNum = student.oborIdno;
                     novyPredmet = predmet;
                     _context.Predmets.Add(novyPredmet);
+                    student.predmetyStudenta.Add(novyPredmet);
+                }
+                else
+                {
+                    student.predmetyStudenta.Add(_context.Predmets.FirstOrDefault(x => x.nazev == predmet.nazev && x.zkratka == predmet.zkratka && x.oborIdNum == student.oborIdno));
                 }
             }
 
@@ -110,18 +115,43 @@ namespace API.Controllers
         {
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+            student.predmetyStudenta.RemoveAll(x => true);
+            
+            var predmets = _context.Predmets.Include(p => p.Students).Where(p => p.Students.Contains(student));
+            foreach(var predmet in predmets)
+            {
+                predmet.Students.RemoveAll(s => s.Id == student.Id);
+            }
 
             if (student == null)
                 return BadRequest("Student s tímto osobním číslem neexistuje.");
 
             if(student.upolNumber == upolNumber)
                 return Ok(student);
+
+            foreach (var predmet in predmety)
+            {
+                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == oborId)))
+                {
+                    Predmet novyPredmet = new Predmet();
+                    predmet.oborIdNum = oborId;
+                    novyPredmet = predmet;
+                    _context.Predmets.Add(novyPredmet);
+                    student.predmetyStudenta.Add(novyPredmet);
+                }
+                else
+                {
+                    student.predmetyStudenta.Add(_context.Predmets.FirstOrDefault(x => x.nazev == predmet.nazev && x.zkratka == predmet.zkratka && x.oborIdNum == oborId));
+                }
+            }
                 
             student.upolNumber = upolNumber;
             student.oborIdno = oborId;
 
             var result = await _userManager.UpdateAsync(student);
             if (!result.Succeeded) return BadRequest(result.Errors);
+
+            _context.SaveChanges();
 
             return Ok(student);
         }
@@ -149,6 +179,12 @@ namespace API.Controllers
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
 
+            var predmets = _context.Predmets.Include(p => p.Students).Where(p => p.Students.Contains(student));
+            foreach(var predmet in predmets)
+            {
+                predmet.Students.RemoveAll(s => s.Id == student.Id);
+            }
+
             if (student == null)
                 return BadRequest("Nastala chyba.");
 
@@ -158,36 +194,36 @@ namespace API.Controllers
             return Ok();
         }
 
-        private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student) //nepouziva se
-        {
-            //GET oborIdno a rocnik z UPOL API
-            var response = await _httpClient
-                .GetAsync("https://stagservices.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + upolNumber + "&outputFormat=JSON");
+        // private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student) //nepouziva se
+        // {
+        //     //GET oborIdno a rocnik z UPOL API
+        //     var response = await _httpClient
+        //         .GetAsync("https://stagservices.upol.cz/ws/services/rest2/programy/getPlanyStudenta?osCislo=" + upolNumber + "&outputFormat=JSON");
 
-            string jsonResponse = await response.Content.ReadAsStringAsync();
-            Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
-            if (!data.planInfo.Any()) return null;
-            student.oborIdno = data.planInfo[0].oborIdno;
-            student.rocnikRegistrace = ExtractNumber(data.planInfo[0].nazev);
+        //     string jsonResponse = await response.Content.ReadAsStringAsync();
+        //     Root data = JsonConvert.DeserializeObject<Root>(jsonResponse);
+        //     if (!data.planInfo.Any()) return null;
+        //     student.oborIdno = data.planInfo[0].oborIdno;
+        //     student.rocnikRegistrace = ExtractNumber(data.planInfo[0].nazev);
 
-            //GET predmety oboru, zkontrolovat zda uz vsechny jsou v databazi
-            response = await _httpClient
-                .GetAsync("https://stagservices.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + student.oborIdno + "&outputFormat=JSON");
-            jsonResponse = await response.Content.ReadAsStringAsync();
-            RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
+        //     //GET predmety oboru, zkontrolovat zda uz vsechny jsou v databazi
+        //     response = await _httpClient
+        //         .GetAsync("https://stagservices.upol.cz/ws/services/rest2/predmety/getPredmetyByObor?oborIdno=" + student.oborIdno + "&outputFormat=JSON");
+        //     jsonResponse = await response.Content.ReadAsStringAsync();
+        //     RootPredmet predmety = JsonConvert.DeserializeObject<RootPredmet>(jsonResponse);
 
-            foreach (var predmet in predmety.predmetOboru.Where((coordinate, index) => index % 2 == 0))
-            {
-                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == student.oborIdno)))
-                {
-                    Predmet novyPredmet = new Predmet();
-                    predmet.oborIdNum = student.oborIdno;
-                    novyPredmet = predmet;
-                    _context.Predmets.Add(novyPredmet);
-                }
-            }
-            return student;
-        }
+        //     foreach (var predmet in predmety.predmetOboru.Where((coordinate, index) => index % 2 == 0))
+        //     {
+        //         if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == student.oborIdno)))
+        //         {
+        //             Predmet novyPredmet = new Predmet();
+        //             predmet.oborIdNum = student.oborIdno;
+        //             novyPredmet = predmet;
+        //             _context.Predmets.Add(novyPredmet);
+        //         }
+        //     }
+        //     return student;
+        // }
 
         private async Task<bool> NameExists(string name)
         {

@@ -30,6 +30,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MaterialyAdminComponent } from './admin/materialy-admin/materialy-admin.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { PredmetyAdminComponent } from './admin/predmety-admin/predmety-admin.component';
+import { PredmetyAddComponent } from './predmety-add/predmety-add.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
     KomentareAdminComponent,
     HodnoceniAdminComponent,
     MaterialyAdminComponent,
-    ProfileComponent
+    ProfileComponent,
+    PredmetyAdminComponent,
+    PredmetyAddComponent
   ],
   imports: [
     BrowserModule,

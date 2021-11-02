@@ -98,6 +98,8 @@ SOFTWARE.
 
 ngx-bootstrap/datepicker
 
+ngx-bootstrap/pagination
+
 ngx-spinner
 MIT
 

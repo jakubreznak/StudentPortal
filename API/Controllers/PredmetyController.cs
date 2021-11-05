@@ -77,6 +77,11 @@ namespace API.Controllers
             var predmety = student.predmetyStudenta.OrderByDescending(p => p.doporucenyRocnik.HasValue)
              .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToList();
 
+            foreach(var predmet in predmety)
+            {
+                predmet.Students = null;
+            }
+
             if(!String.IsNullOrEmpty(predmetParams.Nazev))
             {
                 var words = predmetParams.Nazev.Split(' ');

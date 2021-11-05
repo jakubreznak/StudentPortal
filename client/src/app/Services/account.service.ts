@@ -48,6 +48,19 @@ export class AccountService {
     return this.http.put(this.baseUrl + 'account/password', model);
   }
 
+  registerWOUpolNumber(model: RegisterForm){
+    this.registerDTO.name = model.name;
+    this.registerDTO.password = model.password;
+
+    return this.http.post(this.baseUrl + 'account/register', this.registerDTO).subscribe(
+      (student: Student) => {
+        if(student) {
+          this.setCurrentStudent(student);
+          this.router.navigateByUrl('/predmety');
+        };
+  })
+  }
+
   register(model: RegisterForm){
 
     return this.http
@@ -84,8 +97,8 @@ export class AccountService {
               }
             );
           });
-      }));        
-  }
+      })); 
+  }       
 
   updateUpolNumber(upolNumber : string){
     return this.http

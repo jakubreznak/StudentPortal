@@ -32,15 +32,22 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<IEnumerable<Topic>> GetTopicsByPredmet(string id, [FromQuery] TopicParams topicParams)
         {
-            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == Convert.ToInt32(id));
-            var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();
             List<Topic> topicsList = new List<Topic>(); 
-            foreach(var pred in predmety)
+            if(id != "x")
             {
-                var topic = _context.Topics.Include(t => t.comments).Where(t => t.predmetID == pred.ID.ToString());
-                topicsList.AddRange(topic);
+                var predmet = _context.Predmets.FirstOrDefault(p => p.ID == Convert.ToInt32(id));
+                var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();            
+                foreach(var pred in predmety)
+                {
+                    var topic = _context.Topics.Include(t => t.comments).Where(t => t.predmetID == pred.ID.ToString());
+                    topicsList.AddRange(topic);
+                }
+                topicsList = topicsList.OrderByDescending(x => x.createdDateTime).ToList();
             }
-            topicsList = topicsList.OrderByDescending(x => x.createdDateTime).ToList();
+            else 
+            {
+                topicsList = _context.Topics.Include(t => t.comments).Where(x => x.predmetID == "x").OrderByDescending(x => x.createdDateTime).ToList();
+            }            
 
             var topics = PagedList<Topic>.CreateFromList(topicsList, topicParams.PageNumber, topicParams.PageSize);
 

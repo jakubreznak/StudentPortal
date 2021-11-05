@@ -60,4 +60,8 @@ export class PredmetyService {
   removePredmet(predmetId){
     return this.http.delete<Student>(this.baseUrl + 'predmety/remove/' + predmetId);
   }
+
+  predmetyStudentaCount(){
+    return this.http.get<number>(this.baseUrl + 'predmety/student/count');
+  }
 }

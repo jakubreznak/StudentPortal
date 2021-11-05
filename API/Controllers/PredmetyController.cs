@@ -109,6 +109,19 @@ namespace API.Controllers
             return Ok(predmety.Where(x => x.doporucenyRocnik == predmetParams.Rocnik));
         }
 
+        [HttpGet]
+        [Route("student/count")]
+        [Authorize]
+        public ActionResult<int> GetPredmetyStudentaCount()
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.Include("predmetyStudenta").FirstOrDefault(s => s.UserName == username);
+
+            var predmety = student.predmetyStudenta.OrderByDescending(p => p.doporucenyRocnik.HasValue)
+             .ThenBy(p => p.doporucenyRocnik).ThenBy(p => p.statut).ToList();
+            return predmety.Count();
+        }
+
         [HttpPost("add-file/{predmetId}/{nazevMaterial}")]
         [Authorize]
         public async Task<ActionResult<List<Soubor>>> AddFile(List<IFormFile> files, int predmetId, string nazevMaterial)

@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
       password: new FormControl('', [Validators.required, Validators.pattern("^((?=.*[a-z])(?=.*?[0-9])).{1,}$"),
         Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required, this.matchValues('password')]),
-      upolNumber: new FormControl('', Validators.required)
+      upolNumber: new FormControl('')
     })
     this.registerForm.controls.password.valueChanges.subscribe(() => {
       this.registerForm.controls.confirmPassword.updateValueAndValidity();
@@ -40,13 +40,18 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    this.accountService.register(this.registerForm.value).subscribe(response => 
-      {
-        if(response == 1)
+    if(this.registerForm.controls.upolNumber.value == "")
+    {
+      this.accountService.registerWOUpolNumber(this.registerForm.value);
+    } else {
+      this.accountService.register(this.registerForm.value).subscribe(response => 
         {
-          this.toastr.error("K tomuto osobnímu číslu neexistuje žádný obor.");
-        }
-      })
+          if(response == 1)
+          {
+            this.toastr.error("K tomuto osobnímu číslu neexistuje žádný obor.");
+          }
+        });
+    }
   }
 
   cancel() {

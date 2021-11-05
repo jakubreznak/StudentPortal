@@ -45,5 +45,6 @@
             <span [ngStyle]="{'background-color':getBackgroundColor(predmet.statut)}">{{predmet.statut}}</span>
         </a>  
     </div>
-    <p class="prvni" *ngIf="predmety?.length == 0">Žádný předmět neodpovídá filtrům.</p>
+    <p class="prvni" *ngIf="predmety?.length == 0 && predmetyTotalCount > 0">Žádný předmět neodpovídá filtrům.</p>
+    <p class="prvni" *ngIf="predmetyTotalCount == 0">Nemáte žádný přidaný předmět.</p>
 </div>

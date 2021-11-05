@@ -44,38 +44,45 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<StudentDTO>> Register(RegisterDTO registerDTO)
         {
-
             if (await NameExists(registerDTO.name = RemoveAccents(registerDTO.name)))
                 return BadRequest("Existuje již uživatel s tímto jménem.");
 
-            registerDTO.upolNumber = registerDTO.upolNumber.ToUpper().Trim();
-            var student = new Student
-            {
-                UserName = registerDTO.name.ToLower(),
-                upolNumber = registerDTO.upolNumber,
-                datumRegistrace = DateTime.Now,
-                oborIdno = registerDTO.oborIdno,
-                rocnikRegistrace = registerDTO.rocnikRegistrace
-            };
+            var student = new Student();
 
-            // student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
-            // if (student == null)
-            //     return BadRequest("Student s tímto osobním číslem neexistuje.");
+            if(!String.IsNullOrEmpty(registerDTO.upolNumber))
+            {              
+                registerDTO.upolNumber = registerDTO.upolNumber.ToUpper().Trim();
+                student.UserName = registerDTO.name.ToLower();
+                student.upolNumber = registerDTO.upolNumber;
+                student.datumRegistrace = DateTime.Now;
+                student.oborIdno = registerDTO.oborIdno;
+                student.rocnikRegistrace = registerDTO.rocnikRegistrace;
 
-            foreach (var predmet in registerDTO.predmety)
+                // student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
+                // if (student == null)
+                //     return BadRequest("Student s tímto osobním číslem neexistuje.");
+
+                foreach (var predmet in registerDTO.predmety)
+                {
+                    if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == student.oborIdno)))
+                    {
+                        Predmet novyPredmet = new Predmet();
+                        predmet.oborIdNum = student.oborIdno;
+                        novyPredmet = predmet;
+                        _context.Predmets.Add(novyPredmet);
+                        student.predmetyStudenta.Add(novyPredmet);
+                    }
+                    else
+                    {
+                        student.predmetyStudenta.Add(_context.Predmets.FirstOrDefault(x => x.nazev == predmet.nazev && x.zkratka == predmet.zkratka && x.oborIdNum == student.oborIdno));
+                    }
+                }
+            }
+            else 
             {
-                if (!(await _context.Predmets.AnyAsync(p => p.nazev == predmet.nazev && p.zkratka == predmet.zkratka && p.oborIdNum == student.oborIdno)))
-                {
-                    Predmet novyPredmet = new Predmet();
-                    predmet.oborIdNum = student.oborIdno;
-                    novyPredmet = predmet;
-                    _context.Predmets.Add(novyPredmet);
-                    student.predmetyStudenta.Add(novyPredmet);
-                }
-                else
-                {
-                    student.predmetyStudenta.Add(_context.Predmets.FirstOrDefault(x => x.nazev == predmet.nazev && x.zkratka == predmet.zkratka && x.oborIdNum == student.oborIdno));
-                }
+                student.UserName = registerDTO.name.ToLower();
+                student.datumRegistrace = DateTime.Now;
+                student.rocnikRegistrace = registerDTO.rocnikRegistrace;
             }
 
             var result = await _userManager.CreateAsync(student, registerDTO.password);

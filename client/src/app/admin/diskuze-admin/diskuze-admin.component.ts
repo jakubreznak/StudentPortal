@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { AdminTopicParams } from 'src/app/models/helpModels/adminTopicParams';
+import { Pagination } from 'src/app/models/helpModels/pagination';
 import { Topic } from 'src/app/models/topic';
 import { AdminService } from '../admin.service';
 
@@ -11,6 +13,8 @@ import { AdminService } from '../admin.service';
 export class DiskuzeAdminComponent implements OnInit {
 
   topics: Topic[];
+  topicParams = new AdminTopicParams();
+  pagination: Pagination;
 
   constructor(private adminService: AdminService,private toastr: ToastrService) { }
 
@@ -20,16 +24,28 @@ export class DiskuzeAdminComponent implements OnInit {
 
   
   getTopics() {
-    this.adminService.getTopics().subscribe(topics =>
+    this.adminService.getTopics(this.topicParams).subscribe(response =>
       {
-        this.topics = topics;
+        this.topics = response.result;
+        this.pagination = response.pagination;
       })
+  }
+
+  resetFilters(){
+    this.topicParams = new AdminTopicParams();
+    this.pagination.currentPage = 1;
+  }
+
+  pageChanged(event: any) {
+    this.topicParams.pageNumber = event.page;
+    this.getTopics();
   }
 
   deleteTopic(id: number) {
     this.adminService.deleteTopic(id).subscribe(r =>
       {
-        this.topics = r;
+        this.pagination.currentPage = 1;
+        this.getTopics();
         this.toastr.success("Téma smazáno.");
       });
   }

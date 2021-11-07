@@ -23,6 +23,7 @@ export interface Predmet {
     fileName: string;
     extension: string;
     dateAdded: string;
+    studentName: string;
   }
 
   export interface Hodnoceni {

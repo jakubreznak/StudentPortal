@@ -10,5 +10,8 @@ ul {
 .komentar {
     font-weight: 500;
     font-size: 1.2em;
-    color: black;
+}
+
+.info {
+    font-size: .9em;
 }

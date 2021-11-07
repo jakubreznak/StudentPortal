@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { AdminCommentParams } from 'src/app/models/helpModels/adminCommentParams';
+import { Pagination } from 'src/app/models/helpModels/pagination';
 import { AdminService } from '../admin.service';
 
 @Component({
@@ -10,6 +12,8 @@ import { AdminService } from '../admin.service';
 export class KomentareAdminComponent implements OnInit {
 
   comments: Comment[];
+  pagination: Pagination;
+  commentParams = new AdminCommentParams();
   
   constructor(private adminService: AdminService,private toastr: ToastrService) { }
 
@@ -18,16 +22,28 @@ export class KomentareAdminComponent implements OnInit {
   }
 
   getComments() {
-    this.adminService.getComments().subscribe(comments =>
+    this.adminService.getComments(this.commentParams).subscribe(response =>
       {
-        this.comments = comments;
+        this.comments = response.result;
+        this.pagination = response.pagination;
       })
+  }
+
+  resetFilters(){
+    this.commentParams = new AdminCommentParams();
+    this.pagination.currentPage = 1;
+  }
+
+  pageChanged(event: any) {
+    this.commentParams.pageNumber = event.page;
+    this.getComments();
   }
 
   deleteComment(id: number) {
     this.adminService.deleteComment(id).subscribe(r =>
       {
-        this.comments = r;
+        this.pagination.currentPage = 1;
+        this.getComments();
         this.toastr.success("Komentář smazán.");
       });
   }

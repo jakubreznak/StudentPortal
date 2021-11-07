@@ -1,13 +1,57 @@
 <div class="container mt-5">
     <div *ngIf="soubory">
+
+        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="getSoubory()" autocomplete="off">    
+            <div class="form-group px-2">
+                <label>Název: </label>
+                <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+                    [(ngModel)]="materialParams.nazev">
+            </div>
+    
+            <div class="form-group px-2">
+                <label>Jméno studenta: </label>
+                <input type="text" class="form-control ml-1" style="width: 130px;" name="jmeno" 
+                    [(ngModel)]="materialParams.student">
+            </div>
+
+            <div class="form-group px-2">
+                <label>Typ souboru: </label>
+                <input type="text" class="form-control ml-1" style="width: 130px;" name="typ" 
+                    [(ngModel)]="materialParams.typ">
+            </div>
+    
+            <div>
+                <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+            </div>            
+    
+        </form>
+
         <div class="list-group">
             <ul>
                 <li *ngFor="let soubor of soubory" class="list-group-item border">
                     <p class="komentar">{{soubor.fileName}}</p>
+                    <p class="info">Vytvořil: {{soubor.studentName}} - {{soubor.dateAdded}} | Typ souboru: {{soubor.extension}}</p>
+                    <span class="stahnout mr-2"><a class="btn btn-success" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
                     <button (click)='deleteSoubor(soubor.id)' type="button" class="btn btn-danger">Smazat</button>
                 </li>  
             </ul>
         </div>
+        <div class="d-flex justify-content-center" *ngIf="pagination && soubory.length != 0">
+            <pagination 
+                [maxSize]="5"
+                [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;" 
+                lastText="&raquo;">            
+            </pagination>
+        </div>
     </div>
+    <p class="prvni" *ngIf="soubory?.length == 0">V aplikaci se nenachází žádné (takové) materiály.</p>
 </div>
 

@@ -14,4 +14,5 @@ export interface Comment {
     created: string;
     studentName: string;
     topicID: number;
+    topic: Topic;
 }

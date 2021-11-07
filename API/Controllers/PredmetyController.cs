@@ -54,7 +54,7 @@ namespace API.Controllers
             }
             var pagedFiles = PagedList<Soubor>.CreateFromList(soubory, materialParameters.PageNumber, materialParameters.PageSize);
 
-            Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalCount);
+            Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalPages);
             return Ok(pagedFiles);
 
         }

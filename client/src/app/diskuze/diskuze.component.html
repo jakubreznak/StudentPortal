@@ -1,10 +1,10 @@
-<div class="container mt-5 mb-5">
+<div class="container mt-2 mb-5">
+    <div class="form">
     <div *ngIf="topics != null">
         <div *ngIf="predmet == null">
             <h2>Obecná diskuze</h2>
         </div>
-        
-        <div class="form">
+            <p class="pridat">Přidat téma:</p>
             <form [formGroup]='diskuzeForm' (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="row">
                     <div class="form-group col-10">
@@ -22,8 +22,34 @@
                 </div>       
             </form>
         </div>
+
+        <hr>
+
+        <div class="d-flex mb-2">
+            <button (click)="filterToggle()" class="btn btn-outline-secondary" type="submit">{{filtersToggleText}}</button>
+        </div>
+
+        <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadTopics()" autocomplete="off">    
+            <div class="form-group px-2">
+                <label>Název: </label>
+                <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+                    [(ngModel)]="topicParams.nazev">
+            </div>
+    
+            <div class="form-group px-2">
+                <label>Jméno studenta: </label>
+                <input type="text" class="form-control ml-1" style="width: 130px;" name="jmeno" 
+                    [(ngModel)]="topicParams.student">
+            </div>
+    
+            <div>
+                <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+            </div>            
+    
+        </form>
         
-        <div *ngIf="topics.length > 0">
+        <div *ngIf="topics?.length > 0">
             <div class="list-group">
                 <div *ngFor="let topic of topics" class="list-group-item-action list-group-item border">
                     <a [routerLink]="topic.id">
@@ -53,8 +79,11 @@
                 </pagination>
             </div>            
         </div>
-        <div class="prvni" *ngIf="topics.length == 0">
+        <div class="prvni" *ngIf="topics?.length == 0 && pagination.allItems == 0">
             <p>Buďte první kdo přidá téma v této diskuzi.</p>
+        </div>
+        <div class="prvni" *ngIf="topics?.length == 0 && pagination.allItems > 0">
+            <p>Žádné téma neodpovídá filtrům.</p>
         </div>
     </div>
 </div>

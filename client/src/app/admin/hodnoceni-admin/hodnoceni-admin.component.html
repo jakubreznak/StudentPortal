@@ -53,6 +53,11 @@
             </pagination>
         </div>
     </div>
-    <p class="prvni" *ngIf="hodnoceni?.length == 0">V aplikaci se nenachází žádné (takové) hodnocení.</p>
+    <div class="prvni" *ngIf="hodnoceni?.length == 0 && pagination.allItems == 0">
+        <p>V aplikaci se nenachází žádné hodnocení.</p>
+    </div>
+    <div class="prvni" *ngIf="hodnoceni?.length == 0 && pagination.allItems > 0">
+        <p>Žádné hodnocení neodpovídá filtrům.</p>
+    </div>
 </div>
 

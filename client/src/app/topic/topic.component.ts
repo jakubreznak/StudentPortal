@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
+import { CommentParams } from '../models/helpModels/commentParams';
 import { Pagination } from '../models/helpModels/pagination';
 import { Student } from '../models/student';
 import { Topic } from '../models/topic';
@@ -24,9 +25,10 @@ export class TopicComponent implements OnInit {
   editForm: FormGroup;
   commentForm: FormGroup;
   pagination: Pagination;
-  pageNumber = 1;
-  pageSize = 10;
+  commentParams = new CommentParams();
   pagedComments: Comment[];
+  filtersToggle: boolean = false;
+  filtersToggleText: string = 'Filtry';
 
   constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
@@ -45,7 +47,7 @@ export class TopicComponent implements OnInit {
   }
 
   loadComments(){
-    this.diskuzeService.getComments(Number(this.route.snapshot.paramMap.get('topicid')), this.pageNumber, this.pageSize).subscribe(response =>
+    this.diskuzeService.getComments(Number(this.route.snapshot.paramMap.get('topicid')), this.commentParams).subscribe(response =>
     {
       this.pagedComments = response.result;
       this.pagination = response.pagination;        
@@ -53,9 +55,19 @@ export class TopicComponent implements OnInit {
   }
 
   pageChanged(event: any){
-    this.pageNumber = event.page;
+    this.commentParams.pageNumber = event.page;
     this.loadComments();
     window.scrollTo(0, 0);
+  }
+
+  filterToggle(){
+    this.filtersToggle = !this.filtersToggle;
+    this.filtersToggleText = this.filtersToggle ? 'Skrýt filtry' : 'Filtry';
+  }
+
+  resetFilters(){
+    this.commentParams = new CommentParams();
+    this.pagination.currentPage = 1;
   }
 
   initializeCommentForm() {
@@ -76,9 +88,8 @@ export class TopicComponent implements OnInit {
   deleteComment(topicID, commentID){
     this.diskuzeService.deleteComment(topicID, commentID).subscribe(comment =>
       {
-        this.pageNumber = 1;
-        this.loadComments();
         this.pagination.currentPage = 1;
+        this.loadComments();
         this.toastr.success("Komentář odebrán.");
       });
   }

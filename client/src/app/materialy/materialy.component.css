@@ -2,7 +2,6 @@
     width: 80%; 
 	margin-left: auto; 
 	margin-right: auto; 
-    margin-top: 2em;
     grid-gap: 1rem;
   }
 
@@ -67,6 +66,16 @@ li {
 label{
     margin-bottom: 0;
 }
+
+.formulare{
+    width: 80%;
+    margin-left: auto; 
+	margin-right: auto; 
+}
+
+.prvni {
+    text-align: center;
+  }
 
 
 @media only screen and (min-width: 768px) {

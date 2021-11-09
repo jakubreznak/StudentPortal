@@ -34,6 +34,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<string>>> GetStudents([FromQuery] StudentParams studentParams)
         {
             var students = await _userManager.Users.OrderByDescending(x => x.datumRegistrace).ToListAsync();
+            int allItemsCount = students.Count();
             if(!string.IsNullOrEmpty(studentParams.Nazev))
                 students = students.Where(x => x.UserName.ToLower().Contains(studentParams.Nazev.ToLower())).ToList();
             List<string> studentsNames = new List<string>();
@@ -42,7 +43,7 @@ namespace API.Controllers
             }
             var pagedStudents = PagedList<string>.CreateFromList(studentsNames, studentParams.PageNumber, studentParams.PageSize);
 
-            Response.AddPaginationHeader(pagedStudents.CurrentPage, pagedStudents.PageSize, pagedStudents.TotalCount, pagedStudents.TotalPages);
+            Response.AddPaginationHeader(pagedStudents.CurrentPage, pagedStudents.PageSize, pagedStudents.TotalCount, pagedStudents.TotalPages, allItemsCount);
             return pagedStudents;
         }
 
@@ -62,6 +63,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<Topic>>> GetTopics([FromQuery] AdminTopicParams topicParams)
         {
             var topics = await _context.Topics.OrderByDescending(x => x.ID).ToListAsync();
+            int allItemsCount = topics.Count();
             if(!string.IsNullOrEmpty(topicParams.Nazev))
             {
                 topics = topics.Where(x => x.name.ToLower().Contains(topicParams.Nazev.ToLower())).ToList();
@@ -72,7 +74,7 @@ namespace API.Controllers
             }
             var pagedTopics = PagedList<Topic>.CreateFromList(topics, topicParams.PageNumber, topicParams.PageSize);
 
-            Response.AddPaginationHeader(pagedTopics.CurrentPage, pagedTopics.PageSize, pagedTopics.TotalCount, pagedTopics.TotalPages);
+            Response.AddPaginationHeader(pagedTopics.CurrentPage, pagedTopics.PageSize, pagedTopics.TotalCount, pagedTopics.TotalPages, allItemsCount);
             return pagedTopics;
         }
 
@@ -102,7 +104,7 @@ namespace API.Controllers
             {
                 comment.topic.comments = null;
             }
-
+            int allItemsCount = comments.Count();
             if(!string.IsNullOrEmpty(commentParams.Nazev))
             {
                 comments = comments.Where(x => x.text.ToLower().Contains(commentParams.Nazev.ToLower())).ToList();
@@ -117,7 +119,7 @@ namespace API.Controllers
             }
             var pagedComments = PagedList<Comment>.CreateFromList(comments, commentParams.PageNumber, commentParams.PageSize);
 
-            Response.AddPaginationHeader(pagedComments.CurrentPage, pagedComments.PageSize, pagedComments.TotalCount, pagedComments.TotalPages);
+            Response.AddPaginationHeader(pagedComments.CurrentPage, pagedComments.PageSize, pagedComments.TotalCount, pagedComments.TotalPages, allItemsCount);
             return pagedComments;
         }
 
@@ -159,7 +161,7 @@ namespace API.Controllers
                 hodnoceni.predmet.Hodnocenis = null;
                 hodnoceni.predmet.Students = null;
             }
-
+            int allItemsCount = hodnocenis.Count();
             if(!string.IsNullOrEmpty(hodnoceniParams.Text))
             {
                 hodnocenis = hodnocenis.Where(x => x.text.ToLower().Contains(hodnoceniParams.Text.ToLower())).ToList();
@@ -174,7 +176,7 @@ namespace API.Controllers
             }
             var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnocenis, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
 
-            Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages);
+            Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages, allItemsCount);
             return pagedHodnoceni;
         }
 
@@ -209,7 +211,7 @@ namespace API.Controllers
             {
                 soubory.AddRange(predmet.Files);
             }
-
+            int allItemsCount = soubory.Count();
             if(!string.IsNullOrEmpty(materialParams.Nazev))
             {
                 soubory = soubory.Where(x => x.FileName.ToLower().Contains(materialParams.Nazev.ToLower())).ToList();
@@ -225,7 +227,7 @@ namespace API.Controllers
             
             var pagedMaterials = PagedList<Soubor>.CreateFromList(soubory, materialParams.PageNumber, materialParams.PageSize);
 
-            Response.AddPaginationHeader(pagedMaterials.CurrentPage, pagedMaterials.PageSize, pagedMaterials.TotalCount, pagedMaterials.TotalPages);
+            Response.AddPaginationHeader(pagedMaterials.CurrentPage, pagedMaterials.PageSize, pagedMaterials.TotalCount, pagedMaterials.TotalPages, allItemsCount);
             return pagedMaterials;
         }
 

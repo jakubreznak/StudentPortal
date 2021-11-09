@@ -52,9 +52,20 @@ namespace API.Controllers
             {
                 file.Predmet = null;
             }
+            int allItemsCount = soubory.Count();
+
+            if(!string.IsNullOrEmpty(materialParameters.Nazev))
+            {
+                soubory = soubory.Where(x => x.FileName.ToLower().Contains(materialParameters.Nazev.ToLower())).ToList();
+            }
+            if(!string.IsNullOrEmpty(materialParameters.Typ))
+            {
+                soubory = soubory.Where(x => x.Extension.ToLower().Contains(materialParameters.Typ.ToLower())).ToList();
+            }
+
             var pagedFiles = PagedList<Soubor>.CreateFromList(soubory, materialParameters.PageNumber, materialParameters.PageSize);
 
-            Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalPages);
+            Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalPages, allItemsCount);
             return Ok(pagedFiles);
 
         }
@@ -268,7 +279,7 @@ namespace API.Controllers
 
             var predmety = await _context.Predmets.Where(p => p.doporucenyRocnik == null && p.statut == null).OrderBy(p => p.nazev).ToListAsync();
             predmety = predmety.Where(p => !predmetyStudenta.Any(x => x.katedra == p.katedra && x.zkratka == p.zkratka)).ToList();
-
+            int allItemsCount = predmety.Count();
             if(!String.IsNullOrEmpty(predmetParams.Nazev))
             {
                 predmety = predmety.Where(x => x.nazev.ToLower().Contains(predmetParams.Nazev.Trim().ToLower())).ToList();
@@ -286,7 +297,7 @@ namespace API.Controllers
 
             var pagedPredmety = PagedList<Predmet>.CreateFromList(predmety, predmetParams.PageNumber, predmetParams.PageSize);
 
-            Response.AddPaginationHeader(pagedPredmety.CurrentPage, pagedPredmety.PageSize, pagedPredmety.TotalCount, pagedPredmety.TotalPages);
+            Response.AddPaginationHeader(pagedPredmety.CurrentPage, pagedPredmety.PageSize, pagedPredmety.TotalCount, pagedPredmety.TotalPages, allItemsCount);
             return Ok(pagedPredmety);
         }
 

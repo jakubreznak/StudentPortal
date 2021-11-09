@@ -47,6 +47,11 @@
             </pagination>
         </div>
     </div>
-    <p class="prvni" *ngIf="topics?.length == 0">V aplikaci se nenachází žádné (takové) diskuzní téma.</p>
+    <div class="prvni" *ngIf="topics?.length == 0 && pagination.allItems == 0">
+        <p>V aplikaci se nenachází žádné diskuzní téma.</p>
+    </div>
+    <div class="prvni" *ngIf="topics?.length == 0 && pagination.allItems > 0">
+        <p>Žádné téma neodpovídá filtrům.</p>
+    </div>
 </div>
 

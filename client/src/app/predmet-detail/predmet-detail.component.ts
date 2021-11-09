@@ -32,7 +32,6 @@ export class PredmetDetailComponent implements OnInit {
       {
         this.pred = predmet;
         this.predmetNazev = predmet.nazev;
-        console.log(this.pred.statut);
       });
       
   }

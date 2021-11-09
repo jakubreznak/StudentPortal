@@ -74,9 +74,8 @@ export class HodnoceniComponent implements OnInit {
     this.http.post<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmetId + '/' + this.hodnoceniForm.value.cislo,
     JSON.stringify(this.hodnoceniForm.value.text || ""), this.httpOptions).subscribe(hodnoceni =>
       {
-        this.pageNumber = 1;
-        this.loadHodnoceni();
         this.pagination.currentPage = 1;
+        this.loadHodnoceni();
         this.toastr.success("Hodnocení přidáno.");
         this.hodnoceniForm.reset();
       });    
@@ -134,7 +133,7 @@ export class HodnoceniComponent implements OnInit {
   }
 
   saveEdit(hodnoceniID){
-    this.http.put<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmet.id + '/' + hodnoceniID,
+    this.http.put<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmetId + '/' + hodnoceniID,
     JSON.stringify(this.editForm.value.text || ""), this.httpOptions).subscribe(hodnoceni =>
     {
       this.loadHodnoceni();

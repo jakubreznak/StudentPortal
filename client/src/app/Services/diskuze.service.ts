@@ -2,7 +2,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { CommentParams } from '../models/helpModels/commentParams';
 import { PaginatedResult } from '../models/helpModels/pagination';
+import { TopicParams } from '../models/helpModels/topicParams';
 import { Student } from '../models/student';
 import { Topic } from '../models/topic';
 import { AccountService } from './account.service';
@@ -25,8 +27,11 @@ export class DiskuzeService {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
    }
 
-  getTopicsByPredmetID(predmetID: string, page?: number, itemsPerPage?: number){
-    let params = getPaginationHeaders(page, itemsPerPage);
+  getTopicsByPredmetID(predmetID: string, topicParams: TopicParams){
+    let params = getPaginationHeaders(topicParams.pageNumber, topicParams.pageSize);
+
+    params = params.append('Nazev', topicParams.nazev);
+    params = params.append('Student', topicParams.student);
 
     return getPaginatedResult<Topic[]>(this.baseUrl + 'discussion/' + predmetID, params, this.http);
   }
@@ -36,8 +41,11 @@ export class DiskuzeService {
       post<Topic>(this.baseUrl + 'discussion/' + predmetID, topicName, this.httpOptions);
   }
 
-  getComments(id: number, page?: number, itemsPerPage?: number){
-    let params = getPaginationHeaders(page, itemsPerPage);
+  getComments(id: number, commentParams: CommentParams){
+    let params = getPaginationHeaders(commentParams.pageNumber, commentParams.pageSize);
+
+    params = params.append('Nazev', commentParams.nazev);
+    params = params.append('Student', commentParams.student);
 
     return getPaginatedResult<Comment[]>(this.baseUrl + 'discussion/topic/' + id, params, this.http);
   }

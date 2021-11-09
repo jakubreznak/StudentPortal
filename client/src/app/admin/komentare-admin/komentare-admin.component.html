@@ -54,6 +54,11 @@
             </pagination>
         </div>
     </div>
-    <p class="prvni" *ngIf="comments?.length == 0">V aplikaci se nenachází žádné (takové) komentáře.</p>
+    <div class="prvni" *ngIf="comments?.length == 0 && pagination.allItems == 0">
+        <p>V aplikaci se nenachází žádné komentáře.</p>
+    </div>
+    <div class="prvni" *ngIf="comments?.length == 0 && pagination.allItems > 0">
+        <p>Žádný komentář neodpovídá filtrům.</p>
+    </div>
 </div>
 

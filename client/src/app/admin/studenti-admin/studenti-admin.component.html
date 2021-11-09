@@ -43,5 +43,10 @@
             lastText="&raquo;">            
         </pagination>
     </div>
-    <p class="prvni" *ngIf="studentNames?.length == 0">V aplikaci se nenachází žádný (takový) student.</p>
+    <div class="prvni" *ngIf="studentNames?.length == 0 && pagination.allItems == 0">
+        <p>V aplikaci se nenachází žádný student.</p>
+    </div>
+    <div class="prvni" *ngIf="studentNames?.length == 0 && pagination.allItems > 0">
+        <p>Žádný student neodpovídá filtrům.</p>
+    </div>
 </div>

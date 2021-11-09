@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { MaterialParams } from '../models/helpModels/materialParams';
 import { Pagination } from '../models/helpModels/pagination';
 import { Predmet, Soubor } from '../models/predmet';
 import { Student } from '../models/student';
@@ -23,10 +24,12 @@ export class MaterialyComponent implements OnInit {
   baseUrl = environment.apiUrl;
   materialForm: FormGroup;
   pagination: Pagination;
-  pageNumber = 1;
-  pageSize = 10;
+  materialParams = new MaterialParams();
   pagedFiles: Soubor[];
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
+  allFilesCount: number;
+  filtersToggle: boolean = false;
+  filtersToggleText: string = 'Filtry';
 
 
   constructor(private httpClient: HttpClient, private toastr: ToastrService, private predmetService: PredmetyService,
@@ -42,20 +45,33 @@ export class MaterialyComponent implements OnInit {
   }
 
   loadMaterials() {
-    let params = getPaginationHeaders(this.pageNumber, this.pageSize);
+    let params = getPaginationHeaders(this.materialParams.pageNumber, this.materialParams.pageSize);
+
+    params = params.append('Nazev', this.materialParams.nazev);
+    params = params.append('Typ', this.materialParams.typ);
 
     getPaginatedResult<Soubor[]>(this.baseUrl + 'predmety/getbyid/' + this.predmetId, params, this.httpClient)
       .subscribe(response =>    
         {
           this.pagedFiles = response.result;
-          this.pagination = response.pagination;
+          this.pagination = response.pagination;          
         });
   }
 
+  filterToggle(){
+    this.filtersToggle = !this.filtersToggle;
+    this.filtersToggleText = this.filtersToggle ? 'Skrýt filtry' : 'Filtry';
+  }
+
   pageChanged(event: any){
-    this.pageNumber = event.page;
+    this.materialParams.pageNumber = event.page;
     this.loadMaterials();
     window.scrollTo(0, 0);
+  }
+
+  resetFilters(){
+    this.materialParams = new MaterialParams();
+    this.pagination.currentPage = 1;
   }
 
   initializeForm() {
@@ -75,9 +91,8 @@ export class MaterialyComponent implements OnInit {
     this.httpClient
      .post<Soubor[]>(this.baseUrl + 'predmety/add-file/' + this.predmetId + '/' + this.materialForm.get('name').value, formData, { headers })
      .subscribe(files => {
-      this.pageNumber = 1;
-      this.loadMaterials();
       this.pagination.currentPage = 1;
+      this.loadMaterials();
       this.toastr.success("Materiál byl úspěšně přidán.");
       this.materialForm.reset();
       });
@@ -100,9 +115,8 @@ export class MaterialyComponent implements OnInit {
     this.predmetService.deleteMaterial(this.predmetId, souborID).subscribe(soubor =>
       {
         this.toastr.success("Studijní materiál úspěšně odebrán.");
-        this.pageNumber = 1;
-        this.loadMaterials();
         this.pagination.currentPage = 1;
+        this.loadMaterials();
       });
   }
 }

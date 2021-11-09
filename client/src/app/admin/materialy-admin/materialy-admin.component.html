@@ -52,6 +52,11 @@
             </pagination>
         </div>
     </div>
-    <p class="prvni" *ngIf="soubory?.length == 0">V aplikaci se nenachází žádné (takové) materiály.</p>
+    <div class="prvni" *ngIf="soubory?.length == 0 && pagination.allItems == 0">
+        <p>V aplikaci se nenachází žádné materiály.</p>
+    </div>
+    <div class="prvni" *ngIf="soubory?.length == 0 && pagination.allItems > 0">
+        <p>Žádný materiál neodpovídá filtrům.</p>
+    </div>
 </div>
 

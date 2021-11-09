@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { Pagination } from '../models/helpModels/pagination';
+import { TopicParams } from '../models/helpModels/topicParams';
 import { Predmet } from '../models/predmet';
 import { Student } from '../models/student';
 import { Topic } from '../models/topic';
@@ -20,12 +21,13 @@ export class DiskuzeComponent implements OnInit {
   @Input() predmet: Predmet;
   topics: Topic[];
   pagination: Pagination;
-  pageNumber = 1;
-  pageSize = 10;
+  topicParams = new TopicParams();
   topicName: string;
   diskuzeForm: FormGroup;
   student: Student;
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
+  filtersToggle: boolean = false;
+  filtersToggleText: string = 'Filtry';
 
   constructor(private diskuzeService: DiskuzeService, private toastr: ToastrService, private accountService: AccountService,
     private route: ActivatedRoute) { 
@@ -43,15 +45,20 @@ export class DiskuzeComponent implements OnInit {
     })
   }
 
+  filterToggle(){
+    this.filtersToggle = !this.filtersToggle;
+    this.filtersToggleText = this.filtersToggle ? 'Skrýt filtry' : 'Filtry';
+  }
+
   loadTopics() {
     if(this.predmet == null){
-      this.diskuzeService.getTopicsByPredmetID("x", this.pageNumber, this.pageSize).subscribe(response =>
+      this.diskuzeService.getTopicsByPredmetID("x", this.topicParams).subscribe(response =>
         {
           this.topics = response.result;
           this.pagination = response.pagination;
         });
     }else{
-      this.diskuzeService.getTopicsByPredmetID(this.predmetId.toString(), this.pageNumber, this.pageSize).subscribe(response =>
+      this.diskuzeService.getTopicsByPredmetID(this.predmetId.toString(), this.topicParams).subscribe(response =>
         {
           this.topics = response.result;
           this.pagination = response.pagination;
@@ -60,9 +67,14 @@ export class DiskuzeComponent implements OnInit {
   }
 
   pageChanged(event: any){
-    this.pageNumber = event.page;
+    this.topicParams.pageNumber = event.page;
     this.loadTopics();
     window.scrollTo(0, 0);
+  }
+
+  resetFilters(){
+    this.topicParams = new TopicParams();
+    this.pagination.currentPage = 1;
   }
 
   validateBeforeSubmit(){
@@ -77,7 +89,7 @@ export class DiskuzeComponent implements OnInit {
     if(this.predmet == null){
       this.diskuzeService.postTopic("x", JSON.stringify(this.diskuzeForm.value.topicName)).subscribe(topic =>
         {
-          this.pageNumber = 1;
+          this.topicParams.pageNumber = 1;
           this.loadTopics();
           this.toastr.success("Téma přidáno.");
           this.diskuzeForm.reset();
@@ -85,7 +97,7 @@ export class DiskuzeComponent implements OnInit {
     }else{
       this.diskuzeService.postTopic(this.predmetId.toString(), JSON.stringify(this.diskuzeForm.value.topicName)).subscribe(topic =>
         {
-          this.pageNumber = 1;
+          this.topicParams.pageNumber = 1;
           this.loadTopics();
           this.toastr.success("Téma přidáno.");
           this.diskuzeForm.reset();
@@ -97,9 +109,8 @@ export class DiskuzeComponent implements OnInit {
     this.diskuzeService.deleteTopic(topicID).subscribe(topic =>
       {
         this.toastr.success("Téma odebráno.");
-        this.pageNumber = 1;
-        this.loadTopics();
         this.pagination.currentPage = 1;
+        this.loadTopics();
       });
   }
 }

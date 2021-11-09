@@ -1,11 +1,11 @@
-<div class="container mt-5">
+<div class="container mt-1">
     <div *ngIf="hodnoceni != null">
 
         <div *ngIf="cislo != null && cislo > 0" class="ohodnoceni">
             <p>{{cislo}}/10</p>
         </div>
-    
-        <div class="form">
+        <p class="pridat">Přidat hodnocení:</p>
+        <div class="form mt-0">
             <form [formGroup]='hodnoceniForm' ngNativeValidate (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="form-group">
                     <textarea
@@ -75,8 +75,11 @@
                 </pagination>
             </div>
         </div>
-        <div class="prvni" *ngIf="hodnoceni.length == 0">
+        <div class="prvni" *ngIf="hodnoceni?.length == 0 && pagination.allItems == 0">
             <p>Buďte první kdo přidá hodnocení. 1 - nejhorší, 10 - nejlepší</p>
+        </div>
+        <div class="prvni" *ngIf="hodnoceni?.length == 0 && pagination.allItems > 0">
+            <p>Žádné hodnocení neodpovídá filtrům.</p>
         </div>
     </div>
     

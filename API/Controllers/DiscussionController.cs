@@ -47,11 +47,21 @@ namespace API.Controllers
             else 
             {
                 topicsList = _context.Topics.Include(t => t.comments).Where(x => x.predmetID == "x").OrderByDescending(x => x.createdDateTime).ToList();
-            }            
+            }
+            int allItemsCount = topicsList.Count();
+            
+            if(!string.IsNullOrEmpty(topicParams.Nazev))
+            {
+                topicsList = topicsList.Where(x => x.name.ToLower().Contains(topicParams.Nazev.ToLower())).ToList();
+            }
+            if(!string.IsNullOrEmpty(topicParams.Student))
+            {
+                topicsList = topicsList.Where(x => x.studentName.ToLower().Contains(topicParams.Student.ToLower())).ToList();
+            }
 
             var topics = PagedList<Topic>.CreateFromList(topicsList, topicParams.PageNumber, topicParams.PageSize);
 
-            Response.AddPaginationHeader(topics.CurrentPage, topics.PageSize, topics.TotalCount, topics.TotalPages);
+            Response.AddPaginationHeader(topics.CurrentPage, topics.PageSize, topics.TotalCount, topics.TotalPages, allItemsCount);
             return Ok(topics);
         }
 
@@ -64,9 +74,19 @@ namespace API.Controllers
             {
                 comments[i].topic = null;
             }
+            int allItemsCount = comments.Count();
+            if(!string.IsNullOrEmpty(commentParams.Nazev))
+            {
+                comments = comments.Where(x => x.text.ToLower().Contains(commentParams.Nazev.ToLower())).ToList();
+            }
+            if(!string.IsNullOrEmpty(commentParams.Student))
+            {
+                comments = comments.Where(x => x.studentName.ToLower().Contains(commentParams.Student.ToLower())).ToList();
+            }
+
             var pagedComments = PagedList<Comment>.CreateFromList(comments, commentParams.PageNumber, commentParams.PageSize);
 
-            Response.AddPaginationHeader(pagedComments.CurrentPage, pagedComments.PageSize, pagedComments.TotalCount, pagedComments.TotalPages);
+            Response.AddPaginationHeader(pagedComments.CurrentPage, pagedComments.PageSize, pagedComments.TotalCount, pagedComments.TotalPages, allItemsCount);
             return Ok(pagedComments);
         }
 

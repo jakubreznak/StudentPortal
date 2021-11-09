@@ -36,9 +36,10 @@ namespace API.Controllers
             {
                 hod.predmet = null;
             }
+            int allItemsCount = hodnoceni.Count(); 
             var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
 
-            Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages);
+            Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages, allItemsCount);
             return Ok(pagedHodnoceni);
         }
 

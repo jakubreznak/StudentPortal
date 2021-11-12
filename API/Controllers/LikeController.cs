@@ -25,13 +25,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<int>> LikeMaterial([FromBody]int idSoubor)
         {
-            var predmety = await _context.Predmets.Include(x => x.Files).ToListAsync();
-            Soubor soubor = new Soubor();
-            foreach(var predmet in predmety)
-            {
-                if(predmet.Files.Any(x => x.ID == idSoubor))
-                    soubor = predmet.Files.FirstOrDefault(x => x.ID == idSoubor);
-            }
+            var soubor = _context.Soubor.FirstOrDefault(x => x.ID == idSoubor);
 
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
@@ -58,13 +52,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult> RemoveLikeMaterial(int idSoubor)
         {
-            var predmety = await _context.Predmets.Include(x => x.Files).ToListAsync();
-            Soubor soubor = new Soubor();
-            foreach(var predmet in predmety)
-            {
-                if(predmet.Files.Any(x => x.ID == idSoubor))
-                    soubor = predmet.Files.FirstOrDefault(x => x.ID == idSoubor);
-            }
+            var soubor = _context.Soubor.FirstOrDefault(x => x.ID == idSoubor);
 
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
@@ -85,13 +73,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<int>> LikeComment([FromBody]int idComment)
         {
-            var topics = await _context.Topics.Include(x => x.comments).ToListAsync();
-            Comment comment = new Comment();
-            foreach(var topic in topics)
-            {
-                if(topic.comments.Any(x => x.ID == idComment))
-                    comment = topic.comments.FirstOrDefault(x => x.ID == idComment);
-            }
+            var comment = _context.Comments.FirstOrDefault(x => x.ID == idComment);
 
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
@@ -118,13 +100,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult> RemoveLikeComment(int idComment)
         {
-            var topics = await _context.Topics.Include(x => x.comments).ToListAsync();
-            Comment comment = new Comment();
-            foreach(var topic in topics)
-            {
-                if(topic.comments.Any(x => x.ID == idComment))
-                    comment = topic.comments.FirstOrDefault(x => x.ID == idComment);
-            }
+            var comment = _context.Comments.FirstOrDefault(x => x.ID == idComment);
 
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
@@ -146,13 +122,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<int>> LikeHodnoceni([FromBody]int idHodnoceni)
         {
-            var predmety = await _context.Predmets.Include(x => x.Hodnocenis).ToListAsync();
-            Hodnoceni hodnoceni = new Hodnoceni();
-            foreach(var predmet in predmety)
-            {
-                if(predmet.Hodnocenis.Any(x => x.ID == idHodnoceni))
-                    hodnoceni = predmet.Hodnocenis.FirstOrDefault(x => x.ID == idHodnoceni);
-            }
+            var hodnoceni = _context.Hodnoceni.FirstOrDefault(x => x.ID == idHodnoceni);
 
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
@@ -179,13 +149,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult> RemoveLikeHodnoceni(int idHodnoceni)
         {
-            var predmety = await _context.Predmets.Include(x => x.Hodnocenis).ToListAsync();
-            Hodnoceni hodnoceni = new Hodnoceni();
-            foreach(var predmet in predmety)
-            {
-                if(predmet.Hodnocenis.Any(x => x.ID == idHodnoceni))
-                    hodnoceni = predmet.Hodnocenis.FirstOrDefault(x => x.ID == idHodnoceni);
-            }
+            var hodnoceni = _context.Hodnoceni.FirstOrDefault(x => x.ID == idHodnoceni);
 
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);

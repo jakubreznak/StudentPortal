@@ -25,16 +25,9 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<List<Hodnoceni>> GetPredmet(int idPredmet, [FromQuery] HodnoceniParams hodnoceniParams)
         {
-            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == idPredmet);
-            var predmety = _context.Predmets.Include(p => p.Hodnocenis).Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka);
-            List<Hodnoceni> hodnoceni = new List<Hodnoceni>(); 
-            foreach(var pred in predmety)
-            {
-                hodnoceni.AddRange(pred.Hodnocenis);
-            }
+            var hodnoceni = _context.Hodnoceni.Where(x => x.predmetID == idPredmet).ToList();
             foreach(var hod in hodnoceni)
             {
-                hod.predmet = null;
                 hod.StudentsLikedBy = _context.HodnoceniLikes.Where(x => x.HodnoceniId == hod.ID).ToList();
                 hod.StudentsLikedBy.ForEach(x => x.Student = null);
             }
@@ -49,14 +42,14 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<int> GetRatingNumber(int idPredmet)
         {
-            var hodnoceni = _context.Predmets.Include("Hodnocenis").FirstOrDefault(x => x.ID == idPredmet).Hodnocenis;
+            var hodnoceni = _context.Hodnoceni.Where(x => x.predmetID == idPredmet);
             int ratingNumber = 0;
             foreach(var hod in hodnoceni)
             {
                 ratingNumber += hod.rating;
             }
 
-            return Ok(Math.Ceiling((double) ratingNumber / hodnoceni.Count));
+            return Ok(Math.Ceiling((double) ratingNumber / hodnoceni.Count()));
         }
 
         [HttpPost("{idPredmet}/{cislo}")]
@@ -68,7 +61,7 @@ namespace API.Controllers
             if(text.Length > 2000)
                 return BadRequest("Text je příliš dlouhý, maximálně 2000 znaků.");
 
-            var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
+            var predmet = await  _context.Predmets.Include(x => x.Hodnocenis).FirstOrDefaultAsync(x => x.ID == idPredmet);
             var studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if(predmet.Hodnocenis.Any(x => x.studentName == studentName))
@@ -97,14 +90,12 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<Hodnoceni>> DeleteRating(int idPredmet, int hodnoceniID)
         {
-            var predmet = await  _context.Predmets.Include("Hodnocenis").FirstOrDefaultAsync(x => x.ID == idPredmet);
-
-            var hodnoceni = predmet.Hodnocenis.FirstOrDefault(h => h.ID == hodnoceniID);
+            var hodnoceni = _context.Hodnoceni.FirstOrDefault(h => h.ID == hodnoceniID);
 
             if(hodnoceni.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění smazat toto hodnocení.");
 
-            predmet.Hodnocenis.Remove(hodnoceni);
+            _context.Hodnoceni.Remove(hodnoceni);
 
             if(await _context.SaveChangesAsync() > 0)
             {

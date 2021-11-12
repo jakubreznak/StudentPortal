@@ -14,6 +14,9 @@ namespace API.Data
 
         public DbSet<Predmet> Predmets { get; set; }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Soubor> Soubor { get; set; }
+        public DbSet<Hodnoceni> Hodnoceni { get; set; }
         public DbSet<SouborLike> SouborLikes { get; set; }
         public DbSet<CommentLike> CommentLikes { get; set; }
         public DbSet<HodnoceniLike> HodnoceniLikes { get; set; }

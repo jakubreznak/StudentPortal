@@ -93,12 +93,7 @@ namespace API.Controllers
         [HttpGet("comments")]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments([FromQuery] AdminCommentParams commentParams)
         {
-            var topics = await _context.Topics.Include("comments").ToListAsync();
-            List<Comment> comments = new List<Comment>();
-            foreach(var topic in topics)
-            {
-                comments.AddRange(topic.comments);
-            }
+            var comments = await _context.Comments.Include(x => x.topic).ToListAsync();
 
             foreach(var comment in comments)
             {
@@ -127,18 +122,14 @@ namespace API.Controllers
         [HttpDelete("comment/{id}")]
         public async Task<ActionResult<IEnumerable<Comment>>> DeleteComment(int id)
         {
-            var topics = await _context.Topics.Include("comments").ToListAsync();
-            List<Comment> comments = new List<Comment>();
-            foreach(var topic in topics)
+            var comments = await _context.Comments.ToListAsync();
+            foreach(var comment in comments)
             {
-                foreach(var comment in topic.comments)
+                if(comment.ID == id)
                 {
-                    if(comment.ID == id)
-                    {
-                        topic.comments.Remove(comment);
-                        if(await _context.SaveChangesAsync() <= 0) return BadRequest();
-                        return Ok();
-                    }
+                    _context.Comments.Remove(comment);
+                    if(await _context.SaveChangesAsync() <= 0) return BadRequest();
+                    return Ok();
                 }
             }
             return BadRequest();
@@ -148,12 +139,7 @@ namespace API.Controllers
         [HttpGet("hodnoceni")]
         public async Task<ActionResult<IEnumerable<Hodnoceni>>> GetHodnoceni([FromQuery] AdminHodnoceniParams hodnoceniParams)
         {
-            var predmets = await _context.Predmets.Include("Hodnocenis").ToListAsync();
-            List<Hodnoceni> hodnocenis = new List<Hodnoceni>();
-            foreach(var predmet in predmets)
-            {
-                hodnocenis.AddRange(predmet.Hodnocenis);
-            }
+            var hodnocenis = await _context.Hodnoceni.Include(x => x.predmet).ToListAsync();
 
             foreach(var hodnoceni in hodnocenis)
             {
@@ -182,20 +168,17 @@ namespace API.Controllers
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("hodnoceni/{id}")]
-        public async Task<ActionResult<IEnumerable<Hodnoceni>>> DeleteHodnoceni(int id)
+        public async Task<ActionResult> DeleteHodnoceni(int id)
         {
-            var predmets = await _context.Predmets.Include("Hodnocenis").ToListAsync();
-            List<Hodnoceni> hodnocenis = new List<Hodnoceni>();
-            foreach(var predmet in predmets)
+            var hodnocenis = await _context.Hodnoceni.ToListAsync();
+
+            foreach(var hodnoceni in hodnocenis)
             {
-                foreach(var hodnoceni in predmet.Hodnocenis)
+                if(hodnoceni.ID == id)
                 {
-                    if(hodnoceni.ID == id)
-                    {
-                        predmet.Hodnocenis.Remove(hodnoceni);
-                        if(await _context.SaveChangesAsync() <= 0) return BadRequest();
+                    _context.Hodnoceni.Remove(hodnoceni);
+                    if(await _context.SaveChangesAsync() <= 0) return BadRequest();
                         return Ok();
-                    }
                 }
             }
             return BadRequest();
@@ -205,12 +188,7 @@ namespace API.Controllers
         [HttpGet("soubory")]
         public async Task<ActionResult<IEnumerable<Soubor>>> GetMaterialy([FromQuery] AdminMaterialParams materialParams)
         {
-            var predmets = await _context.Predmets.Include("Files").ToListAsync();
-            List<Soubor> soubory = new List<Soubor>();
-            foreach(var predmet in predmets)
-            {
-                soubory.AddRange(predmet.Files);
-            }
+            var soubory = await _context.Soubor.ToListAsync();
             int allItemsCount = soubory.Count();
             if(!string.IsNullOrEmpty(materialParams.Nazev))
             {
@@ -233,24 +211,20 @@ namespace API.Controllers
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete("soubor/{id}")]
-        public async Task<ActionResult<IEnumerable<Soubor>>> DeleteMaterial(int id)
+        public async Task<ActionResult> DeleteMaterial(int id)
         {
-            var predmets = await _context.Predmets.Include("Files").ToListAsync();
-            List<Soubor> soubory = new List<Soubor>();
-            foreach(var predmet in predmets)
+            var soubory = await _context.Soubor.ToListAsync();
+            foreach(var soubor in soubory)
             {
-                foreach(var soubor in predmet.Files)
+                if(soubor.ID == id)
                 {
-                    if(soubor.ID == id)
-                    {
-                        predmet.Files.Remove(soubor);
-                        if(await _context.SaveChangesAsync() <= 0) return BadRequest();
+                    _context.Soubor.Remove(soubor);
+                    if(await _context.SaveChangesAsync() <= 0) return BadRequest();
 
-                        var result = await _fileService.RemoveFileAsync(soubor.PublicID);
-                         if (result.Error != null) return BadRequest();
+                    var result = await _fileService.RemoveFileAsync(soubor.PublicID);
+                        if (result.Error != null) return BadRequest();
 
-                        return Ok();
-                    }
+                    return Ok();
                 }
             }
             return BadRequest();

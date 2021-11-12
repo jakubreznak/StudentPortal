@@ -44,13 +44,7 @@ namespace API.Controllers
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
            
-            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == id);
-            var predmety = _context.Predmets.Include(p => p.Files).Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka);
-            List<Soubor> soubory = new List<Soubor>(); 
-            foreach(var pred in predmety)
-            {
-                soubory.AddRange(pred.Files);
-            }
+            var soubory = _context.Soubor.Where(x => x.PredmetID == id).ToList();
             int allItemsCount = soubory.Count();
 
             if(!string.IsNullOrEmpty(materialParameters.Nazev))
@@ -234,13 +228,12 @@ namespace API.Controllers
         [HttpDelete("{predmetID}/{souborID}")]
         public async Task<ActionResult<Soubor>> DeleteMaterial(int predmetID, int souborID)
         {
-            var predmet = await _context.Predmets.Include("Files").FirstOrDefaultAsync(p => p.ID == predmetID);
-            var soubor = predmet.Files.FirstOrDefault(s => s.ID == souborID);
+            var soubor = _context.Soubor.FirstOrDefault(s => s.ID == souborID);
 
             if(soubor.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění smazat tento studijní materiál.");
 
-            predmet.Files.Remove(soubor);
+            _context.Soubor.Remove(soubor);
             if (await _context.SaveChangesAsync() <= 0) return BadRequest();
 
             var result = await _fileService.RemoveFileAsync(soubor.PublicID);

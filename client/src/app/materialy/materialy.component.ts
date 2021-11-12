@@ -30,6 +30,7 @@ export class MaterialyComponent implements OnInit {
   allFilesCount: number;
   filtersToggle: boolean = false;
   filtersToggleText: string = 'Filtry';
+  materialsLiked: number[] = [];
 
 
   constructor(private httpClient: HttpClient, private toastr: ToastrService, private predmetService: PredmetyService,
@@ -54,7 +55,19 @@ export class MaterialyComponent implements OnInit {
       .subscribe(response =>    
         {
           this.pagedFiles = response.result;
-          this.pagination = response.pagination;          
+          this.pagination = response.pagination;
+
+          this.accountService.getCurrentUserId().subscribe(id =>
+            {
+              let files: number[] = [];
+              response.result.forEach(function (file){
+                if(file.studentsLikedBy.some(x => x.studentId == id))
+                {
+                  files.push(file.id);
+                }
+              })
+              this.materialsLiked = files;
+            })          
         });
   }
 
@@ -79,6 +92,32 @@ export class MaterialyComponent implements OnInit {
       name: new FormControl('', [Validators.required, Validators.maxLength(200)]),
       file: new FormControl('', Validators.required),
     })
+  }
+
+  likeOrRemoveLike(materialId: number){
+    if(this.materialsLiked.includes(materialId)){
+      this.removeLikeMaterial(materialId);
+    }
+    else if(!this.materialsLiked.includes(materialId))
+    {
+      this.likeMaterial(materialId);
+    }
+  }
+
+  likeMaterial(materialId: number){
+    this.httpClient.post<Soubor>(this.baseUrl + 'like/material', materialId).subscribe(response =>
+    {
+      this.toastr.success("Líbí se vám daný materiál.")
+      this.loadMaterials();
+    });
+  }
+
+  removeLikeMaterial(materialId: number){
+    this.httpClient.delete(this.baseUrl + 'like/material/' + materialId).subscribe(response =>
+    {
+      this.toastr.success("Materiál se vám již nelíbí.")
+      this.loadMaterials();
+    });
   }
 
   postMaterial(){

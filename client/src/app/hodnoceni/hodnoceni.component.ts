@@ -38,6 +38,7 @@ export class HodnoceniComponent implements OnInit {
   pageSize = 10;
   pagedRatings: Hodnoceni[];
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
+  hodnoceniLiked: number[] = [];
 
   constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService,
     private route: ActivatedRoute) { 
@@ -89,12 +90,50 @@ export class HodnoceniComponent implements OnInit {
         {
           this.hodnoceni = response.result;
           this.pagination = response.pagination;
+
+          this.accountService.getCurrentUserId().subscribe(id =>
+            {
+              let hodnocenis: number[] = [];
+              response.result.forEach(function (hodnoceni){
+                if(hodnoceni.studentsLikedBy.some(x => x.studentId == id))
+                {
+                  hodnocenis.push(hodnoceni.id);
+                }
+              })
+              this.hodnoceniLiked = hodnocenis;
+            })          
         });
 
       this.http.get<number>(this.baseUrl + 'hodnoceni/cislo/' + this.predmetId).subscribe(response =>
         {
           this.cislo = response;
         });
+  }
+
+  likeOrRemoveLike(materialId: number){
+    if(this.hodnoceniLiked.includes(materialId)){
+      this.removeLikeMaterial(materialId);
+    }
+    else if(!this.hodnoceniLiked.includes(materialId))
+    {
+      this.likeMaterial(materialId);
+    }
+  }
+
+  likeMaterial(hodnoceniId: number){
+    this.http.post<number>(this.baseUrl + 'like/hodnoceni', hodnoceniId).subscribe(response =>
+    {
+      this.toastr.success("Líbí se vám daný materiál.")
+      this.loadHodnoceni();
+    });
+  }
+
+  removeLikeMaterial(hodnoceniId: number){
+    this.http.delete(this.baseUrl + 'like/hodnoceni/' + hodnoceniId).subscribe(response =>
+    {
+      this.toastr.success("Materiál se vám již nelíbí.")
+      this.loadHodnoceni();
+    });
   }
 
   pageChanged(event: any){

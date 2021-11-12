@@ -1,3 +1,5 @@
+import { Student } from "./student";
+
 export interface Predmet {
     id: number;
     zkratka: string;
@@ -24,6 +26,7 @@ export interface Predmet {
     extension: string;
     dateAdded: string;
     studentName: string;
+    studentsLikedBy: SouborLike[];
   }
 
   export interface Hodnoceni {
@@ -32,4 +35,15 @@ export interface Predmet {
     rating: number;
     created: string;
     predmet: Predmet;
+    studentsLikedBy: HodnoceniLike[];
+  }
+
+  export interface SouborLike {
+    souborId: number;
+    studentId: number;
+  }
+
+  export interface HodnoceniLike {
+    hodnoceniId: number;
+    studentId: number;
   }

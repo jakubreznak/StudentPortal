@@ -35,9 +35,11 @@ namespace API.Controllers
             foreach(var hod in hodnoceni)
             {
                 hod.predmet = null;
+                hod.StudentsLikedBy = _context.HodnoceniLikes.Where(x => x.HodnoceniId == hod.ID).ToList();
+                hod.StudentsLikedBy.ForEach(x => x.Student = null);
             }
             int allItemsCount = hodnoceni.Count(); 
-            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
+            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni.OrderByDescending(x => x.ID), hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
 
             Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages, allItemsCount);
             return Ok(pagedHodnoceni);

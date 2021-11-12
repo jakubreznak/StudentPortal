@@ -21,7 +21,6 @@
         </div>
     </form>
     
-    <hr>
     <div class="d-flex mb-2">
         <button (click)="filterToggle()" class="btn btn-outline-secondary" type="submit">{{filtersToggleText}}</button>
     </div>
@@ -60,12 +59,28 @@
     <div *ngIf="pagedFiles && pagedFiles.length > 0">
         <ul>
             <li *ngFor="let soubor of pagedFiles" class="list-group-item border">
-                <div class="nazev-stahnout">
-                    <span><p>{{soubor.fileName}}</p><br><p class="date">{{soubor.dateAdded}} - {{soubor.extension}}</p></span>
-                    <span class="stahnout"><a class="btn btn-success" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
-                </div>
-                <div *ngIf="soubor.studentName == student.name">
-                    <button (click)='deleteMaterial(soubor.id)' type="button" class="btn btn-danger">Smazat</button>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <p>{{soubor.fileName}}</p>
+                        </div>
+                        <div class="col-sm d-flex justify-content-end">
+                            <span class="stahnout"><a class="btn btn-success" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <p class="date">{{soubor.dateAdded}} - {{soubor.extension}}</p>
+                        </div>
+                        <div class="like col-sm d-flex justify-content-end">
+                            <p class="mr-1">{{soubor.studentsLikedBy.length}}</p>
+                            <button class="btn btn-light" (click)="likeOrRemoveLike(soubor.id)"><i *ngIf="materialsLiked.includes(soubor.id)" class="fas fa-heart"></i>
+                                <i *ngIf="!materialsLiked.includes(soubor.id)" class="far fa-heart"></i></button>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="soubor.studentName == student.name">
+                        <button (click)='deleteMaterial(soubor.id)' type="button" class="btn btn-danger">Smazat</button>
+                    </div>
                 </div>
             </li>  
         </ul>

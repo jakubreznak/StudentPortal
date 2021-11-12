@@ -13,15 +13,6 @@
       display: none;
   }
 
-.nazev-stahnout {
-  width: 100%;
-  height: auto;
-  justify-content: space-between;
-  padding: 30px;
-  box-sizing: border-box;
-  padding: 1em;
-}
-
 .btn-danger{
     margin-left: 16px;
 }
@@ -30,14 +21,6 @@ p {
     font-size: 1.6em;
     font-weight: 600;
     margin: 0;
-}
-
-.stahnout {
-    text-align: center;
-}
-
-.stahnout p {
-    margin-top: .7em;
 }
 
 .inputfile {
@@ -77,9 +60,18 @@ label{
     text-align: center;
   }
 
+.like{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5em;
+    font-size: 1.3em;
+}
 
-@media only screen and (min-width: 768px) {
-    .nazev-stahnout{
-        display: flex;
-    }
-  }
+.like p{
+    font-size: 1.1em;
+}
+
+.row {
+    height: 3em;
+}

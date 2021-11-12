@@ -201,6 +201,16 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpGet("currentuser")]
+        [Authorize]
+        public ActionResult<int> CurrentUserId()
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
+            return Ok(student.Id);
+        }
+
         // private async Task<Student> GetPredmetyFromUpol(string upolNumber, Student student) //nepouziva se
         // {
         //     //GET oborIdno a rocnik z UPOL API

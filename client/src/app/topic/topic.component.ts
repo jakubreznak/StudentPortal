@@ -6,7 +6,7 @@ import { take } from 'rxjs/operators';
 import { CommentParams } from '../models/helpModels/commentParams';
 import { Pagination } from '../models/helpModels/pagination';
 import { Student } from '../models/student';
-import { Topic } from '../models/topic';
+import { Topic, Comment } from '../models/topic';
 import { AccountService } from '../Services/account.service';
 import { DiskuzeService } from '../Services/diskuze.service';
 
@@ -29,6 +29,7 @@ export class TopicComponent implements OnInit {
   pagedComments: Comment[];
   filtersToggle: boolean = false;
   filtersToggleText: string = 'Filtry';
+  commentsLiked: number[] = [];
 
   constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
@@ -47,11 +48,41 @@ export class TopicComponent implements OnInit {
   }
 
   loadComments(){
-    this.diskuzeService.getComments(Number(this.route.snapshot.paramMap.get('topicid')), this.commentParams).subscribe(response =>
+    this.diskuzeService.getComments(Number(this.route.snapshot.paramMap.get('topicid')), this.commentParams)
+      .subscribe(response =>
+        {
+          this.pagedComments = response.result;
+          this.pagination = response.pagination;
+          
+          this.accountService.getCurrentUserId().subscribe(id =>
+            {
+              let comments: number[] = [];
+              response.result.forEach(function (comment){
+                console.log(comment.id)
+                if(comment.studentsLikedBy.some(x => x.studentId == id))
+                {                  
+                  comments.push(comment.id);
+                }
+              })
+              this.commentsLiked = comments;
+            })          
+        });
+  }
+
+  likeOrRemoveLike(commentId: number){
+    if(this.commentsLiked.includes(commentId)){
+      this.diskuzeService.removeLikeComment(commentId).subscribe(response =>{
+        this.toastr.success("Komentář se vám již nelíbí.")
+        this.loadComments();
+      })
+    }
+    else if(!this.commentsLiked.includes(commentId))
     {
-      this.pagedComments = response.result;
-      this.pagination = response.pagination;        
-    });
+      this.diskuzeService.likeComment(commentId).subscribe(response =>{
+        this.toastr.success("Líbí se vám daný materiál.")
+        this.loadComments();
+      })
+    }
   }
 
   pageChanged(event: any){

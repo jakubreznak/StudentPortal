@@ -54,3 +54,21 @@ textarea{
     font-size: 1.6em;
     font-weight: 600;
   }
+
+  .like{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5em;
+    margin-top: 0;
+}
+
+.col-10{
+    padding-left: 0;
+}
+
+.likeCount {
+    font-weight: 500;
+    font-size: 1.5em;
+    vertical-align: middle;
+}

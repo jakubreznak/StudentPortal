@@ -6,7 +6,7 @@ import { CommentParams } from '../models/helpModels/commentParams';
 import { PaginatedResult } from '../models/helpModels/pagination';
 import { TopicParams } from '../models/helpModels/topicParams';
 import { Student } from '../models/student';
-import { Topic } from '../models/topic';
+import { Topic, Comment } from '../models/topic';
 import { AccountService } from './account.service';
 import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
@@ -69,4 +69,12 @@ export class DiskuzeService {
   editComment(topicID: number, commentID: number, text: string){
   return this.http.put<Topic>(this.baseUrl + 'discussion/comment/' + topicID + '/' + commentID, text, this.httpOptions);
 }
+
+  likeComment(commentId: number){
+    return this.http.post<number>(this.baseUrl + 'like/comment', commentId);
+  }
+
+  removeLikeComment(commentId: number){
+    return this.http.delete<any>(this.baseUrl + 'like/comment/' + commentId);
+  }
 }

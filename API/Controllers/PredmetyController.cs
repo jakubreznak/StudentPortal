@@ -41,16 +41,15 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<IEnumerable<Soubor>> GetMaterialy(int id, [FromQuery] MaterialParameters materialParameters)
         {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+           
             var predmet = _context.Predmets.FirstOrDefault(p => p.ID == id);
             var predmety = _context.Predmets.Include(p => p.Files).Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka);
             List<Soubor> soubory = new List<Soubor>(); 
             foreach(var pred in predmety)
             {
                 soubory.AddRange(pred.Files);
-            }
-            foreach(var file in soubory)
-            {
-                file.Predmet = null;
             }
             int allItemsCount = soubory.Count();
 
@@ -63,7 +62,14 @@ namespace API.Controllers
                 soubory = soubory.Where(x => x.Extension.ToLower().Contains(materialParameters.Typ.ToLower())).ToList();
             }
 
-            var pagedFiles = PagedList<Soubor>.CreateFromList(soubory, materialParameters.PageNumber, materialParameters.PageSize);
+            foreach(var soubor in soubory)
+            {
+                soubor.Predmet = null;
+                soubor.StudentsLikedBy = _context.SouborLikes.Where(x => x.SouborId == soubor.ID).ToList();
+                soubor.StudentsLikedBy.ForEach(x => x.Student = null);
+            }
+
+            var pagedFiles = PagedList<Soubor>.CreateFromList(soubory.OrderByDescending(x => x.ID), materialParameters.PageNumber, materialParameters.PageSize);
 
             Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalPages, allItemsCount);
             return Ok(pagedFiles);

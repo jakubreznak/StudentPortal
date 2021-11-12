@@ -70,10 +70,6 @@ namespace API.Controllers
         public ActionResult<IEnumerable<Comment>> GetCommentsByTopic (int id, [FromQuery] CommentParams commentParams)
         {
             var comments = _context.Topics.Include("comments").FirstOrDefault(t => t.ID == id).comments;
-            for(int i = 0; i < comments.Count(); i++)
-            {
-                comments[i].topic = null;
-            }
             int allItemsCount = comments.Count();
             if(!string.IsNullOrEmpty(commentParams.Nazev))
             {
@@ -82,6 +78,13 @@ namespace API.Controllers
             if(!string.IsNullOrEmpty(commentParams.Student))
             {
                 comments = comments.Where(x => x.studentName.ToLower().Contains(commentParams.Student.ToLower())).ToList();
+            }
+
+            foreach(var comment in comments)
+            {
+                comment.topic = null;
+                comment.StudentsLikedBy = _context.CommentLikes.Where(x => x.CommentId == comment.ID).ToList();
+                comment.StudentsLikedBy.ForEach(x => x.Student = null);
             }
 
             var pagedComments = PagedList<Comment>.CreateFromList(comments, commentParams.PageNumber, commentParams.PageSize);

@@ -149,4 +149,8 @@ export class AccountService {
   getDecodedToken(token){
     return JSON.parse(atob(token.split('.')[1]));
   }
+
+  getCurrentUserId(){
+    return this.http.get<number>(this.baseUrl + 'account/currentuser');
+  }
 }

@@ -1,7 +1,14 @@
+using System.Collections.Generic;
+
 namespace API.Entities
 {
     public class Soubor
     {
+        public Soubor()
+        {
+            this.StudentsLikedBy = new List<SouborLike>();
+        }
+
         public int ID { get; set; }
         public string Url { get; set; }
         public string PublicID { get; set; }
@@ -11,5 +18,6 @@ namespace API.Entities
         public string DateAdded { get; set; }
         public Predmet Predmet { get; set; }
         public int PredmetID { get; set; }
+        public List<SouborLike> StudentsLikedBy { get; set; }
     }
 }

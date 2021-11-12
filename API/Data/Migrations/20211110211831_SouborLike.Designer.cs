@@ -3,15 +3,17 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211110211831_SouborLike")]
+    partial class SouborLike
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,21 +90,6 @@ namespace API.Data.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("API.Entities.CommentLike", b =>
-                {
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CommentId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("StudentId", "CommentId");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("CommentLikes");
-                });
-
             modelBuilder.Entity("API.Entities.Hodnoceni", b =>
                 {
                     b.Property<int>("ID")
@@ -130,21 +117,6 @@ namespace API.Data.Migrations
                     b.HasIndex("predmetID");
 
                     b.ToTable("Hodnoceni");
-                });
-
-            modelBuilder.Entity("API.Entities.HodnoceniLike", b =>
-                {
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("HodnoceniId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("StudentId", "HodnoceniId");
-
-                    b.HasIndex("HodnoceniId");
-
-                    b.ToTable("HodnoceniLikes");
                 });
 
             modelBuilder.Entity("API.Entities.Predmet", b =>
@@ -487,25 +459,6 @@ namespace API.Data.Migrations
                     b.Navigation("topic");
                 });
 
-            modelBuilder.Entity("API.Entities.CommentLike", b =>
-                {
-                    b.HasOne("API.Entities.Comment", "Comment")
-                        .WithMany("StudentsLikedBy")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.Student", "Student")
-                        .WithMany("likedComments")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("API.Entities.Hodnoceni", b =>
                 {
                     b.HasOne("API.Entities.Predmet", "predmet")
@@ -515,25 +468,6 @@ namespace API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("predmet");
-                });
-
-            modelBuilder.Entity("API.Entities.HodnoceniLike", b =>
-                {
-                    b.HasOne("API.Entities.Hodnoceni", "Hodnoceni")
-                        .WithMany("StudentsLikedBy")
-                        .HasForeignKey("HodnoceniId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Entities.Student", "Student")
-                        .WithMany("likedHodnoceni")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hodnoceni");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("API.Entities.Soubor", b =>
@@ -622,16 +556,6 @@ namespace API.Data.Migrations
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("API.Entities.Comment", b =>
-                {
-                    b.Navigation("StudentsLikedBy");
-                });
-
-            modelBuilder.Entity("API.Entities.Hodnoceni", b =>
-                {
-                    b.Navigation("StudentsLikedBy");
-                });
-
             modelBuilder.Entity("API.Entities.Predmet", b =>
                 {
                     b.Navigation("Files");
@@ -646,10 +570,6 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Student", b =>
                 {
-                    b.Navigation("likedComments");
-
-                    b.Navigation("likedHodnoceni");
-
                     b.Navigation("likedMaterialy");
 
                     b.Navigation("UserRoles");

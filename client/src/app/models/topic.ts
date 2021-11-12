@@ -15,4 +15,10 @@ export interface Comment {
     studentName: string;
     topicID: number;
     topic: Topic;
+    studentsLikedBy: CommentLike[];
 }
+
+export interface CommentLike {
+    commentId: number;
+    studentId: number;
+  }

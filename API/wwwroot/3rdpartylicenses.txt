@@ -131,6 +131,8 @@ SOFTWARE.
 
 
 
+ngx-bootstrap/buttons
+
 ngx-bootstrap/datepicker
 
 ngx-bootstrap/pagination

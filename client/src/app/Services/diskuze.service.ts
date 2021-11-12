@@ -32,6 +32,7 @@ export class DiskuzeService {
 
     params = params.append('Nazev', topicParams.nazev);
     params = params.append('Student', topicParams.student);
+    params = params.append('OrderBy', topicParams.orderBy);
 
     return getPaginatedResult<Topic[]>(this.baseUrl + 'discussion/' + predmetID, params, this.http);
   }
@@ -46,6 +47,7 @@ export class DiskuzeService {
 
     params = params.append('Nazev', commentParams.nazev);
     params = params.append('Student', commentParams.student);
+    params = params.append('OrderBy', commentParams.orderBy);
 
     return getPaginatedResult<Comment[]>(this.baseUrl + 'discussion/topic/' + id, params, this.http);
   }

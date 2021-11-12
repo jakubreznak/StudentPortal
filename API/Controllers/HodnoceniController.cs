@@ -23,7 +23,7 @@ namespace API.Controllers
 
         [HttpGet("{idPredmet}")]
         [Authorize]
-        public ActionResult<List<Hodnoceni>> GetPredmet(int idPredmet, [FromQuery] HodnoceniParams hodnoceniParams)
+        public ActionResult<List<Hodnoceni>> GetHodnoceniPredmetu(int idPredmet, [FromQuery] HodnoceniParams hodnoceniParams)
         {
             var hodnoceni = _context.Hodnoceni.Where(x => x.predmetID == idPredmet).ToList();
             foreach(var hod in hodnoceni)
@@ -32,7 +32,21 @@ namespace API.Controllers
                 hod.StudentsLikedBy.ForEach(x => x.Student = null);
             }
             int allItemsCount = hodnoceni.Count(); 
-            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni.OrderByDescending(x => x.ID), hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
+
+            switch (hodnoceniParams.OrderBy)
+            {
+                case "datum":
+                    hodnoceni = hodnoceni.OrderByDescending(x => x.ID).ToList();
+                    break;
+                case "ohodnoceni":
+                    hodnoceni = hodnoceni.OrderByDescending(x => x.rating).ToList();
+                    break;
+                case "oblibenost":
+                    hodnoceni = hodnoceni.OrderByDescending(x => x.StudentsLikedBy.Count()).ToList();
+                    break;
+            }
+
+            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
 
             Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages, allItemsCount);
             return Ok(pagedHodnoceni);
@@ -72,7 +86,7 @@ namespace API.Controllers
             var hodnoceni = new Hodnoceni
             {
                 studentName = studentName,
-                text = text,
+                text = text.Trim(),
                 rating = cislo,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy")
             };
@@ -117,7 +131,7 @@ namespace API.Controllers
             if(hodnoceni.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravovat toto hodnocení.");
 
-            hodnoceni.text = text;
+            hodnoceni.text = text.Trim();
 
             if(await _context.SaveChangesAsync() > 0)
             {

@@ -59,6 +59,19 @@ namespace API.Controllers
                 topicsList = topicsList.Where(x => x.studentName.ToLower().Contains(topicParams.Student.ToLower())).ToList();
             }
 
+            switch (topicParams.OrderBy)
+            {
+                case "datum":
+                    topicsList = topicsList.OrderByDescending(x => x.ID).ToList();
+                    break;
+                case "nazev":
+                    topicsList = topicsList.OrderBy(x => x.name).ToList();
+                    break;
+                case "komentare":
+                    topicsList = topicsList.OrderByDescending(x => x.comments.Count()).ToList();
+                    break;
+            }
+
             var topics = PagedList<Topic>.CreateFromList(topicsList, topicParams.PageNumber, topicParams.PageSize);
 
             Response.AddPaginationHeader(topics.CurrentPage, topics.PageSize, topics.TotalCount, topics.TotalPages, allItemsCount);
@@ -85,6 +98,16 @@ namespace API.Controllers
                 comment.topic = null;
                 comment.StudentsLikedBy = _context.CommentLikes.Where(x => x.CommentId == comment.ID).ToList();
                 comment.StudentsLikedBy.ForEach(x => x.Student = null);
+            }
+
+            switch (commentParams.OrderBy)
+            {
+                case "datum":
+                    comments = comments.OrderByDescending(x => x.ID).ToList();
+                    break;
+                case "oblibenost":
+                    comments = comments.OrderByDescending(x => x.StudentsLikedBy.Count()).ToList();
+                    break;
             }
 
             var pagedComments = PagedList<Comment>.CreateFromList(comments, commentParams.PageNumber, commentParams.PageSize);
@@ -115,7 +138,7 @@ namespace API.Controllers
             {
                 predmetID = predmetID ?? String.Empty,
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                name = topicName,
+                name = topicName.Trim(),
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
                 createdDateTime = DateTime.Now
             };
@@ -144,7 +167,7 @@ namespace API.Controllers
             {
                 topicID = topicID.Value,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
-                text = text,
+                text = text.Trim(),
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
             };
 
@@ -217,7 +240,7 @@ namespace API.Controllers
             if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravit tento komentář.");
 
-            comment.text = text;
+            comment.text = text.Trim();
 
             if(await _context.SaveChangesAsync() > 0)
             {

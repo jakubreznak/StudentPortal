@@ -50,6 +50,7 @@ export class MaterialyComponent implements OnInit {
 
     params = params.append('Nazev', this.materialParams.nazev);
     params = params.append('Typ', this.materialParams.typ);
+    params = params.append('OrderBy', this.materialParams.orderBy);
 
     getPaginatedResult<Soubor[]>(this.baseUrl + 'predmety/getbyid/' + this.predmetId, params, this.httpClient)
       .subscribe(response =>    

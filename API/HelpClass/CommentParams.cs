@@ -4,5 +4,6 @@ namespace API.HelpClass
     {
         public string Nazev { get; set; }
         public string Student { get; set; }
+        public string OrderBy { get; set; } = "datum";
     }
 }

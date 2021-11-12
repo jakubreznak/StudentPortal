@@ -20,10 +20,18 @@
             <button [disabled]='!materialForm.valid' class="btn btn-success mr-2" type="submit">Přídat</button>
         </div>
     </form>
+    <div class="d-flex justify-content-between">
+        <div class="d-flex mb-2">
+            <button (click)="filterToggle()" class="btn btn-outline-secondary" type="submit">{{filtersToggleText}}</button>
+        </div>
     
-    <div class="d-flex mb-2">
-        <button (click)="filterToggle()" class="btn btn-outline-secondary" type="submit">{{filtersToggleText}}</button>
+        <div class="btn-group float-right mb-2">
+            <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadMaterials()" btnRadio='datum' [(ngModel)]="materialParams.orderBy">Datum</button>
+            <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadMaterials()" btnRadio='nazev' [(ngModel)]="materialParams.orderBy">Název</button>
+            <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadMaterials()" btnRadio='likes' [(ngModel)]="materialParams.orderBy">Oblíbenost</button>
+        </div>
     </div>
+
     <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadMaterials()" autocomplete="off">    
         <div class="form-group px-2">
             <label>Název: </label>

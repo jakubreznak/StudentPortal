@@ -11,6 +11,7 @@ import { AccountService } from '../Services/account.service';
 import { Pagination } from '../models/helpModels/pagination';
 import { getPaginatedResult, getPaginationHeaders } from '../Services/paginationHelper';
 import { ActivatedRoute } from '@angular/router';
+import { HodnoceniParams } from '../models/helpModels/hodnoceniParams';
 
 @Component({
   selector: 'app-hodnoceni',
@@ -34,8 +35,7 @@ export class HodnoceniComponent implements OnInit {
   textIsEditing: string;
   editForm: FormGroup;
   pagination: Pagination;
-  pageNumber = 1;
-  pageSize = 10;
+  hodnoceniParams: HodnoceniParams = new HodnoceniParams();
   pagedRatings: Hodnoceni[];
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
   hodnoceniLiked: number[] = [];
@@ -83,7 +83,9 @@ export class HodnoceniComponent implements OnInit {
   }
 
   loadHodnoceni(){
-    let params = getPaginationHeaders(this.pageNumber, this.pageSize);
+    let params = getPaginationHeaders(this.hodnoceniParams.pageNumber, this.hodnoceniParams.pageSize);
+
+    params = params.append('OrderBy',  this.hodnoceniParams.orderBy);
 
     getPaginatedResult<Hodnoceni[]>(this.baseUrl + 'hodnoceni/' + this.predmetId, params, this.http)
       .subscribe(response =>    
@@ -137,7 +139,7 @@ export class HodnoceniComponent implements OnInit {
   }
 
   pageChanged(event: any){
-    this.pageNumber = event.page;
+    this.hodnoceniParams.pageNumber = event.page;
     this.loadHodnoceni();
     window.scrollTo(0, 0);
   }
@@ -145,9 +147,8 @@ export class HodnoceniComponent implements OnInit {
   deleteRating(hodnoceniID){
     this.http.delete<Hodnoceni>(this.baseUrl + 'hodnoceni/' + this.predmetId + '/' + hodnoceniID).subscribe(hodnoceni =>
       {
-        this.pageNumber = 1;
-        this.loadHodnoceni();
-        this.pagination.currentPage = 1;        
+        this.pagination.currentPage = 1;
+        this.loadHodnoceni();      
         this.toastr.success("Hodnocení bylo úspěšně odebráno.");
       }
       );

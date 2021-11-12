@@ -5,7 +5,7 @@
             <p>{{cislo}}/10</p>
         </div>
         <p class="pridat">Přidat hodnocení:</p>
-        <div class="form mt-0">
+        <div class="form mt-0 mb-0">
             <form [formGroup]='hodnoceniForm' ngNativeValidate (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="form-group">
                     <textarea
@@ -28,6 +28,14 @@
             </form>
         </div>
     
+        <div class="d-flex justify-content-between">     
+            <div class="btn-group float-right mb-2">
+                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadHodnoceni()" btnRadio='datum' [(ngModel)]="hodnoceniParams.orderBy">Datum</button>
+                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadHodnoceni()" btnRadio='ohodnoceni' [(ngModel)]="hodnoceniParams.orderBy">Ohodnocení</button>
+                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadHodnoceni()" btnRadio='oblibenost' [(ngModel)]="hodnoceniParams.orderBy">Oblíbenost</button>
+            </div>
+        </div>
+
         <div *ngIf="hodnoceni.length > 0">
             <div class="list-group">
                 <ul>

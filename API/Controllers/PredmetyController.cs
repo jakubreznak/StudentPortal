@@ -63,7 +63,20 @@ namespace API.Controllers
                 soubor.StudentsLikedBy.ForEach(x => x.Student = null);
             }
 
-            var pagedFiles = PagedList<Soubor>.CreateFromList(soubory.OrderByDescending(x => x.ID), materialParameters.PageNumber, materialParameters.PageSize);
+            switch (materialParameters.OrderBy)
+            {
+                case "datum":
+                    soubory = soubory.OrderByDescending(x => x.ID).ToList();
+                    break;
+                case "nazev":
+                    soubory = soubory.OrderBy(x => x.FileName).ToList();
+                    break;
+                case "likes":
+                    soubory = soubory.OrderByDescending(x => x.StudentsLikedBy.Count()).ToList();
+                    break;
+            }
+
+            var pagedFiles = PagedList<Soubor>.CreateFromList(soubory, materialParameters.PageNumber, materialParameters.PageSize);
 
             Response.AddPaginationHeader(pagedFiles.CurrentPage, pagedFiles.PageSize, pagedFiles.TotalCount, pagedFiles.TotalPages, allItemsCount);
             return Ok(pagedFiles);

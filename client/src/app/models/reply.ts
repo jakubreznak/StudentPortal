@@ -5,5 +5,6 @@ export interface Reply{
     text: string;
     created: string;
     studentName: string;
+    edited: string;
     comment: Comment;
 }

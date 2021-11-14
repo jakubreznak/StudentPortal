@@ -34,6 +34,7 @@ export interface Predmet {
     text: string;
     rating: number;
     created: string;
+    edited: string;
     predmet: Predmet;
     studentsLikedBy: HodnoceniLike[];
   }

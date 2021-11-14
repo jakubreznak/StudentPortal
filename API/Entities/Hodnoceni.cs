@@ -14,6 +14,7 @@ namespace API.Entities
         public int rating { get; set; }
         public string studentName { get; set; }
         public string created { get; set; }
+        public string edited { get; set; }
         public int predmetID { get; set; }
         public Predmet predmet { get; set; }
         public List<HodnoceniLike> StudentsLikedBy { get; set; }

@@ -197,7 +197,7 @@ namespace API.Controllers
             if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění smazat tento komentář.");
 
-            if(comment.Replies == null || comment.Replies.Count() > 0)
+            if(comment.Replies != null && comment.Replies.Count() > 0)
                 return BadRequest("Nelze smazat komentář s odpověďmi.");
 
             topic.comments.Remove(comment);
@@ -293,10 +293,13 @@ namespace API.Controllers
             if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravit tento komentář.");
 
-            if(comment.Replies == null || comment.Replies.Count() > 0)
+            if(comment.Replies != null && comment.Replies.Count() > 0)
                 return BadRequest("Nelze upravit komentář s odpověďmi.");
 
             comment.text = text.Trim();
+            comment.edited = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm");
+
+            _context.Comments.Update(comment);
 
             if(await _context.SaveChangesAsync() > 0)
             {
@@ -320,6 +323,7 @@ namespace API.Controllers
                 return BadRequest("Nemáte oprávnění upravit tuto odpvěď.");
 
             reply.text = text.Trim();
+            reply.edited = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm");
 
             if(await _context.SaveChangesAsync() > 0)
             {

@@ -132,6 +132,8 @@ namespace API.Controllers
                 return BadRequest("Nemáte oprávnění upravovat toto hodnocení.");
 
             hodnoceni.text = text.Trim();
+            hodnoceni.edited = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm");
+
 
             if(await _context.SaveChangesAsync() > 0)
             {

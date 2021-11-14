@@ -22,7 +22,12 @@ export class TopicComponent implements OnInit {
   student: Student;
   idIsEditing: number;
   textIsEditing: string;
+  idReplyIsEditing: number;
+  textReplyIsEditing: string;
+  commentIdIsReplying: number;
   editForm: FormGroup;
+  editReplyForm: FormGroup;
+  replyForm: FormGroup;
   commentForm: FormGroup;
   pagination: Pagination;
   commentParams = new CommentParams();
@@ -30,6 +35,7 @@ export class TopicComponent implements OnInit {
   filtersToggle: boolean = false;
   filtersToggleText: string = 'Filtry';
   commentsLiked: number[] = [];
+  commentIdRepliesShown: number;
 
   constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
@@ -116,6 +122,24 @@ export class TopicComponent implements OnInit {
       });
   }
 
+  postReply(commentId: number){
+    this.diskuzeService.postReply(commentId, JSON.stringify(this.replyForm.value.text)).subscribe(reply =>
+      {
+        this.toastr.success("Odpověď přidána.");
+        this.initializeReplyForm();
+        this.cancelReplying();
+        this.loadComments();
+      })
+  }
+
+  deleteReply(replyId: number){
+    this.diskuzeService.deleteReply(replyId).subscribe(response => 
+      {
+        this.toastr.success("Opdověď smazána.");
+        this.loadComments();
+      })
+  }
+
   deleteComment(topicID, commentID){
     this.diskuzeService.deleteComment(topicID, commentID).subscribe(comment =>
       {
@@ -131,10 +155,38 @@ export class TopicComponent implements OnInit {
     })
   }
 
+  initializeEditReplyForm() {
+    this.editReplyForm = new FormGroup({
+      text: new FormControl('',[Validators.required, Validators.minLength(1)])
+    })
+  }
+
   editComment(commentID, commentText){
     this.textIsEditing = commentText;
     this.idIsEditing = commentID;
     this.initializeEditForm();
+  }
+
+  editReply(replyId, replyText){
+    this.textReplyIsEditing = replyText;
+    this.idReplyIsEditing = replyId;
+    this.initializeEditReplyForm();
+  }
+
+  initializeReplyForm() {
+    this.replyForm = new FormGroup({
+      text: new FormControl('',[Validators.required, Validators.minLength(1)])
+    })
+  }
+
+  reply(commentID){
+    this.commentIdIsReplying = commentID;
+    this.initializeReplyForm();
+  }
+
+  cancelReplying()
+  {
+    this.commentIdIsReplying = NaN;
   }
 
   saveEdit(topicID, commentID){
@@ -150,6 +202,20 @@ export class TopicComponent implements OnInit {
   cancelEdit()
   {
     this.idIsEditing = NaN;
+  }
+
+  saveEditReply(replyId: number){
+    this.diskuzeService.editReply(replyId, JSON.stringify(this.editReplyForm.value.text)).subscribe(response =>
+      {
+        this.toastr.success("Odpověď upravena.");
+        this.cancelReplyEdit();
+        this.loadComments();
+      })
+  }
+
+  cancelReplyEdit()
+  {
+    this.idReplyIsEditing = NaN;
   }
 
 }

@@ -11,6 +11,7 @@
             <div class="btn-group float-right mb-2">
                 <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadComments()" btnRadio='datum' [(ngModel)]="commentParams.orderBy">Datum</button>
                 <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadComments()" btnRadio='oblibenost' [(ngModel)]="commentParams.orderBy">Oblíbenost</button>
+                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadComments()" btnRadio='odpovedi' [(ngModel)]="commentParams.orderBy">Odpovědi</button>
             </div>
         </div>
 
@@ -36,8 +37,8 @@
         
         <div *ngIf="pagedComments?.length > 0">
             <div class="list-group mt-0">
-                <ul>
-                    <li *ngFor="let comment of pagedComments" class="list-group-item border">
+                <ul *ngFor="let comment of pagedComments" >
+                    <li class="list-group-item border">
                         <div *ngIf="this.idIsEditing != comment.id" class="koment">
                             <div class="container">
                                 <div class="row">
@@ -51,10 +52,20 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <p class="info">{{comment.studentName}} - {{comment.created}}</p>
+                                    <div class="pl-0 col-sm">
+                                        <p class="info">{{comment.studentName}} - {{comment.created}}</p>
+                                    </div>
+                                    <div class="col-sm d-flex justify-content-end">
+                                        <button *ngIf="this.commentIdIsReplying != comment.id" class="btn btn-primary mr-1" (click)='reply(comment.id)' type="button">
+                                            Odpovědět
+                                        </button>
+                                        <button *ngIf="comment.replies && comment.replies.length > 0 && commentIdRepliesShown != comment.id" class="btn btn-primary" (click)='commentIdRepliesShown = comment.id' type="button">
+                                            Zobrazit odpovědi
+                                        </button>
+                                    </div>                                    
                                 </div>
                                 <div class="row" *ngIf="comment.studentName == student.name">
-                                    <button (click)='editComment(comment.id, comment.text)' type="button" class="btn btn-primary">Upravit</button>
+                                    <button (click)='editComment(comment.id, comment.text)' type="button" class="upravit btn btn-primary">Upravit</button>
                                     <button (click)='deleteComment(topic.id, comment.id)' type="button" class="btn btn-danger">Smazat</button>
                                 </div>
                             </div>
@@ -71,8 +82,64 @@
                                     <button [disabled]='!editForm.valid' class="btn btn-success mr-2" type="submit">Uložit</button>
                                 </div>
                             </form>
-                        </div>      
-                    </li>  
+                        </div>
+
+                        <div *ngIf="this.commentIdIsReplying == comment.id" class="reply">
+                            <form [formGroup]='replyForm' ngNativeValidate (ngSubmit)="postReply(comment.id)" autocomplete="off">
+                                <div class="form-group">
+                                    <textarea
+                                    type="text" class="form-control" formControlName='text' [(ngModel)]='textIsReplying'></textarea>
+                                </div>
+                
+                                <div class="button">
+                                    <button class="btn btn-info mr-2" (click)='cancelReplying()' type="button">Zrušit</button>
+                                    <button [disabled]='!replyForm.valid' class="btn btn-success mr-2" type="submit">Uložit</button>
+                                </div>
+                            </form>
+                        </div>    
+                    </li>
+                    
+                    <!-- Replies -->
+                    <div class="list-group mt-0 ml-5" *ngIf="commentIdRepliesShown == comment.id">
+                        <ul *ngFor="let reply of comment.replies" >
+                            <li class="list-group-item border">
+                                
+                                <div class="container" *ngIf="this.idReplyIsEditing != reply.id">
+                                    <div class="row">
+                                        <p class="komentar">{{reply.text}}</p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="info">{{reply.studentName}} - {{reply.created}}</p>
+                                    </div>
+                                    <div class="row" *ngIf="comment.studentName == student.name">
+                                        <button (click)='editReply(reply.id, reply.text)' type="button" class="btn btn-primary upravit">Upravit</button>
+                                        <button (click)='deleteReply(reply.id)' type="button" class="btn btn-danger">Smazat</button>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="this.idReplyIsEditing == reply.id" class="editace">
+                                    <form [formGroup]='editReplyForm' ngNativeValidate (ngSubmit)="saveEditReply(reply.id)" autocomplete="off">
+                                        <div class="form-group">
+                                            <textarea
+                                            type="text" class="form-control" formControlName='text' [(ngModel)]='textReplyIsEditing'></textarea>
+                                        </div>
+                        
+                                        <div class="button">
+                                            <button class="btn btn-info mr-2" (click)='cancelReplyEdit()' type="button">Zrušit</button>
+                                            <button [disabled]='!editReplyForm.valid' class="btn btn-success mr-2" type="submit">Uložit</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="row justify-content-center">
+                        <button *ngIf="commentIdRepliesShown == comment.id" class="btn btn-primary mt-1" (click)='commentIdRepliesShown = NaN' type="button">
+                            Skrýt odpovědi
+                        </button>
+                    </div>                    
+
                 </ul>
             </div>
 

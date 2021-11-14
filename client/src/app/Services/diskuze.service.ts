@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { CommentParams } from '../models/helpModels/commentParams';
 import { PaginatedResult } from '../models/helpModels/pagination';
 import { TopicParams } from '../models/helpModels/topicParams';
+import { Reply } from '../models/reply';
 import { Student } from '../models/student';
 import { Topic, Comment } from '../models/topic';
 import { AccountService } from './account.service';
@@ -62,6 +63,18 @@ export class DiskuzeService {
 
   deleteComment(topicID, commentID){
     return this.http.delete<Comment>(this.baseUrl + 'discussion/comment/' + topicID + '/' + commentID);
+  }
+
+  postReply(commentId: number, text: string){
+    return this.http.post<Reply>(this.baseUrl + 'discussion/reply/' + commentId, text, this.httpOptions);
+  }
+  
+  deleteReply(replyId: number){
+    return this.http.delete<Reply>(this.baseUrl + 'discussion/reply/' + replyId);
+  }
+
+  editReply(replyId: number, text: string){
+    return this.http.put<Reply>(this.baseUrl + 'discussion/reply/' + replyId, text, this.httpOptions);
   }
 
   deleteTopic(topicID){

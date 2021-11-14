@@ -1,3 +1,5 @@
+import { Reply } from "./reply";
+
 export interface Topic {
     id: number;
     name: string;
@@ -16,6 +18,7 @@ export interface Comment {
     topicID: number;
     topic: Topic;
     studentsLikedBy: CommentLike[];
+    replies: Reply[];
 }
 
 export interface CommentLike {

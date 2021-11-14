@@ -82,7 +82,7 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<IEnumerable<Comment>> GetCommentsByTopic (int id, [FromQuery] CommentParams commentParams)
         {
-            var comments = _context.Topics.Include("comments").FirstOrDefault(t => t.ID == id).comments;
+            var comments = _context.Comments.Include(x => x.Replies).Where(x => x.topicID == id).ToList();
             int allItemsCount = comments.Count();
             if(!string.IsNullOrEmpty(commentParams.Nazev))
             {
@@ -95,9 +95,9 @@ namespace API.Controllers
 
             foreach(var comment in comments)
             {
-                comment.topic = null;
                 comment.StudentsLikedBy = _context.CommentLikes.Where(x => x.CommentId == comment.ID).ToList();
                 comment.StudentsLikedBy.ForEach(x => x.Student = null);
+                comment.Replies = comment.Replies.OrderByDescending(x => x.ID).ToList();
             }
 
             switch (commentParams.OrderBy)
@@ -107,6 +107,9 @@ namespace API.Controllers
                     break;
                 case "oblibenost":
                     comments = comments.OrderByDescending(x => x.StudentsLikedBy.Count()).ToList();
+                    break;
+                case "odpovedi":
+                    comments = comments.OrderByDescending(x => x.Replies.Count()).ToList();
                     break;
             }
 
@@ -194,10 +197,60 @@ namespace API.Controllers
             if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění smazat tento komentář.");
 
+            if(comment.Replies == null || comment.Replies.Count() > 0)
+                return BadRequest("Nelze smazat komentář s odpověďmi.");
+
             topic.comments.Remove(comment);
             if(await _context.SaveChangesAsync() > 0)
             {
                 return Ok(comment);
+            }
+            return BadRequest();
+        }
+
+        [HttpPost("reply/{commentId}")]
+        [Authorize]
+        public async Task<ActionResult<Reply>> PostReply (int? commentId, [FromBody] string text)
+        {
+            if(commentId == null || text == null)
+                return BadRequest();
+            
+            if(text.Length > 500)
+                return BadRequest("Text je příliš dlouhý, maximálně 500 znaků.");
+
+            var comment = await _context.Comments.Include(x => x.Replies).FirstOrDefaultAsync(x => x.ID == commentId);
+            if(comment == null)
+                return BadRequest();
+
+            var reply = new Reply
+            {
+                commentId = commentId.Value,
+                created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
+                text = text.Trim(),
+                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+            };
+
+            comment.Replies.Add(reply);
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return Ok(reply);
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("reply/{replyId}")]
+        [Authorize]
+        public async Task<ActionResult> DeleteReply (int replyId)
+        {
+            var reply = await _context.Replies.FirstOrDefaultAsync(x => x.ID == replyId);            
+            
+            if(reply.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění smazat tuto odpověď.");
+
+            _context.Replies.Remove(reply);
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return Ok();
             }
             return BadRequest();
         }
@@ -240,6 +293,9 @@ namespace API.Controllers
             if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravit tento komentář.");
 
+            if(comment.Replies == null || comment.Replies.Count() > 0)
+                return BadRequest("Nelze upravit komentář s odpověďmi.");
+
             comment.text = text.Trim();
 
             if(await _context.SaveChangesAsync() > 0)
@@ -247,6 +303,39 @@ namespace API.Controllers
                 return topic;
             }
             return BadRequest("Nebyly provedeny žádné změny.");
+        }
+
+        [HttpPut("reply/{replyId}")]
+        [Authorize]
+        public async Task<ActionResult> EditReply(int replyId, [FromBody] string text)
+        {
+            if(text.Length > 500)
+                return BadRequest("Text je příliš dlouhý, maximálně 500 znaků.");
+
+            var reply = await _context.Replies.FirstOrDefaultAsync(x => x.ID == replyId);
+            if(reply == null)
+                return BadRequest();
+            
+            if(reply.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return BadRequest("Nemáte oprávnění upravit tuto odpvěď.");
+
+            reply.text = text.Trim();
+
+            if(await _context.SaveChangesAsync() > 0)
+            {
+                return Ok();
+            }
+            return BadRequest("Nebyly provedeny žádné změny.");
+        }
+
+        [HttpGet("reply/{commentId}/{repliesCount}")]
+        [Authorize]
+        public ActionResult<IEnumerable<Reply>> LoadMoreReplies (int commentId, int repliesCount)
+        {
+            var replies = _context.Replies.Where(x => x.commentId == commentId).OrderByDescending(x => x.ID).ToList();
+
+            replies = replies.Skip(3 * repliesCount).Take(3).ToList();
+            return Ok(replies);
         }
     }
 }

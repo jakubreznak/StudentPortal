@@ -17,5 +17,6 @@ namespace API.Entities
         public int topicID { get; set; }
         public Topic topic { get; set; }
         public List<CommentLike> StudentsLikedBy { get; set; }
+        public List<Reply> Replies { get; set; }
     }
 }

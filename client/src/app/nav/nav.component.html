@@ -21,7 +21,7 @@
             </ng-container>
             </ul>
         <div class="dropdown" *ngIf="accountService.currentStudent$ | async as user" dropdown>
-            <a class="dropdown-toggle text-dark" dropdownToggle>{{user.name}}</a>
+            <a class="dropdown-toggle" dropdownToggle>{{user.name}}</a>
             <div class="dropdown-menu dropdown-menu-right mt-3" *dropdownMenu>
                 <a class="dropdown-item" routerLink='/profile'>Upravit profil</a>
                 <a class="dropdown-item" (click)="logout()">Odhlásit se</a>
@@ -32,16 +32,16 @@
             <input 
                 [class.is-invalid]='loginForm.get("name").errors && loginForm.get("name").touched'
                 formControlName='name'
-                class="form-control mr-sm-2" 
+                class="form-control rounded-item mr-sm-2" 
                 type="text" 
                 placeholder="jméno">
             <input 
                 [class.is-invalid]='loginForm.get("password").errors && loginForm.get("password").touched'
                 formControlName='password'
-                class="form-control mr-sm-2" 
+                class="form-control rounded-item mr-sm-2" 
                 type="password" 
                 placeholder="heslo">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Přihlásit</button>
+            <button class="btn btn-outline-primary btn-rounded rounded-pill my-2 my-sm-0" type="submit">Přihlásit</button>
         </form>
     </div>
 </nav>

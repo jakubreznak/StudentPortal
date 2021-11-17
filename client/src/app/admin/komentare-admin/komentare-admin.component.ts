@@ -7,7 +7,7 @@ import { AdminService } from '../admin.service';
 @Component({
   selector: 'app-komentare-admin',
   templateUrl: './komentare-admin.component.html',
-  styleUrls: ['./komentare-admin.component.css']
+  styleUrls: ['./komentare-admin.component.scss']
 })
 export class KomentareAdminComponent implements OnInit {
 

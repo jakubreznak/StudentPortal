@@ -1,34 +1,34 @@
 <div class="container mt-3">
-    <a class="btn btn-secondary mr-2 mb-3" routerLink="..">Zpět</a>
+    <a class="btn btn-secondary btn-rounded rounded-pill mr-2 mb-3" routerLink="..">Zpět</a>
     <div class="container mt-3">
         <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadPredmety()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Název: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+                <input type="text" class="form-control rounded-item ml-1" style="width: 130px;" name="nazev" 
                     [(ngModel)]="predmetyParams.nazev">
             </div>
 
             <div class="form-group px-2">
                 <label>Zkratka katedry: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="katedra" 
+                <input type="text" class="form-control rounded-item ml-1" style="width: 130px;" name="katedra" 
                     [(ngModel)]="predmetyParams.katedra">
             </div>
 
             <div class="form-group px-2">
                 <label>Zkratka předmětu: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="zkratka" 
+                <input type="text" class="form-control rounded-item ml-1" style="width: 130px;" name="zkratka" 
                     [(ngModel)]="predmetyParams.zkratka">
             </div>
     
-            <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
-            <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+            <button class="btn btn-primary btn-rounded rounded-pill ml-1" type="submit">Filtrovat</button>
+            <button (click)="resetFilters()" class="btn btn-info btn-rounded rounded-pill ml-1" type="submit">Zrušit filtr</button>
 
         </form>
 
     <hr>
     </div>
-    <div class="list-group mb-5">
-        <div *ngFor="let predmet of predmety" class="a list-group-item border" [ngClass]="{'added cent':predmetyPridany?.includes(predmet)}">
+    <div class="list-group rounded-item mb-5">
+        <div *ngFor="let predmet of predmety" class="a list-group-item rounded-item list-effect" [ngClass]="{'added cent':predmetyPridany?.includes(predmet)}">
             <div class="nazev-rocnik" [ngClass]="{'hid':predmetyPridany?.includes(predmet)}">
                 {{predmet.nazev}}
                 <p>katedra: {{predmet.katedra}} | zkratka predmetu: {{predmet.zkratka}}</p> 
@@ -38,7 +38,7 @@
                 <p [ngClass]="predmetyPridany?.includes(predmet) ? 'vis' : 'unv' ">Přidán</p>
             </div>
             <div class="d-flex justify-content-end">
-                <button (click)='addPredmet(predmet)' class="btn btn-success" [ngClass]="{'hid':predmetyPridany?.includes(predmet)}">Přidat</button>
+                <button (click)='addPredmet(predmet)' class="btn btn-success btn-rounded rounded-pill" [ngClass]="{'hid':predmetyPridany?.includes(predmet)}">Přidat</button>
             </div>
         </div> 
     </div>

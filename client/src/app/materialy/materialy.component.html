@@ -3,7 +3,7 @@
     <form [formGroup]='materialForm' (ngSubmit)="materialForm.valid && postMaterial()" autocomplete="off" class="mt-2 mb-1">
         <div class="form-group">
             <input [class.is-invalid]='materialForm.get("name").errors && materialForm.get("name").touched'
-            type="text" formControlName="name" class="form-control" placeholder="název studijního materiálu">
+            type="text" formControlName="name" class="rounded-item form-control" placeholder="název studijního materiálu">
             <div *ngIf="materialForm.get('name').hasError('required')"
             class="invalid-feedback">Prosím vyplňte název studijního materiálu.</div>
             <div *ngIf="materialForm.get('name').hasError('maxlength')"
@@ -12,42 +12,42 @@
         <div class="form-group button1">
             <input 
             [class.is-invalid]='materialForm.get("file").errors && materialForm.get("file").touched' id="file" name="file"
-            type="file" class="form-control inputfile" formControlName='file' (change)="onFilesSelected($event)" multiple>
-            <label class="btn btn-success" for="file">Vybrat soubor</label>
+            type="file" class="rounded-item form-control inputfile" formControlName='file' (change)="onFilesSelected($event)" multiple>
+            <label class="btn btn-success btn-rounded rounded-pill" for="file">Vybrat soubor</label>
             <div *ngIf="materialForm.get('file').hasError('required')" class="invalid-feedback">Vyberte prosím soubor.</div>
         </div>
         <div class="form-group button2">
-            <button [disabled]='!materialForm.valid' class="btn btn-success mr-2" type="submit">Přídat</button>
+            <button [disabled]='!materialForm.valid' class="btn btn-success btn-rounded rounded-pill mr-2" type="submit">Přídat</button>
         </div>
     </form>
     <div class="d-flex justify-content-between">
         <div class="d-flex mb-2">
-            <button (click)="filterToggle()" class="btn btn-outline-secondary" type="submit">{{filtersToggleText}}</button>
+            <button (click)="filterToggle()" class="btn btn-outline-secondary btn-rounded rounded-pill" type="submit">{{filtersToggleText}}</button>
         </div>
     
         <div class="btn-group float-right mb-2">
-            <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadMaterials()" btnRadio='datum' [(ngModel)]="materialParams.orderBy">Datum</button>
-            <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadMaterials()" btnRadio='nazev' [(ngModel)]="materialParams.orderBy">Název</button>
-            <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadMaterials()" btnRadio='likes' [(ngModel)]="materialParams.orderBy">Oblíbenost</button>
+            <button type="button" class="btn btn-secondary btn-rounded btn-left" name='orderBy' (click)="loadMaterials()" btnRadio='datum' [(ngModel)]="materialParams.orderBy">Datum</button>
+            <button type="button" class="btn btn-secondary btn-rounded" name='orderBy' (click)="loadMaterials()" btnRadio='nazev' [(ngModel)]="materialParams.orderBy">Název</button>
+            <button type="button" class="btn btn-secondary btn-rounded btn-right" name='orderBy' (click)="loadMaterials()" btnRadio='likes' [(ngModel)]="materialParams.orderBy">Oblíbenost</button>
         </div>
     </div>
 
     <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadMaterials()" autocomplete="off">    
         <div class="form-group px-2">
             <label>Název: </label>
-            <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+            <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="nazev" 
                 [(ngModel)]="materialParams.nazev">
         </div>
     
         <div class="form-group px-2">
             <label>Typ souboru: </label>
-            <input type="text" class="form-control ml-1" style="width: 130px;" name="typ" 
+            <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="typ" 
                 [(ngModel)]="materialParams.typ">
         </div>
     
         <div>
-            <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
-            <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+            <button class="btn btn-primary ml-1 btn-rounded rounded-pill" type="submit">Filtrovat</button>
+            <button (click)="resetFilters()" class="btn btn-info btn-rounded rounded-pill ml-1" type="submit">Zrušit filtr</button>
         </div>            
     
     </form>
@@ -65,15 +65,15 @@
     </div>
     
     <div *ngIf="pagedFiles && pagedFiles.length > 0">
-        <ul>
-            <li *ngFor="let soubor of pagedFiles" class="list-group-item border">
+        <ul class="rounded-item">
+            <li *ngFor="let soubor of pagedFiles" class="list-group-item list-effect mt-3 rounded-item">
                 <div class="container">
                     <div class="row">
                         <div class="col-sm">
                             <p>{{soubor.fileName}}</p>
                         </div>
                         <div class="col-sm d-flex justify-content-end">
-                            <span class="stahnout"><a class="btn btn-success" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
+                            <span class="stahnout"><a class="btn btn-success btn-rounded rounded-pill" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
                         </div>
                     </div>
                     <div class="row">
@@ -82,12 +82,12 @@
                         </div>
                         <div class="like col-sm d-flex justify-content-end">
                             <p class="mr-1">{{soubor.studentsLikedBy.length}}</p>
-                            <button class="btn btn-light" (click)="likeOrRemoveLike(soubor.id)"><i *ngIf="materialsLiked.includes(soubor.id)" class="fas fa-heart"></i>
+                            <button class="btn btn-light btn-rounded rounded-pill" (click)="likeOrRemoveLike(soubor.id)"><i *ngIf="materialsLiked.includes(soubor.id)" class="fas fa-heart"></i>
                                 <i *ngIf="!materialsLiked.includes(soubor.id)" class="far fa-heart"></i></button>
                         </div>
                     </div>
                     <div class="row" *ngIf="soubor.studentName == student.name">
-                        <button (click)='deleteMaterial(soubor.id)' type="button" class="btn btn-danger">Smazat</button>
+                        <button (click)='deleteMaterial(soubor.id)' type="button" class="btn btn-danger btn-rounded rounded-pill">Smazat</button>
                     </div>
                 </div>
             </li>  

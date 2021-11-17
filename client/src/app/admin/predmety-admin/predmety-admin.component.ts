@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-predmety-admin',
   templateUrl: './predmety-admin.component.html',
-  styleUrls: ['./predmety-admin.component.css']
+  styleUrls: ['./predmety-admin.component.scss']
 })
 export class PredmetyAdminComponent implements OnInit {
 

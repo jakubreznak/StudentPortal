@@ -9,6 +9,4 @@
 	   = Google Chrome - google-chrome --disable-web-security
 
 	- MacOs
-	   = Google Chrome - open -a Google\ Chrome --args --disable-web-security --user-data-dir
-
-	   = Safari - Enable the develop menu by going to Preferences > Advanced. Then select “Disable Cross-Origin Restrictions” from the develop menu.
+	   = Safari - Preferences -> Advanced -> Show Develop menu in bar, Otevřít Develop menu -> Označit “Disable Cross-Origin Restrictions”. Znovu načíst stránku!

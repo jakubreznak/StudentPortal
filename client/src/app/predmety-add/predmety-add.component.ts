@@ -11,7 +11,7 @@ import { PredmetyService } from '../Services/predmety.service';
 @Component({
   selector: 'app-predmety-add',
   templateUrl: './predmety-add.component.html',
-  styleUrls: ['./predmety-add.component.css']
+  styleUrls: ['./predmety-add.component.scss']
 })
 export class PredmetyAddComponent implements OnInit {
 

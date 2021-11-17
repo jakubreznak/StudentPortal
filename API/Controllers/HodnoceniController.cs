@@ -131,6 +131,9 @@ namespace API.Controllers
             if(hodnoceni.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravovat toto hodnocení.");
 
+            if(hodnoceni.text == text.Trim())
+                return BadRequest("Nebyly provedeny žádné změny.");
+
             hodnoceni.text = text.Trim();
             hodnoceni.edited = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm");
 

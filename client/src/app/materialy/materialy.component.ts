@@ -16,7 +16,7 @@ import { PredmetyService } from '../Services/predmety.service';
 @Component({
   selector: 'app-materialy',
   templateUrl: './materialy.component.html',
-  styleUrls: ['./materialy.component.css']
+  styleUrls: ['./materialy.component.scss']
 })
 export class MaterialyComponent implements OnInit {
   @Input() predmet: Predmet;

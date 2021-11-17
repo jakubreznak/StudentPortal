@@ -9,7 +9,7 @@ import { AdminService } from '../admin.service';
 @Component({
   selector: 'app-studenti-admin',
   templateUrl: './studenti-admin.component.html',
-  styleUrls: ['./studenti-admin.component.css']
+  styleUrls: ['./studenti-admin.component.scss']
 })
 export class StudentiAdminComponent implements OnInit {
 

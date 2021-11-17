@@ -10,14 +10,14 @@
                     <div class="form-group col-10">
                         <input
                         [class.is-invalid]='diskuzeForm.get("topicName").errors && diskuzeForm.get("topicName").touched'
-                        type="text" class="form-control" formControlName="topicName" placeholder="nové téma" required >
+                        type="text" class="rounded-item form-control" formControlName="topicName" placeholder="nové téma" required >
                         <div *ngIf="diskuzeForm.get('topicName').hasError('required')"
                         class="invalid-feedback">Prosím vyplňte název tématu.</div>
                         <div *ngIf="diskuzeForm.get('topicName').hasError('maxlength')"
                         class="invalid-feedback">Název materiálu může mít maximálně 200 znaků.</div>
                     </div>
                     <div class="form-group col-md-auto">
-                        <button class="btn btn-success mr-2" type="submit">Přidat</button>
+                        <button class="btn btn-success btn-rounded rounded-pill mr-2" type="submit">Přidat</button>
                     </div>
                 </div>       
             </form>
@@ -25,39 +25,39 @@
 
         <div class="d-flex justify-content-between">
             <div class="d-flex mb-2">
-                <button (click)="filterToggle()" class="btn btn-outline-secondary" type="submit">{{filtersToggleText}}</button>
+                <button (click)="filterToggle()" class="btn btn-outline-secondary btn-rounded rounded-pill" type="submit">{{filtersToggleText}}</button>
             </div>
         
             <div class="btn-group float-right mb-2">
-                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadTopics()" btnRadio='datum' [(ngModel)]="topicParams.orderBy">Datum</button>
-                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadTopics()" btnRadio='nazev' [(ngModel)]="topicParams.orderBy">Název</button>
-                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadTopics()" btnRadio='komentare' [(ngModel)]="topicParams.orderBy">Komentáře</button>
+                <button type="button" class="btn btn-secondary btn-rounded btn-left" name='orderBy' (click)="loadTopics()" btnRadio='datum' [(ngModel)]="topicParams.orderBy">Datum</button>
+                <button type="button" class="btn btn-secondary btn-rounded" name='orderBy' (click)="loadTopics()" btnRadio='nazev' [(ngModel)]="topicParams.orderBy">Název</button>
+                <button type="button" class="btn btn-secondary btn-rounded btn-right" name='orderBy' (click)="loadTopics()" btnRadio='komentare' [(ngModel)]="topicParams.orderBy">Komentáře</button>
             </div>
         </div>
 
         <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadTopics()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Název: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+                <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="nazev" 
                     [(ngModel)]="topicParams.nazev">
             </div>
     
             <div class="form-group px-2">
                 <label>Jméno studenta: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="jmeno" 
+                <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="jmeno" 
                     [(ngModel)]="topicParams.student">
             </div>
     
             <div>
-                <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
-                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+                <button class="btn btn-primary ml-1 btn-rounded rounded-pill" type="submit">Filtrovat</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1 btn-rounded rounded-pill" type="submit">Zrušit filtr</button>
             </div>            
     
         </form>
         
         <div *ngIf="topics?.length > 0">
-            <div class="list-group">
-                <div *ngFor="let topic of topics" class="list-group-item-action list-group-item border">
+            <div class="list-group rounded-item">
+                <div *ngFor="let topic of topics" class="list-group-item-action rounded-item list-effect list-group-item">
                     <a [routerLink]="topic.id">
                         <div class="nazev-rocnik">
                             {{topic.name}}
@@ -65,7 +65,7 @@
                         </div>
                     </a>
                     <div *ngIf="topic.studentName == student.name">
-                        <button (click)='deleteTopic(topic.id)' type="button" class="btn btn-danger">Smazat</button>
+                        <button (click)='deleteTopic(topic.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                     </div>
                 </div>  
             </div>

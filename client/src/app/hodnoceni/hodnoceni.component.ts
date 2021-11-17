@@ -16,7 +16,7 @@ import { HodnoceniParams } from '../models/helpModels/hodnoceniParams';
 @Component({
   selector: 'app-hodnoceni',
   templateUrl: './hodnoceni.component.html',
-  styleUrls: ['./hodnoceni.component.css']
+  styleUrls: ['./hodnoceni.component.scss']
 })
 export class HodnoceniComponent implements OnInit {
   @Input() predmet: Predmet;

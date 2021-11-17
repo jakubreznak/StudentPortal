@@ -9,12 +9,12 @@
             <form [formGroup]='hodnoceniForm' ngNativeValidate (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="form-group">
                     <textarea
-                    type="text" class="form-control" formControlName='text' placeholder="názor (nepovinné)"></textarea>
+                    type="text" class="rounded-item form-control" formControlName='text' placeholder="názor (nepovinné)"></textarea>
                 </div>
 
                 <select
                 [class.is-invalid]='hodnoceniForm.get("cislo").errors && hodnoceniForm.get("cislo").touched'
-                class="custom-select" formControlName="cislo">
+                class="rounded-item custom-select" formControlName="cislo">
                     <option disabled hidden value="">vyberte ohodnocení</option>
                     <option *ngFor="let cislo of cisla">
                       {{cislo}}
@@ -23,24 +23,24 @@
                 <div *ngIf="hodnoceniForm.get('cislo').hasError('required')" class="invalid-feedback">Prosím vyplňte číselné hodnocení.</div>
 
                 <div class="button">
-                    <button class="btn btn-success mr-2" type="submit">Hodnotit</button>
+                    <button class="btn btn-success mr-2 btn-rounded rounded-pill" type="submit">Hodnotit</button>
                 </div>
             </form>
         </div>
     
         <div class="d-flex justify-content-between">     
             <div class="btn-group float-right mb-2">
-                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadHodnoceni()" btnRadio='datum' [(ngModel)]="hodnoceniParams.orderBy">Datum</button>
-                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadHodnoceni()" btnRadio='ohodnoceni' [(ngModel)]="hodnoceniParams.orderBy">Ohodnocení</button>
-                <button type="button" class="btn btn-secondary" name='orderBy' (click)="loadHodnoceni()" btnRadio='oblibenost' [(ngModel)]="hodnoceniParams.orderBy">Oblíbenost</button>
+                <button type="button" class="btn btn-secondary btn-rounded btn-left" name='orderBy' (click)="loadHodnoceni()" btnRadio='datum' [(ngModel)]="hodnoceniParams.orderBy">Datum</button>
+                <button type="button" class="btn btn-secondary btn-rounded" name='orderBy' (click)="loadHodnoceni()" btnRadio='ohodnoceni' [(ngModel)]="hodnoceniParams.orderBy">Ohodnocení</button>
+                <button type="button" class="btn btn-secondary btn-rounded btn-right" name='orderBy' (click)="loadHodnoceni()" btnRadio='oblibenost' [(ngModel)]="hodnoceniParams.orderBy">Oblíbenost</button>
             </div>
         </div>
 
         <div *ngIf="hodnoceni.length > 0">
-            <div class="list-group">
-                <ul>
+            <div class="list-group rounded-item">
+                <ul class="rounded-item">
                     <ng-container *ngFor="let comment of hodnoceni">
-                         <li  class="list-group-item border"> <!-- *ngIf="comment.text.length != 0" -->
+                         <li  class="list-group-item list-effect rounded-item"> <!-- *ngIf="comment.text.length != 0" -->
                             <div *ngIf="this.idIsEditing != comment.id" class="koment container">
                                 <div class="row">
                                     <div class="col-10">
@@ -48,7 +48,7 @@
                                     </div>
                                     <div class="likeCount col-sm d-flex justify-content-end">
                                         <p>{{comment.studentsLikedBy.length}}</p>
-                                        <button class="like btn btn-light" (click)="likeOrRemoveLike(comment.id)"><i *ngIf="hodnoceniLiked.includes(comment.id)" class="fas fa-heart"></i>
+                                        <button class="like btn btn-light btn-rounded rounded-pill" (click)="likeOrRemoveLike(comment.id)"><i *ngIf="hodnoceniLiked.includes(comment.id)" class="fas fa-heart"></i>
                                             <i *ngIf="!hodnoceniLiked.includes(comment.id)" class="far fa-heart"></i></button>
                                     </div>
                                 </div>
@@ -60,8 +60,8 @@
                                     <p class="info" *ngIf="comment.edited">{{comment.studentName}} - {{comment.created}} | Upraveno: {{comment.edited}}</p>
                                 </div>
                                 <div class="row" *ngIf="comment.studentName == student.name">
-                                    <button (click)='editRating(comment.id, comment.text)' type="button" class="btn btn-primary">Upravit</button>
-                                    <button (click)='deleteRating(comment.id)' type="button" class="btn btn-danger">Smazat</button>
+                                    <button (click)='editRating(comment.id, comment.text)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2 mt-0">Upravit</button>
+                                    <button (click)='deleteRating(comment.id)' type="button" class="btn btn-dark btn-light-info rounded-pill mt-0">Smazat</button>
                                 </div>
                             </div>
 
@@ -69,12 +69,12 @@
                                 <form [formGroup]='editForm' ngNativeValidate (ngSubmit)="saveEdit(comment.id)" autocomplete="off">
                                     <div class="form-group">
                                         <textarea
-                                        type="text" class="form-control" formControlName='text' [(ngModel)]='textIsEditing'></textarea>
+                                        type="text" class="rounded-item form-control" formControlName='text' [(ngModel)]='textIsEditing'></textarea>
                                     </div>
                     
                                     <div class="button">
-                                        <button class="btn btn-info mr-2" (click)='cancelEdit()' type="button">Zrušit</button>
-                                        <button class="btn btn-success mr-2" type="submit">Uložit</button>
+                                        <button class="btn btn-info mr-2 btn-rounded rounded-pill" (click)='cancelEdit()' type="button">Zrušit</button>
+                                        <button class="btn btn-success mr-2 btn-rounded rounded-pill" type="submit">Uložit</button>
                                     </div>
                                 </form>
                             </div>                            

@@ -11,7 +11,7 @@ import { PredmetyService } from '../Services/predmety.service';
 @Component({
   selector: 'app-predmety-list',
   templateUrl: './predmety-list.component.html',
-  styleUrls: ['./predmety-list.component.css']
+  styleUrls: ['./predmety-list.component.scss']
 })
 export class PredmetyListComponent implements OnInit {
 

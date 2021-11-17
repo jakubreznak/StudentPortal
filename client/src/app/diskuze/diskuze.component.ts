@@ -15,7 +15,7 @@ import { DiskuzeService } from '../Services/diskuze.service';
 @Component({
   selector: 'app-diskuze',
   templateUrl: './diskuze.component.html',
-  styleUrls: ['./diskuze.component.css']
+  styleUrls: ['./diskuze.component.scss']
 })
 export class DiskuzeComponent implements OnInit {
   @Input() predmet: Predmet;

@@ -8,7 +8,7 @@ import { AdminService } from '../admin.service';
 @Component({
   selector: 'app-diskuze-admin',
   templateUrl: './diskuze-admin.component.html',
-  styleUrls: ['./diskuze-admin.component.css']
+  styleUrls: ['./diskuze-admin.component.scss']
 })
 export class DiskuzeAdminComponent implements OnInit {
 

@@ -8,7 +8,7 @@ import { AdminService } from '../admin.service';
 @Component({
   selector: 'app-materialy-admin',
   templateUrl: './materialy-admin.component.html',
-  styleUrls: ['./materialy-admin.component.css']
+  styleUrls: ['./materialy-admin.component.scss']
 })
 export class MaterialyAdminComponent implements OnInit {
 

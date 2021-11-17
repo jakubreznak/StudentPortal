@@ -6,11 +6,11 @@
                     <div class="form-group col-10">
                         <input
                         [class.is-invalid]='profileForm.get("idNumber").errors && profileForm.get("idNumber").touched'
-                        type="text" class="form-control" formControlName="idNumber" placeholder="nové osobní číslo" required >
+                        type="text" class="rounded-item form-control" formControlName="idNumber" placeholder="nové osobní číslo" required >
                         <div *ngIf="profileForm.get('idNumber').hasError('required')" class="invalid-feedback">Prosím vyplňte nové osobní číslo.</div>
                     </div>
                     <div class="form-group col-md-auto">
-                        <button class="btn btn-success mr-2" type="submit">Změnit</button>
+                        <button class="btn btn-primary btn-rounded rounded-pill mr-2" type="submit">Změnit</button>
                     </div>
                 </div>       
             </form>
@@ -23,13 +23,13 @@
             <div class="form-group">
                 <input 
                 [class.is-invalid]='changePasswordForm.get("oldPassword").errors && changePasswordForm.get("oldPassword").touched'
-                type="password" class="form-control" formControlName='oldPassword' placeholder="staré heslo">
+                type="password" class="rounded-item form-control" formControlName='oldPassword' placeholder="staré heslo">
                 <div *ngIf="changePasswordForm.get('oldPassword').hasError('required')" class="invalid-feedback">Prosím vyplňte staré heslo.</div>
             </div>
             <div class="form-group">
                 <input 
                 [class.is-invalid]='changePasswordForm.get("newPassword").errors && changePasswordForm.get("newPassword").touched'
-                type="password" class="form-control" formControlName='newPassword' placeholder="nové heslo">
+                type="password" class="rounded-item form-control" formControlName='newPassword' placeholder="nové heslo">
                 <div *ngIf="changePasswordForm.get('newPassword').hasError('required')" class="invalid-feedback">Prosím vyplňte heslo.</div>
                 <div *ngIf="changePasswordForm.get('newPassword').hasError('pattern')" class="invalid-feedback">Heslo musí obsahovat alespoň 1 číslici.</div>
                 <div *ngIf="changePasswordForm.get('newPassword').hasError('minlength')" class="invalid-feedback">Heslo musí mít 6 znaků a více.</div>
@@ -37,16 +37,16 @@
             <div class="form-group">
                 <input 
                 [class.is-invalid]='changePasswordForm.get("confirmNewPassword").errors && changePasswordForm.get("confirmNewPassword").touched'
-                type="password" class="form-control" formControlName='confirmNewPassword' placeholder="kontrola nového hesla">
+                type="password" class="rounded-item form-control" formControlName='confirmNewPassword' placeholder="kontrola nového hesla">
                 <div *ngIf="changePasswordForm.get('confirmNewPassword').hasError('required')" class="invalid-feedback">Prosím vyplňte kontrolu hesla.</div>
                 <div *ngIf="changePasswordForm.get('confirmNewPassword').hasError('isMatching')" class="invalid-feedback">Musí být stejné jako heslo.</div>   
             </div>
             <div class="form-group">
-                <button [disabled]='!changePasswordForm.valid' class="change-password-btn btn btn-success mr-2" type="submit">Změnit</button>
+                <button [disabled]='!changePasswordForm.valid' class="change-password-btn btn btn-primary btn-rounded rounded-pill mr-2" type="submit">Změnit</button>
             </div>
         </form>
 
 
         <h3>Zrušení svého účtu:</h3>
-        <button (click)='deleteAccount()' type="button" class="btn btn-danger">Smazat účet</button>
+        <button (click)='deleteAccount()' type="button" class="btn btn-danger btn-rounded rounded-pill">Smazat účet</button>
 </div>

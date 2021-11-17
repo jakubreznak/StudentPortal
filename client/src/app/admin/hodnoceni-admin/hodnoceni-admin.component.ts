@@ -8,7 +8,7 @@ import { AdminHodnoceniParams } from 'src/app/models/helpModels/adminHodnoceniPa
 @Component({
   selector: 'app-hodnoceni-admin',
   templateUrl: './hodnoceni-admin.component.html',
-  styleUrls: ['./hodnoceni-admin.component.css']
+  styleUrls: ['./hodnoceni-admin.component.scss']
 })
 export class HodnoceniAdminComponent implements OnInit {
 

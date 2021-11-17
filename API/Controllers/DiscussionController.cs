@@ -289,6 +289,9 @@ namespace API.Controllers
             var comment = topic.comments.FirstOrDefault(c => c.ID == commentID);
             if(comment == null)
                 return BadRequest();
+
+            if(comment.text == text.Trim())
+                return BadRequest("Nebyly provedeny žádné změny.");
             
             if(comment.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravit tento komentář.");
@@ -321,6 +324,9 @@ namespace API.Controllers
             
             if(reply.studentName != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
                 return BadRequest("Nemáte oprávnění upravit tuto odpvěď.");
+
+            if(reply.text == text.Trim())
+                return BadRequest("Nebyly provedeny žádné změny.");
 
             reply.text = text.Trim();
             reply.edited = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm");

@@ -8,7 +8,7 @@ import { PredmetyService } from '../Services/predmety.service';
 @Component({
   selector: 'app-predmet-detail',
   templateUrl: './predmet-detail.component.html',
-  styleUrls: ['./predmet-detail.component.css']
+  styleUrls: ['./predmet-detail.component.scss']
 })
 export class PredmetDetailComponent implements OnInit {
 

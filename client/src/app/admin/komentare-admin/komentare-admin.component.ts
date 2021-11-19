@@ -29,6 +29,12 @@ export class KomentareAdminComponent implements OnInit {
       })
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.commentParams.pageNumber = 1;
+    this.getComments();
+  }
+
   resetFilters(){
     this.commentParams = new AdminCommentParams();
     this.pagination.currentPage = 1;

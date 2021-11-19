@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <form *ngIf="filtersToggle" #form="ngForm" class="form-inline d-flex justify-content-center mt-1" (ngSubmit)="loadComments()" autocomplete="off">    
+        <form *ngIf="filtersToggle" #form="ngForm" class="form-inline d-flex justify-content-center mt-1" (ngSubmit)="filter()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Text: </label>
                 <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="nazev" 

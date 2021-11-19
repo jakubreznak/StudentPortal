@@ -72,6 +72,12 @@ export class MaterialyComponent implements OnInit {
         });
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.materialParams.pageNumber = 1;
+    this.loadMaterials();
+  }
+
   filterToggle(){
     this.filtersToggle = !this.filtersToggle;
     this.filtersToggleText = this.filtersToggle ? 'Skrýt filtry' : 'Filtry';

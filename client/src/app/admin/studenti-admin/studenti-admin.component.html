@@ -1,7 +1,7 @@
 <div class="container mt-5">
     
     <div class="container mt-3">
-        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="getStudents()" autocomplete="off">    
+        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Jméno: </label>
                 <input type="text" class="form-control ml-1 rounded-item list-effect" style="width: 130px;" name="nazev" 

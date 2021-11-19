@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="loadMaterials()" autocomplete="off">    
+    <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
         <div class="form-group px-2">
             <label>Název: </label>
             <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="nazev" 
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div class="row" *ngIf="soubor.studentName == student.name">
-                        <button (click)='deleteMaterial(soubor.id)' type="button" class="btn btn-danger btn-rounded rounded-pill">Smazat</button>
+                        <button (click)='deleteMaterial(soubor.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                     </div>
                 </div>
             </li>  

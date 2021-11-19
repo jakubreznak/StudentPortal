@@ -75,6 +75,12 @@ export class TopicComponent implements OnInit {
         });
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.commentParams.pageNumber = 1;
+    this.loadComments();
+  }
+
   likeOrRemoveLike(commentId: number){
     if(this.commentsLiked.includes(commentId)){
       this.diskuzeService.removeLikeComment(commentId).subscribe(response =>{

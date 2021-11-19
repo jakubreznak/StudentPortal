@@ -33,7 +33,7 @@ namespace API.Controllers
         [HttpGet("students")]
         public async Task<ActionResult<IEnumerable<string>>> GetStudents([FromQuery] StudentParams studentParams)
         {
-            var students = await _userManager.Users.OrderByDescending(x => x.datumRegistrace).ToListAsync();
+            var students = await _userManager.Users.Where(x => x.UserName != "jakub").OrderByDescending(x => x.datumRegistrace).ToListAsync();
             int allItemsCount = students.Count();
             if(!string.IsNullOrEmpty(studentParams.Nazev))
                 students = students.Where(x => x.UserName.ToLower().Contains(studentParams.Nazev.ToLower())).ToList();

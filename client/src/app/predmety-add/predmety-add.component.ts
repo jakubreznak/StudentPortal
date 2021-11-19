@@ -37,6 +37,12 @@ export class PredmetyAddComponent implements OnInit {
         });    
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.predmetyParams.pageNumber = 1;
+    this.loadPredmety();
+  }
+
   addPredmet(predmet: Predmet){
     this.predmetService.addPredmet(predmet).subscribe(response =>
       {

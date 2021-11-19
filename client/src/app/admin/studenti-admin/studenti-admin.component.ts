@@ -31,6 +31,12 @@ export class StudentiAdminComponent implements OnInit {
       })
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.studentsParams.pageNumber = 1;
+    this.getStudents();
+  }
+
   deleteStudent(name: string) {
     this.adminService.deleteStudent(name).subscribe(r =>
       {

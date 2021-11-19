@@ -1,7 +1,7 @@
 <div class="container mt-5">
     <div *ngIf="hodnoceni">
 
-        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="getHodnoceni()" autocomplete="off">    
+        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Text: </label>
                 <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="text" 

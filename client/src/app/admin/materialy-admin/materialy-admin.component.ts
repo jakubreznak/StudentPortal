@@ -30,6 +30,12 @@ export class MaterialyAdminComponent implements OnInit {
       })
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.materialParams.pageNumber = 1;
+    this.getSoubory();
+  }
+
   resetFilters(){
     this.materialParams = new AdminMaterialParams();
     this.pagination.currentPage = 1;

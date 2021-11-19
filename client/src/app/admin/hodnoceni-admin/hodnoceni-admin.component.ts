@@ -30,6 +30,12 @@ export class HodnoceniAdminComponent implements OnInit {
       })
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.hodnoceniParams.pageNumber = 1;
+    this.getHodnoceni();
+  }
+
   deleteHodnoceni(id: number) {
     this.adminService.deleteHodnoceni(id).subscribe(r =>
       {

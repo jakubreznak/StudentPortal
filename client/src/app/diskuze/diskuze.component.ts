@@ -66,6 +66,12 @@ export class DiskuzeComponent implements OnInit {
     }
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.topicParams.pageNumber = 1;
+    this.loadTopics();
+  }
+
   pageChanged(event: any){
     this.topicParams.pageNumber = event.page;
     this.loadTopics();

@@ -31,6 +31,12 @@ export class DiskuzeAdminComponent implements OnInit {
       })
   }
 
+  filter(){
+    this.pagination.currentPage = 1;
+    this.topicParams.pageNumber = 1;
+    this.getTopics();
+  }
+
   resetFilters(){
     this.topicParams = new AdminTopicParams();
     this.pagination.currentPage = 1;

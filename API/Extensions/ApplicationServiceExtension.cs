@@ -27,7 +27,7 @@ namespace API.Extensions
                     }
                     else
                     {
-                        var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+                        var connUrl = Environment.GetEnvironmentVariable("HEROKU_POSTGRESQL_MAROON_URL");
 
                         connUrl = connUrl.Replace("postgres://", string.Empty);
                         var pgUserPass = connUrl.Split("@")[0];

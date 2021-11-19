@@ -4,36 +4,36 @@
         <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="getSoubory()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Název: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+                <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="nazev" 
                     [(ngModel)]="materialParams.nazev">
             </div>
     
             <div class="form-group px-2">
                 <label>Jméno studenta: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="jmeno" 
+                <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="jmeno" 
                     [(ngModel)]="materialParams.student">
             </div>
 
             <div class="form-group px-2">
                 <label>Typ souboru: </label>
-                <input type="text" class="form-control ml-1" style="width: 130px;" name="typ" 
+                <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="typ" 
                     [(ngModel)]="materialParams.typ">
             </div>
     
             <div>
-                <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
-                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+                <button class="btn btn-primary ml-1 btn-rounded rounded-pill" type="submit">Filtrovat</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1 btn-rounded rounded-pill" type="submit">Zrušit filtr</button>
             </div>            
     
         </form>
 
         <div class="list-group">
-            <ul>
-                <li *ngFor="let soubor of soubory" class="list-group-item border">
+            <ul class="rounded-item">
+                <li *ngFor="let soubor of soubory" class="list-group-item rounded-item list-effect">
                     <p class="komentar">{{soubor.fileName}}</p>
                     <p class="info">Vytvořil: {{soubor.studentName}} - {{soubor.dateAdded}} | Typ souboru: {{soubor.extension}}</p>
-                    <span class="stahnout mr-2"><a class="btn btn-success" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
-                    <button (click)='deleteSoubor(soubor.id)' type="button" class="btn btn-danger">Smazat</button>
+                    <span class="stahnout mr-2"><a class="btn btn-dark btn-light-info rounded-pill" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
+                    <button (click)='deleteSoubor(soubor.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                 </li>  
             </ul>
         </div>

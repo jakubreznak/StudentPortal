@@ -2,19 +2,19 @@
     <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="getTopics()" autocomplete="off">    
         <div class="form-group px-2">
             <label>Název: </label>
-            <input type="text" class="form-control ml-1" style="width: 130px;" name="nazev" 
+            <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="nazev" 
                 [(ngModel)]="topicParams.nazev">
         </div>
 
         <div class="form-group px-2">
             <label>Jméno studenta: </label>
-            <input type="text" class="form-control ml-1" style="width: 130px;" name="jmeno" 
+            <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="jmeno" 
                 [(ngModel)]="topicParams.student">
         </div>
 
         <div>
-            <button class="btn btn-primary ml-1" type="submit">Filtrovat</button>
-            <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Zrušit filtr</button>
+            <button class="btn btn-primary ml-1 btn-rounded rounded-pill" type="submit">Filtrovat</button>
+            <button (click)="resetFilters()" class="btn btn-info ml-1 btn-rounded rounded-pill" type="submit">Zrušit filtr</button>
         </div>            
 
     </form>
@@ -22,13 +22,13 @@
 <hr>
     <div *ngIf="topics">
         <div class="list-group">
-            <ul>
-                <li *ngFor="let topic of topics" class="list-group-item border">
+            <ul class="rounded-item">
+                <li *ngFor="let topic of topics" class="list-group-item rounded-item list-effect">
                     <p class="komentar">{{topic.name}}</p>
                     <div class="nazev-rocnik">
                         <p>Vytvořil: {{topic.studentName}} - {{topic.created}} | Počet komentářů: {{topic.comments.length}} | Poslední komentář: {{topic.comments[0] && topic.comments[0].created || "zatím nepřidán"}}</p>
                     </div>
-                    <button (click)='deleteTopic(topic.id)' type="button" class="btn btn-danger">Smazat</button>
+                    <button (click)='deleteTopic(topic.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                 </li>  
             </ul>
         </div>

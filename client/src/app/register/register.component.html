@@ -4,13 +4,13 @@
     <div class="form-group">
         <input 
         [class.is-invalid]='registerForm.get("name").errors && registerForm.get("name").touched'
-        type="text" class="form-control" formControlName='name' placeholder="jméno">
+        type="text" class="form-control rounded-item" formControlName='name' placeholder="jméno">
         <div class="invalid-feedback">Prosím vyplňte jméno.</div>
     </div>
     <div class="form-group">
         <input 
         [class.is-invalid]='registerForm.get("password").errors && registerForm.get("password").touched'
-        type="password" class="form-control" formControlName='password' placeholder="heslo">
+        type="password" class="form-control rounded-item" formControlName='password' placeholder="heslo">
         <div *ngIf="registerForm.get('password').hasError('required')" class="invalid-feedback">Prosím vyplňte heslo.</div>
         <div *ngIf="registerForm.get('password').hasError('pattern')" class="invalid-feedback">Heslo musí obsahovat alespoň 1 číslici.</div>
         <div *ngIf="registerForm.get('password').hasError('minlength')" class="invalid-feedback">Heslo musí mít 6 znaků a více.</div>
@@ -18,14 +18,14 @@
     <div class="form-group">
         <input 
         [class.is-invalid]='registerForm.get("confirmPassword").errors && registerForm.get("confirmPassword").touched'
-        type="password" class="form-control" formControlName='confirmPassword' placeholder="kontrola hesla">
+        type="password" class="form-control rounded-item" formControlName='confirmPassword' placeholder="kontrola hesla">
         <div *ngIf="registerForm.get('confirmPassword').hasError('required')" class="invalid-feedback">Prosím vyplňte kontrolu hesla.</div>
         <div *ngIf="registerForm.get('confirmPassword').hasError('isMatching')" class="invalid-feedback">Musí být stejné jako heslo.</div>   
     </div>
     <div class="form-group">
         <input 
         [class.is-invalid]='registerForm.get("upolNumber").errors && registerForm.get("upolNumber").touched'
-        type="text" class="form-control" formControlName='upolNumber' placeholder="osobní číslo (např. R18140) - nepovinné">
+        type="text" class="form-control rounded-item" formControlName='upolNumber' placeholder="osobní číslo (např. R18140) - nepovinné">
         <!-- <div *ngIf="registerForm.get('upolNumber').hasError('required')" class="invalid-feedback">Prosím vyplňte své osobní číslo.</div> -->
     </div>
     <div class="form-group text-center">

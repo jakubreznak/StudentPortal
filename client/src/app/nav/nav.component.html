@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md bg-white">
+<nav class="navbar navbar-expand-md">
     <div class="container">
         <ng-container *ngIf="accountService.currentStudent$ | async; else homeComp">
             <a class="navbar-brand" [routerLink]="'/predmety'">Student portal</a>

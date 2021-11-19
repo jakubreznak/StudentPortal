@@ -1,6 +1,6 @@
 <div class="container main">
     <div class="row">
-        <div class="col mr-5">
+        <div class="col mr-md-5">
         <div *ngIf="!registerMode">
             <h1>Vítejte na studentském portálu</h1>
             <p class="main-info">Sdílejte své studijní materiály. Hodnoťte předměty. Zapojte se do diskuzí o předmětech.</p>       
@@ -10,7 +10,7 @@
         </div>
     
         <div *ngIf="registerMode">
-            <div class="row justify-content-start">
+            <div class="row d-flex justify-content-md-start">
                 <div class="col-8">
                     <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>
                 </div>

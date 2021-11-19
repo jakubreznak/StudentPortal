@@ -11,9 +11,21 @@ h1 {
 }
 
 
-@media only screen and (min-width: 1100px) {
+@media only screen and (min-width: 1200px) {
     img{
         height: 28em;
     }
   }
 
+
+  @media only screen and (max-width: 767px) {
+    .row {
+        justify-content: center;
+    }
+
+    img {
+        margin-top: 5em;
+        margin-left: auto;
+        margin-right: auto;
+    }
+  }

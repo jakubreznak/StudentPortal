@@ -20,7 +20,7 @@
             <button [disabled]='!materialForm.valid' class="btn btn-success btn-rounded rounded-pill mr-2" type="submit">Přídat</button>
         </div>
     </form>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-md-between flex-wrap">
         <div class="d-flex mb-2">
             <button (click)="filterToggle()" class="btn btn-outline-secondary btn-rounded rounded-pill" type="submit">{{filtersToggleText}}</button>
         </div>
@@ -69,18 +69,18 @@
             <li *ngFor="let soubor of pagedFiles" class="list-group-item list-effect mt-3 rounded-item">
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm">
+                        <div class="col">
                             <p>{{soubor.fileName}}</p>
                         </div>
-                        <div class="col-sm d-flex justify-content-end">
+                        <div class="col d-flex justify-content-end">
                             <span class="stahnout"><a class="btn btn-success btn-rounded rounded-pill" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm">
+                        <div class="col">
                             <p class="date">{{soubor.dateAdded}} - {{soubor.extension}}</p>
                         </div>
-                        <div class="like col-sm d-flex justify-content-end">
+                        <div class="like col d-flex justify-content-end">
                             <p class="mr-1">{{soubor.studentsLikedBy.length}}</p>
                             <button class="btn btn-light btn-rounded rounded-pill" (click)="likeOrRemoveLike(soubor.id)"><i *ngIf="materialsLiked.includes(soubor.id)" class="fas fa-heart"></i>
                                 <i *ngIf="!materialsLiked.includes(soubor.id)" class="far fa-heart"></i></button>

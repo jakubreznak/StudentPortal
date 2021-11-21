@@ -28,18 +28,17 @@
     <hr>
     </div>
     <div class="list-group rounded-item mb-5">
-        <div *ngFor="let predmet of predmety" class="a list-group-item rounded-item list-effect" [ngClass]="{'added cent':predmetyPridany?.includes(predmet)}">
+        <div *ngFor="let predmet of predmety" class="a list-group-item rounded-item list-effect" [ngClass]="{'added cent':predmetyPridany?.includes(predmet)}">         
             <div class="nazev-rocnik" [ngClass]="{'hid':predmetyPridany?.includes(predmet)}">
                 {{predmet.nazev}}
-                <p>katedra: {{predmet.katedra}} | zkratka predmetu: {{predmet.zkratka}}</p> 
-                
+                <p>katedra: {{predmet.katedra}} | zkratka predmetu: {{predmet.zkratka}}</p>                 
             </div>
             <div>
                 <p [ngClass]="predmetyPridany?.includes(predmet) ? 'vis' : 'unv' ">Přidán</p>
             </div>
-            <div class="d-flex justify-content-end">
+            <span [ngClass]="predmetyPridany?.includes(predmet) ? 'unv' : 'vis' ">
                 <button (click)='addPredmet(predmet)' class="btn btn-success btn-rounded rounded-pill" [ngClass]="{'hid':predmetyPridany?.includes(predmet)}">Přidat</button>
-            </div>
+            </span>
         </div> 
     </div>
 

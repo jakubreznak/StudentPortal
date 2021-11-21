@@ -48,6 +48,7 @@ export class PredmetyAddComponent implements OnInit {
       {
         this.predmetyPridany.push(predmet);
         this.toastr.success("Předmět byl přidán.");
+        setTimeout(()=>{ this.loadPredmety() }, 500);
       })
   }
 

@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Predmet } from '../models/predmet';
 import { PredmetyService } from '../Services/predmety.service';
@@ -17,7 +17,8 @@ export class PredmetDetailComponent implements OnInit {
   predmetId: number = Number(this.route.snapshot.paramMap.get('id'));
   pred: Predmet;
 
-  constructor(private predmetService: PredmetyService, private route: ActivatedRoute, private toastr: ToastrService) { }
+  constructor(private predmetService: PredmetyService, private route: ActivatedRoute,
+     private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadPredmet();
@@ -40,6 +41,7 @@ export class PredmetDetailComponent implements OnInit {
     this.predmetService.removePredmet(this.route.snapshot.paramMap.get('id')).subscribe(response =>
       {
         this.toastr.success("Předmět odebrán ze seznamu.");
+        this.router.navigate([".."]);
       });
   }
 

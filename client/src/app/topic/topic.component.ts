@@ -132,8 +132,8 @@ export class TopicComponent implements OnInit {
     this.diskuzeService.postReply(commentId, JSON.stringify(this.replyForm.value.text)).subscribe(reply =>
       {
         this.toastr.success("Odpověď přidána.");
-        this.initializeReplyForm();
         this.cancelReplying();
+        this.replyForm.reset();
         this.loadComments();
       })
   }

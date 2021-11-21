@@ -186,11 +186,7 @@ namespace API.Controllers
         [Authorize]
         public async Task<ActionResult<Comment>> DeleteComment (int topicID, int commentID)
         {
-            var topic = await _context.Topics.Include("comments").FirstOrDefaultAsync(t => t.ID == topicID);
-            if(topic == null)
-                return BadRequest();
-
-            var comment = topic.comments.FirstOrDefault(c => c.ID == commentID);
+            var comment = _context.Comments.Include(x => x.Replies).FirstOrDefault(c => c.ID == commentID);
             if(comment == null)
                 return BadRequest();
             
@@ -200,7 +196,7 @@ namespace API.Controllers
             if(comment.Replies != null && comment.Replies.Count() > 0)
                 return BadRequest("Nelze smazat komentář s odpověďmi.");
 
-            topic.comments.Remove(comment);
+            _context.Comments.Remove(comment);
             if(await _context.SaveChangesAsync() > 0)
             {
                 return Ok(comment);

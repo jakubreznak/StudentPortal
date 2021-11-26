@@ -61,7 +61,7 @@
                     <a [routerLink]="topic.id">
                         <div class="nazev-rocnik">
                             {{topic.name}}
-                            <p>Vytvořil: {{topic.studentName}} - {{topic.created}} | Počet komentářů: {{topic.comments.length}} | Poslední komentář: {{topic.comments[0] && topic.comments[0].created || "zatím nepřidán"}}</p>
+                            <p>Vytvořil: {{topic.accountName}} - {{topic.created}} | Počet komentářů: {{topic.comments.length}} | Poslední komentář: {{topic.comments[0] && topic.comments[0].created || "zatím nepřidán"}}</p>
                         </div>
                     </a>
                     <div *ngIf="topic.studentName == student.name">

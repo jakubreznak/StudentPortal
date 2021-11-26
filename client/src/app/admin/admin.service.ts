@@ -7,6 +7,7 @@ import { AdminMaterialParams } from '../models/helpModels/adminMaterialParams';
 import { AdminTopicParams } from '../models/helpModels/adminTopicParams';
 import { StudentsParams } from '../models/helpModels/studentsParams';
 import { Hodnoceni, Soubor } from '../models/predmet';
+import { Reply } from '../models/reply';
 import { Student } from '../models/student';
 import { Topic } from '../models/topic';
 import { getPaginatedResult, getPaginationHeaders } from '../Services/paginationHelper';
@@ -56,6 +57,10 @@ export class AdminService {
 
   deleteComment(id: number) {
     return this.http.delete<Comment[]>(this.baseUrl + 'admin/comment/' + id);
+  }
+
+  deleteReply(id: number) {
+    return this.http.delete<Reply>(this.baseUrl + 'admin/reply/' + id);
   }
 
   getHodnoceni(hodnoceniParams: AdminHodnoceniParams) {

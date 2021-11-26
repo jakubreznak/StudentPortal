@@ -5,6 +5,7 @@ export interface Topic {
     name: string;
     predmetID: string;
     studentName: string;
+    accountName: string;
     created: string;
     createdDateTime: string;
     comments: Comment[];
@@ -16,6 +17,7 @@ export interface Comment {
     created: string;
     edited: string;
     studentName: string;
+    accountName: string;
     topicID: number;
     topic: Topic;
     studentsLikedBy: CommentLike[];

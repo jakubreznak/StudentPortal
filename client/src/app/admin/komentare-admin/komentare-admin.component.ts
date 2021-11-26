@@ -14,6 +14,7 @@ export class KomentareAdminComponent implements OnInit {
   comments: Comment[];
   pagination: Pagination;
   commentParams = new AdminCommentParams();
+  commentIdRepliesShown: number;
   
   constructor(private adminService: AdminService,private toastr: ToastrService) { }
 
@@ -52,6 +53,15 @@ export class KomentareAdminComponent implements OnInit {
         this.getComments();
         this.toastr.success("Komentář smazán.");
       });
+  }
+
+  
+  deleteReply(replyId: number){
+    this.adminService.deleteReply(replyId).subscribe(response => 
+      {
+        this.toastr.success("Opdověď smazána.");
+        this.getComments();
+      })
   }
 
 }

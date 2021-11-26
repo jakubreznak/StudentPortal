@@ -64,7 +64,6 @@ export class TopicComponent implements OnInit {
             {
               let comments: number[] = [];
               response.result.forEach(function (comment){
-                console.log(comment.id)
                 if(comment.studentsLikedBy.some(x => x.studentId == id))
                 {                  
                   comments.push(comment.id);

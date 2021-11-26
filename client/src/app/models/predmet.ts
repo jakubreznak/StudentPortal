@@ -26,6 +26,7 @@ export interface Predmet {
     extension: string;
     dateAdded: string;
     studentName: string;
+    accountName: string;
     studentsLikedBy: SouborLike[];
   }
 

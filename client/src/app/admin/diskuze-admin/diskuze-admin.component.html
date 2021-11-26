@@ -26,7 +26,7 @@
                 <li *ngFor="let topic of topics" class="list-group-item rounded-item list-effect">
                     <p class="komentar">{{topic.name}}</p>
                     <div class="nazev-rocnik">
-                        <p>Vytvořil: {{topic.studentName}} - {{topic.created}} | Počet komentářů: {{topic.comments.length}} | Poslední komentář: {{topic.comments[0] && topic.comments[0].created || "zatím nepřidán"}}</p>
+                        <p>Vytvořil: {{topic.accountName}} - {{topic.created}} | Počet komentářů: {{topic.comments.length}} | Poslední komentář: {{topic.comments[0] && topic.comments[0].created || "zatím nepřidán"}}</p>
                     </div>
                     <button (click)='deleteTopic(topic.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                 </li>  

@@ -53,13 +53,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="pl-0 col-sm">
-                                        <p class="info" *ngIf="comment.edited == null">{{comment.studentName}} - {{comment.created}} </p>
-                                        <p class="info" *ngIf="comment.edited">{{comment.studentName}} - {{comment.created}} | Upraveno: {{comment.edited}}</p>
+                                        <p class="info" *ngIf="comment.edited == null">{{comment.accountName}} - {{comment.created}} </p>
+                                        <p class="info" *ngIf="comment.edited">{{comment.accountName}} - {{comment.created}} | Upraveno: {{comment.edited}}</p>
                                     </div>                                  
                                 </div>
-                                <div class="row" *ngIf="comment.studentName == student.name">
-                                    <button (click)='editComment(comment.id, comment.text)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2">Upravit</button>
-                                    <button (click)='deleteComment(topic.id, comment.id)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2">Smazat</button>
+                                <div class="row">
+                                    <button *ngIf="comment.studentName == student.name" (click)='editComment(comment.id, comment.text)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2">Upravit</button>
+                                    <button *ngIf="comment.studentName == student.name" (click)='deleteComment(topic.id, comment.id)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2">Smazat</button>
                                     <button *ngIf="this.commentIdIsReplying != comment.id" class="btn btn-dark btn-light-info rounded-pill mr-2" (click)='reply(comment.id)' type="button">
                                         Odpovědět
                                     </button>
@@ -108,8 +108,8 @@
                                         <p class="komentar">{{reply.text}}</p>
                                     </div>
                                     <div class="row">
-                                        <p class="info" *ngIf="reply.edited == null">{{reply.studentName}} - {{reply.created}} </p>
-                                        <p class="info" *ngIf="reply.edited">{{reply.studentName}} - {{reply.created}} | Upraveno: {{reply.edited}}</p>
+                                        <p class="info" *ngIf="reply.edited == null">{{reply.accountName}} - {{reply.created}} </p>
+                                        <p class="info" *ngIf="reply.edited">{{reply.accountName}} - {{reply.created}} | Upraveno: {{reply.edited}}</p>
                                     </div>
                                     <div class="row" *ngIf="comment.studentName == student.name">
                                         <button (click)='editReply(reply.id, reply.text)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2">Upravit</button>

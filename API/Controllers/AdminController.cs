@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.CustomExtensions;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -36,7 +37,7 @@ namespace API.Controllers
             var students = await _userManager.Users.Where(x => x.UserName != "jakub").OrderByDescending(x => x.datumRegistrace).ToListAsync();
             int allItemsCount = students.Count();
             if(!string.IsNullOrEmpty(studentParams.Nazev))
-                students = students.Where(x => x.UserName.ToLower().Contains(studentParams.Nazev.ToLower())).ToList();
+                students = students.Where(x => x.UserName.Contains(studentParams.Nazev.RemoveAccentsToLower())).ToList();
             List<string> studentsNames = new List<string>();
             foreach(var student in students){
                 studentsNames.Add(student.UserName);
@@ -70,7 +71,7 @@ namespace API.Controllers
             }
             if(!string.IsNullOrEmpty(topicParams.Student))
             {
-                topics = topics.Where(x => x.studentName.ToLower().Contains(topicParams.Student.ToLower())).ToList();
+                topics = topics.Where(x => x.studentName.RemoveAccentsToLower().Contains(topicParams.Student.RemoveAccentsToLower())).ToList();
             }
             var pagedTopics = PagedList<Topic>.CreateFromList(topics, topicParams.PageNumber, topicParams.PageSize);
 
@@ -93,11 +94,12 @@ namespace API.Controllers
         [HttpGet("comments")]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments([FromQuery] AdminCommentParams commentParams)
         {
-            var comments = await _context.Comments.Include(x => x.topic).ToListAsync();
+            var comments = await _context.Comments.Include(x => x.Replies).Include(x => x.topic).ToListAsync();
 
             foreach(var comment in comments)
             {
                 comment.topic.comments = null;
+                comment.Replies = comment.Replies.OrderByDescending(x => x.ID).ToList();
             }
             int allItemsCount = comments.Count();
             if(!string.IsNullOrEmpty(commentParams.Nazev))
@@ -106,7 +108,7 @@ namespace API.Controllers
             }
             if(!string.IsNullOrEmpty(commentParams.Student))
             {
-                comments = comments.Where(x => x.studentName.ToLower().Contains(commentParams.Student.ToLower())).ToList();
+                comments = comments.Where(x => x.studentName.RemoveAccentsToLower().Contains(commentParams.Student.RemoveAccentsToLower())).ToList();
             }
             if(!string.IsNullOrEmpty(commentParams.Tema))
             {
@@ -154,7 +156,7 @@ namespace API.Controllers
             }
             if(!string.IsNullOrEmpty(hodnoceniParams.Student))
             {
-                hodnocenis = hodnocenis.Where(x => x.studentName.ToLower().Contains(hodnoceniParams.Student.ToLower())).ToList();
+                hodnocenis = hodnocenis.Where(x => x.studentName.RemoveAccentsToLower().Contains(hodnoceniParams.Student.RemoveAccentsToLower())).ToList();
             }
             if(!string.IsNullOrEmpty(hodnoceniParams.Predmet))
             {
@@ -196,7 +198,7 @@ namespace API.Controllers
             }
             if(!string.IsNullOrEmpty(materialParams.Student))
             {
-                soubory = soubory.Where(x => x.studentName.ToLower().Contains(materialParams.Student.ToLower())).ToList();
+                soubory = soubory.Where(x => x.studentName.RemoveAccentsToLower().Contains(materialParams.Student.RemoveAccentsToLower())).ToList();
             }
             if(!string.IsNullOrEmpty(materialParams.Typ))
             {
@@ -223,6 +225,24 @@ namespace API.Controllers
 
                     var result = await _fileService.RemoveFileAsync(soubor.PublicID);
                         if (result.Error != null) return BadRequest();
+
+                    return Ok();
+                }
+            }
+            return BadRequest();
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpDelete("reply/{id}")]
+        public async Task<ActionResult> DeleteReply(int id)
+        {
+            var replies = await _context.Replies.ToListAsync();
+            foreach(var reply in replies)
+            {
+                if(reply.ID == id)
+                {
+                    _context.Replies.Remove(reply);
+                    if(await _context.SaveChangesAsync() <= 0) return BadRequest();
 
                     return Ok();
                 }

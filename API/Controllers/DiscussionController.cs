@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using API.CustomExtensions;
 using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.HelpClass;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +18,11 @@ namespace API.Controllers
     public class DiscussionController : BaseApiController
     {
         private readonly DataContext _context;
-        public DiscussionController(DataContext context)
+        private readonly UserManager<Student> _userManager;
+        public DiscussionController(DataContext context, UserManager<Student> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -56,7 +60,7 @@ namespace API.Controllers
             }
             if(!string.IsNullOrEmpty(topicParams.Student))
             {
-                topicsList = topicsList.Where(x => x.studentName.ToLower().Contains(topicParams.Student.ToLower())).ToList();
+                topicsList = topicsList.Where(x => x.studentName.RemoveAccentsToLower().Contains(topicParams.Student.RemoveAccentsToLower())).ToList();
             }
 
             switch (topicParams.OrderBy)
@@ -90,7 +94,7 @@ namespace API.Controllers
             }
             if(!string.IsNullOrEmpty(commentParams.Student))
             {
-                comments = comments.Where(x => x.studentName.ToLower().Contains(commentParams.Student.ToLower())).ToList();
+                comments = comments.Where(x => x.studentName.RemoveAccentsToLower().Contains(commentParams.Student.RemoveAccentsToLower())).ToList();
             }
 
             foreach(var comment in comments)
@@ -137,13 +141,17 @@ namespace API.Controllers
             if(topicName.Length > 200)
                 return BadRequest("Název tématu může mít maximálně 200 znaků.");
 
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
             var topic = new Topic
             {
                 predmetID = predmetID ?? String.Empty,
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 name = topicName.Trim(),
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
-                createdDateTime = DateTime.Now
+                createdDateTime = DateTime.Now,
+                accountName = student.accountName
             };
 
             _context.Topics.Add(topic);
@@ -166,12 +174,16 @@ namespace API.Controllers
             if(topic == null)
                 return BadRequest();
 
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
             var comment = new Comment
             {
                 topicID = topicID.Value,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
                 text = text.Trim(),
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                accountName = student.accountName
             };
 
             topic.comments.Add(comment);
@@ -218,12 +230,16 @@ namespace API.Controllers
             if(comment == null)
                 return BadRequest();
 
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
             var reply = new Reply
             {
                 commentId = commentId.Value,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
                 text = text.Trim(),
                 studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                accountName = student.accountName
             };
 
             comment.Replies.Add(reply);

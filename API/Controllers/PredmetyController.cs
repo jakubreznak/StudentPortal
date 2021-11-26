@@ -180,6 +180,9 @@ namespace API.Controllers
 
                 string extension = Path.GetExtension(files[0].FileName).Substring(1).ToUpper();
 
+                var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
+
                 var soubor = new Soubor
                 {
                     Url = result.SecureUrl.AbsoluteUri,
@@ -187,7 +190,8 @@ namespace API.Controllers
                     FileName = nazevMaterial,
                     Extension = extension,
                     DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
-                    studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    accountName = student.accountName
                 };
 
                 predmet.Files.Add(soubor);

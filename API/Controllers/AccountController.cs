@@ -20,6 +20,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
 using API.Entities._HelpEntities;
+using API.CustomExtensions;
 
 namespace API.Controllers
 {
@@ -44,7 +45,7 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<StudentDTO>> Register(RegisterDTO registerDTO)
         {
-            if (await NameExists(registerDTO.name = RemoveAccents(registerDTO.name)))
+            if (await NameExists(registerDTO.name.RemoveAccentsToLower()))
                 return BadRequest("Existuje již uživatel s tímto jménem.");
 
             var student = new Student();
@@ -52,11 +53,12 @@ namespace API.Controllers
             if(!String.IsNullOrEmpty(registerDTO.upolNumber))
             {              
                 registerDTO.upolNumber = registerDTO.upolNumber.ToUpper().Trim();
-                student.UserName = registerDTO.name.ToLower();
+                student.UserName = registerDTO.name.RemoveAccentsToLower();
                 student.upolNumber = registerDTO.upolNumber;
                 student.datumRegistrace = DateTime.Now;
                 student.oborIdno = registerDTO.oborIdno;
                 student.rocnikRegistrace = registerDTO.rocnikRegistrace;
+                student.accountName = registerDTO.name.Trim();
 
                 // student = await GetPredmetyFromUpol(registerDTO.upolNumber, student);
                 // if (student == null)
@@ -80,9 +82,10 @@ namespace API.Controllers
             }
             else 
             {
-                student.UserName = registerDTO.name.ToLower();
+                student.UserName = registerDTO.name.RemoveAccentsToLower();
                 student.datumRegistrace = DateTime.Now;
                 student.rocnikRegistrace = registerDTO.rocnikRegistrace;
+                student.accountName = registerDTO.name.Trim();
             }
 
             var result = await _userManager.CreateAsync(student, registerDTO.password);
@@ -101,7 +104,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<StudentDTO>> Login(LoginDTO loginDTO)
         {
-            var student = await _userManager.Users.FirstOrDefaultAsync(s => s.UserName == RemoveAccents(loginDTO.name.ToLower()));
+            var student = await _userManager.Users.FirstOrDefaultAsync(s => s.UserName == loginDTO.name.RemoveAccentsToLower());
 
             if (student == null)
                 return Unauthorized("Uživatel s tímto jménem neexistuje.");
@@ -259,25 +262,6 @@ namespace API.Controllers
                 i++;
             }
             return 0;
-        }
-
-        private string RemoveAccents(string username)
-        {
-            string result = username.Replace(" ", string.Empty);
-
-            var normalizedString = result.Normalize(NormalizationForm.FormD);
-            var stringBuilder = new StringBuilder();
-
-            foreach (var c in normalizedString)
-            {
-                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-                {
-                    stringBuilder.Append(c);
-                }
-            }
-
-            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
     }
 }

@@ -31,7 +31,7 @@
             <ul class="rounded-item">
                 <li *ngFor="let soubor of soubory" class="list-group-item rounded-item list-effect">
                     <p class="komentar">{{soubor.fileName}}</p>
-                    <p class="info">Vytvořil: {{soubor.studentName}} - {{soubor.dateAdded}} | Typ souboru: {{soubor.extension}}</p>
+                    <p class="info">Vytvořil: {{soubor.accountName}} - {{soubor.dateAdded}} | Typ souboru: {{soubor.extension}}</p>
                     <span class="stahnout mr-2"><a class="btn btn-dark btn-light-info rounded-pill" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
                     <button (click)='deleteSoubor(soubor.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                 </li>  

@@ -56,8 +56,8 @@
                                     <p class="komentar">{{comment.rating}}/10</p>
                                 </div>
                                 <div class="row">
-                                    <p class="info" *ngIf="comment.edited == null">{{comment.studentName}} - {{comment.created}} </p>
-                                    <p class="info" *ngIf="comment.edited">{{comment.studentName}} - {{comment.created}} | Upraveno: {{comment.edited}}</p>
+                                    <p class="info" *ngIf="comment.edited == null">{{comment.accountName}} - {{comment.created}} </p>
+                                    <p class="info" *ngIf="comment.edited">{{comment.accountName}} - {{comment.created}} | Upraveno: {{comment.edited}}</p>
                                 </div>
                                 <div class="row" *ngIf="comment.studentName == student.name">
                                     <button (click)='editRating(comment.id, comment.text)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2 mt-0">Upravit</button>

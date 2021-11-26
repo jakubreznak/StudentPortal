@@ -28,14 +28,45 @@
         </form>
 
         <div class="list-group">
-            <ul class="rounded-item">
-                <li *ngFor="let comment of comments" class="list-group-item rounded-item list-effect">
-                    <div class="koment">
-                        <p class="komentar">{{comment.text}}</p>
-                        <p class="info">Vytvořil: {{comment.studentName}} - {{comment.created}} | Téma: {{comment.topic.name}}</p>
-                    </div>
-                    <button (click)='deleteComment(comment.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
-                </li>  
+            <ul *ngFor="let comment of comments" class="rounded-item">
+                <li class="list-group-item rounded-item list-effect">
+                    <div>
+                        <div class="koment">
+                            <p class="komentar">{{comment.text}}</p>
+                            <p class="info">Vytvořil: {{comment.accountName}} - {{comment.created}} | Téma: {{comment.topic.name}}</p>
+                        </div>
+                        <button (click)='deleteComment(comment.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                        <button *ngIf="comment.replies && comment.replies.length > 0 && commentIdRepliesShown != comment.id" class="btn btn-dark btn-light-info rounded-pill ml-2" (click)='commentIdRepliesShown = comment.id' type="button">
+                            Zobrazit odpovědi
+                        </button>
+                    </div>                                          
+                </li>
+
+                <div class="list-group mt-0 ml-5" *ngIf="commentIdRepliesShown == comment.id">
+                    <ul *ngFor="let reply of comment.replies" class="rounded-item" >
+                        <li class="list-group-item list-effect rounded-item">
+                            
+                            <div class="container">
+                                <div class="row">
+                                    <p class="komentar">{{reply.text}}</p>
+                                </div>
+                                <div class="row">
+                                    <p class="info" *ngIf="reply.edited == null">{{reply.accountName}} - {{reply.created}} </p>
+                                    <p class="info" *ngIf="reply.edited">{{reply.accountName}} - {{reply.created}} | Upraveno: {{reply.edited}}</p>
+                                </div>
+                                <div class="row">
+                                    <button (click)='deleteReply(reply.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                                </div>
+                            </div>                              
+                        </li>
+                    </ul>
+                </div>
+                <div class="row justify-content-center">
+                    <button *ngIf="commentIdRepliesShown == comment.id" class="btn mt-1 btn-dark btn-light-info rounded-pill" (click)='commentIdRepliesShown = NaN' type="button">
+                        Skrýt odpovědi
+                    </button>
+                </div>
+
             </ul>
         </div>
 

@@ -62,7 +62,7 @@
                     </ul>
                 </div>
                 <div class="row justify-content-center">
-                    <button *ngIf="commentIdRepliesShown == comment.id" class="btn mt-1 btn-dark btn-light-info rounded-pill" (click)='commentIdRepliesShown = NaN' type="button">
+                    <button *ngIf="commentIdRepliesShown == comment.id && comment.replies.length > 0" class="btn mt-1 btn-dark btn-light-info rounded-pill" (click)='commentIdRepliesShown = NaN' type="button">
                         Skrýt odpovědi
                     </button>
                 </div>

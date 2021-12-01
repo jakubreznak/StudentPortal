@@ -15,6 +15,7 @@ export class KomentareAdminComponent implements OnInit {
   pagination: Pagination;
   commentParams = new AdminCommentParams();
   commentIdRepliesShown: number;
+  showComment: number;
   
   constructor(private adminService: AdminService,private toastr: ToastrService) { }
 

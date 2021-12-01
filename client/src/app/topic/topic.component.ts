@@ -36,6 +36,7 @@ export class TopicComponent implements OnInit {
   filtersToggleText: string = 'Filtry';
   commentsLiked: number[] = [];
   commentIdRepliesShown: number;
+  showComment: number;
 
   constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);

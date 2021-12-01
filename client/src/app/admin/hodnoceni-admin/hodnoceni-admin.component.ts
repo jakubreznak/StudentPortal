@@ -14,6 +14,7 @@ export class HodnoceniAdminComponent implements OnInit {
 
   hodnoceni: Hodnoceni[];
   pagination: Pagination;
+  showRating: number;
   hodnoceniParams = new AdminHodnoceniParams();
 
   constructor(private adminService: AdminService,private toastr: ToastrService) { }

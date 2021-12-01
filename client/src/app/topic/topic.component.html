@@ -43,7 +43,12 @@
                             <div class="container">
                                 <div class="row">
                                     <div class="col-10">
-                                        <p class="komentar">{{comment.text}}</p>
+                                        <p *ngIf="showComment != comment.id && comment.text.length > 150" class="komentar">{{comment.text.substring(0,150)}} ...</p>
+                                        <p *ngIf="showComment == comment.id || comment.text.length <= 150" class="komentar">{{comment.text}}</p>
+                                        <div class="text-center">
+                                            <button *ngIf="showComment != comment.id && comment.text.length > 150" (click)='showComment = comment.id' type="button" class="btn btn-dark btn-light-info rounded-pill">Celý komentář</button>
+                                            <button *ngIf="showComment == comment.id" (click)='showComment = NaN' type="button" class="btn btn-dark btn-light-info rounded-pill">Skrýt komentář</button>
+                                        </div>
                                     </div>
                                     <div class="likeCount col-sm d-flex justify-content-end">
                                         <p>{{comment.studentsLikedBy.length}}</p>

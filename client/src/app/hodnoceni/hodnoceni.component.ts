@@ -39,6 +39,7 @@ export class HodnoceniComponent implements OnInit {
   pagedRatings: Hodnoceni[];
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
   hodnoceniLiked: number[] = [];
+  showRating: number;
 
   constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService,
     private route: ActivatedRoute) { 

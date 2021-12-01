@@ -31,8 +31,13 @@
             <ul class="rounded-item">
                 <li *ngFor="let hodnoceno of hodnoceni" class="list-group-item rounded-item list-effect">
                     <div class="koment">
-                        <p class="komentar">{{hodnoceno.text}}</p>
-                        <p class="info">Vytvořil: {{hodnoceno.accountName}} - {{hodnoceno.created}} | Předmět: {{hodnoceno.predmet.nazev}} | Hodnoceni: {{hodnoceno.rating}}/10</p>
+                        <p *ngIf="showRating != hodnoceno.id && hodnoceno.text.length > 150" class="komentar">{{hodnoceno.text.substring(0,150)}} ...</p>
+                        <p *ngIf="showRating == hodnoceno.id || hodnoceno.text.length <= 150" class="komentar">{{hodnoceno.text}}</p>
+                        <div class="text-center">
+                            <button *ngIf="showRating != hodnoceno.id && hodnoceno.text.length > 150" (click)='showRating = hodnoceno.id' type="button" class="btn btn-dark btn-light-info rounded-pill">Celé hodnocení</button>
+                            <button *ngIf="showRating == hodnoceno.id" (click)='showRating = NaN' type="button" class="btn btn-dark btn-light-info rounded-pill">Skrýt hodnocení</button>
+                        </div>                        
+                        <p class="info">Vytvořil: {{hodnoceno.accountName}} - {{hodnoceno.created}} | Předmět: {{hodnoceno.predmet.nazev}} | Hodnoceni: {{hodnoceno.rating}}/10</p>                        
                     </div>
                     <button (click)='deleteHodnoceni(hodnoceno.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                 </li>  

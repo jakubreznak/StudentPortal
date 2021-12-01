@@ -44,7 +44,12 @@
                             <div *ngIf="this.idIsEditing != comment.id" class="koment container">
                                 <div class="row">
                                     <div class="col-10">
-                                        <p class="komentar">{{comment.text}}</p>
+                                        <p *ngIf="showRating != comment.id && comment.text.length > 150" class="komentar">{{comment.text.substring(0,150)}} ...</p>
+                                        <p *ngIf="showRating == comment.id || comment.text.length <= 150" class="komentar">{{comment.text}}</p>
+                                        <div class="text-center">
+                                            <button *ngIf="showRating != comment.id && comment.text.length > 150" (click)='showRating = comment.id' type="button" class="btn btn-dark btn-light-info rounded-pill">Celé hodnocení</button>
+                                            <button *ngIf="showRating == comment.id" (click)='showRating = NaN' type="button" class="btn btn-dark btn-light-info rounded-pill">Skrýt hodnocení</button>
+                                        </div>
                                     </div>
                                     <div class="likeCount col-sm d-flex justify-content-end">
                                         <p>{{comment.studentsLikedBy.length}}</p>

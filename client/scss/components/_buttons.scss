@@ -34,4 +34,18 @@
 
 .list-group-item {
     border: none;
-    }
+}
+
+.customClass .active {
+    border-radius: 25px;
+}
+
+.page-item:first-child .page-link {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.page-item:last-child .page-link {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}

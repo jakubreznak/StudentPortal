@@ -1,15 +1,15 @@
 <div class="container mt-5">
-    <button *ngIf="pred && pred.statut == null" class="btn btn-danger mr-2 float-right" (click)='removePredmet()'>Odebrat</button>
+    <button *ngIf="pred && pred.statut == null" class="btn btn-danger float-right btn-rounded rounded-pill" (click)='removePredmet()'>Odebrat</button>
     <h2>{{predmetNazev}}</h2>
     <div class="pills">
         <tabset type="pills">
-            <tab heading="Materiály" id="tab1">
+            <tab heading="Materiály" id="tab1" customClass="customClass">
                 <app-materialy *ngIf="predmet" [predmet]="predmet"></app-materialy>
             </tab>
-            <tab heading="Diskuze">
+            <tab heading="Diskuze" customClass="customClass">
                 <app-diskuze *ngIf="predmet" [predmet]="predmet"></app-diskuze>
             </tab>
-            <tab heading="Hodnocení">
+            <tab heading="Hodnocení" customClass="customClass">
                 <app-hodnoceni *ngIf="predmet" [predmet]="predmet"></app-hodnoceni>
             </tab>
         </tabset>

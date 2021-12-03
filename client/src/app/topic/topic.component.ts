@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { CommentParams } from '../models/helpModels/commentParams';
@@ -37,8 +38,11 @@ export class TopicComponent implements OnInit {
   commentsLiked: number[] = [];
   commentIdRepliesShown: number;
   showComment: number;
+  modalRefComment?: BsModalRef;
+  modalRefReply?: BsModalRef;
 
-  constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService, private accountService: AccountService) {
+  constructor(private diskuzeService: DiskuzeService, private route: ActivatedRoute, private toastr: ToastrService,
+    private accountService: AccountService, private modalService: BsModalService) {
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
    }
 
@@ -73,6 +77,22 @@ export class TopicComponent implements OnInit {
               this.commentsLiked = comments;
             })          
         });
+  }
+
+  openModalComment(template: TemplateRef<any>) {
+    this.modalRefComment = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefComment?.hide();
+  }
+
+  openModalReply(replyModal: TemplateRef<any>) {
+    this.modalRefReply = this.modalService.show(replyModal, {class: 'modal-sm'});
+  }
+
+  declineReplyDelete(): void {
+    this.modalRefReply?.hide();
   }
 
   filter(){
@@ -143,15 +163,17 @@ export class TopicComponent implements OnInit {
       {
         this.toastr.success("Opdověď smazána.");
         this.loadComments();
+        this.modalRefReply?.hide();
       })
   }
 
   deleteComment(topicID, commentID){
     this.diskuzeService.deleteComment(topicID, commentID).subscribe(comment =>
       {
+        this.modalRefComment?.hide();
         this.pagination.currentPage = 1;
         this.loadComments();
-        this.toastr.success("Komentář odebrán.");
+        this.toastr.success("Komentář odebrán.");        
       });
   }
 

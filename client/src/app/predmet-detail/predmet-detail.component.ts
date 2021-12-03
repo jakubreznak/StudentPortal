@@ -1,6 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { Predmet } from '../models/predmet';
 import { PredmetyService } from '../Services/predmety.service';
@@ -16,9 +17,10 @@ export class PredmetDetailComponent implements OnInit {
   predmetNazev: string;
   predmetId: number = Number(this.route.snapshot.paramMap.get('id'));
   pred: Predmet;
+  modalRefPredmet?: BsModalRef;
 
   constructor(private predmetService: PredmetyService, private route: ActivatedRoute,
-     private toastr: ToastrService, private router: Router) { }
+     private toastr: ToastrService, private router: Router, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.loadPredmet();
@@ -37,11 +39,20 @@ export class PredmetDetailComponent implements OnInit {
       
   }
 
+  openModalPredmet(template: TemplateRef<any>) {
+    this.modalRefPredmet = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefPredmet?.hide();
+  }
+
   removePredmet(){
     this.predmetService.removePredmet(this.route.snapshot.paramMap.get('id')).subscribe(response =>
       {
         this.toastr.success("Předmět odebrán ze seznamu.");
         this.router.navigate([".."]);
+        this.modalRefPredmet?.hide();
       });
   }
 

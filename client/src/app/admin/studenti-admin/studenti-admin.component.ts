@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { Pagination } from 'src/app/models/helpModels/pagination';
 import { StudentsParams } from 'src/app/models/helpModels/studentsParams';
@@ -16,8 +17,9 @@ export class StudentiAdminComponent implements OnInit {
   studentNames: string[];
   studentsParams = new StudentsParams();
   pagination: Pagination;
+  modalRefStudent?: BsModalRef;
 
-  constructor(private adminService: AdminService,private toastr: ToastrService) { }
+  constructor(private adminService: AdminService,private toastr: ToastrService, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.getStudents();
@@ -29,6 +31,14 @@ export class StudentiAdminComponent implements OnInit {
         this.studentNames = response.result;
         this.pagination = response.pagination;
       })
+  }
+
+  openModalStudent(template: TemplateRef<any>) {
+    this.modalRefStudent = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefStudent?.hide();
   }
 
   filter(){
@@ -43,6 +53,7 @@ export class StudentiAdminComponent implements OnInit {
         this.pagination.currentPage = 1;
         this.getStudents();
         this.toastr.success("Student smazán.");
+        this.modalRefStudent?.hide();
       });
   }
 

@@ -46,7 +46,13 @@
             </div>
         </form>
 
-
+        <ng-template #template>
+            <div class="modal-body text-center">
+              <p>Opravdu chcete smazat svůj účet?</p>
+              <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="decline()">Zrušit</button>
+              <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteAccount()" >Smazat</button>
+            </div>
+        </ng-template>
         <h3>Zrušení svého účtu:</h3>
-        <button (click)='deleteAccount()' type="button" class="btn btn-danger btn-rounded rounded-pill">Smazat účet</button>
+        <button (click)='openModalProfile(template)' type="button" class="btn btn-danger btn-rounded rounded-pill">Smazat účet</button>
 </div>

@@ -183,6 +183,8 @@ ngx-bootstrap/buttons
 
 ngx-bootstrap/datepicker
 
+ngx-bootstrap/modal
+
 ngx-bootstrap/pagination
 
 ngx-spinner

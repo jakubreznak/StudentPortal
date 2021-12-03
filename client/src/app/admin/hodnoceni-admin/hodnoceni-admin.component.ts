@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Pagination } from 'src/app/models/helpModels/pagination';
 import { Hodnoceni } from 'src/app/models/predmet';
 import { AdminService } from '../admin.service';
 import { AdminHodnoceniParams } from 'src/app/models/helpModels/adminHodnoceniParams';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-hodnoceni-admin',
@@ -16,8 +17,9 @@ export class HodnoceniAdminComponent implements OnInit {
   pagination: Pagination;
   showRating: number;
   hodnoceniParams = new AdminHodnoceniParams();
+  modalRefRating?: BsModalRef;
 
-  constructor(private adminService: AdminService,private toastr: ToastrService) { }
+  constructor(private adminService: AdminService,private toastr: ToastrService, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.getHodnoceni();
@@ -29,6 +31,14 @@ export class HodnoceniAdminComponent implements OnInit {
         this.hodnoceni = response.result;
         this.pagination = response.pagination;
       })
+  }
+
+  openModalRating(template: TemplateRef<any>) {
+    this.modalRefRating = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefRating?.hide();
   }
 
   filter(){
@@ -43,6 +53,7 @@ export class HodnoceniAdminComponent implements OnInit {
         this.pagination.currentPage = 1;
         this.getHodnoceni();
         this.toastr.success("Hodnocení smazáno.");
+        this.modalRefRating?.hide();
       });
   }
 

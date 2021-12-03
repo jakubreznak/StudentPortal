@@ -1,5 +1,12 @@
 <div class="container mt-5">
-    <button *ngIf="pred && pred.statut == null" class="btn btn-danger float-right btn-rounded rounded-pill" (click)='removePredmet()'>Odebrat</button>
+    <ng-template #template>
+        <div class="modal-body text-center">
+          <p>Opravdu chcete odebrat tento předmět z vašich předmětů?</p>
+          <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="decline()">Zrušit</button>
+          <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="removePredmet()" >Smazat</button>
+        </div>
+    </ng-template>
+    <button *ngIf="pred && pred.statut == null" class="btn btn-danger float-right btn-rounded rounded-pill" (click)='openModalPredmet(template)'>Odebrat</button>
     <h2>{{predmetNazev}}</h2>
     <div class="pills">
         <tabset type="pills">

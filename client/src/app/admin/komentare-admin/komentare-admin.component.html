@@ -29,6 +29,13 @@
 
         <div class="list-group">
             <ul *ngFor="let comment of comments" class="rounded-item">
+                <ng-template #template>
+                    <div class="modal-body text-center">
+                      <p>Opravdu chcete smazat tento komentář?</p>
+                      <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="decline()">Zrušit</button>
+                      <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteComment(comment.id)" >Smazat</button>
+                    </div>
+                </ng-template>
                 <li class="list-group-item rounded-item list-effect">
                     <div>
                         <div class="koment">
@@ -40,7 +47,7 @@
                             </div>
                             <p class="info">Vytvořil: {{comment.accountName}} - {{comment.created}} | Téma: {{comment.topic.name}}</p>
                         </div>
-                        <button (click)='deleteComment(comment.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                        <button (click)='openModalComment(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                         <button *ngIf="comment.replies && comment.replies.length > 0 && commentIdRepliesShown != comment.id" class="btn btn-dark btn-light-info rounded-pill ml-2" (click)='commentIdRepliesShown = comment.id' type="button">
                             Zobrazit odpovědi
                         </button>
@@ -49,6 +56,13 @@
 
                 <div class="list-group mt-0 ml-5" *ngIf="commentIdRepliesShown == comment.id">
                     <ul *ngFor="let reply of comment.replies" class="rounded-item" >
+                        <ng-template #replyTemplate>
+                            <div class="modal-body text-center">
+                              <p>Opravdu chcete smazat tuto odpověď?</p>
+                              <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="declineReplyDelete()">Zrušit</button>
+                              <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteReply(reply.id)" >Smazat</button>
+                            </div>
+                        </ng-template>
                         <li class="list-group-item list-effect rounded-item">
                             
                             <div class="container">
@@ -60,7 +74,7 @@
                                     <p class="info" *ngIf="reply.edited">{{reply.accountName}} - {{reply.created}} | Upraveno: {{reply.edited}}</p>
                                 </div>
                                 <div class="row">
-                                    <button (click)='deleteReply(reply.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                                    <button (click)='openModalReply(replyTemplate)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                                 </div>
                             </div>                              
                         </li>

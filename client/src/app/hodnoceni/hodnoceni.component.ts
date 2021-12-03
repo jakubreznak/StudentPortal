@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Hodnoceni, Predmet } from '../models/predmet';
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,7 @@ import { Pagination } from '../models/helpModels/pagination';
 import { getPaginatedResult, getPaginationHeaders } from '../Services/paginationHelper';
 import { ActivatedRoute } from '@angular/router';
 import { HodnoceniParams } from '../models/helpModels/hodnoceniParams';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-hodnoceni',
@@ -40,9 +41,10 @@ export class HodnoceniComponent implements OnInit {
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
   hodnoceniLiked: number[] = [];
   showRating: number;
+  modalRefRating?: BsModalRef;
 
   constructor(private http: HttpClient, private toastr: ToastrService, private accountService: AccountService,
-    private route: ActivatedRoute) { 
+    private route: ActivatedRoute, private modalService: BsModalService) { 
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
   }
 
@@ -62,6 +64,14 @@ export class HodnoceniComponent implements OnInit {
     this.editForm = new FormGroup({
       text: new FormControl('')
     })
+  }
+
+  openModalRating(template: TemplateRef<any>) {
+    this.modalRefRating = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefRating?.hide();
   }
 
   validateBeforeSubmit(){
@@ -151,6 +161,7 @@ export class HodnoceniComponent implements OnInit {
         this.pagination.currentPage = 1;
         this.loadHodnoceni();      
         this.toastr.success("Hodnocení bylo úspěšně odebráno.");
+        this.modalRefRating?.hide();
       }
       );
   }

@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { Pagination } from '../models/helpModels/pagination';
@@ -28,9 +29,10 @@ export class DiskuzeComponent implements OnInit {
   predmetId = Number(this.route.snapshot.paramMap.get('id'));
   filtersToggle: boolean = false;
   filtersToggleText: string = 'Filtry';
+  modalRefTopic?: BsModalRef;
 
   constructor(private diskuzeService: DiskuzeService, private toastr: ToastrService, private accountService: AccountService,
-    private route: ActivatedRoute) { 
+    private route: ActivatedRoute, private modalService: BsModalService) { 
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
   }
 
@@ -48,6 +50,14 @@ export class DiskuzeComponent implements OnInit {
   filterToggle(){
     this.filtersToggle = !this.filtersToggle;
     this.filtersToggleText = this.filtersToggle ? 'Skrýt filtry' : 'Filtry';
+  }
+
+  openModalTopic(template: TemplateRef<any>) {
+    this.modalRefTopic = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefTopic?.hide();
   }
 
   loadTopics() {
@@ -117,6 +127,7 @@ export class DiskuzeComponent implements OnInit {
         this.toastr.success("Téma odebráno.");
         this.pagination.currentPage = 1;
         this.loadTopics();
+        this.modalRefTopic?.hide();
       });
   }
 }

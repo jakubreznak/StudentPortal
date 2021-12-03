@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { AdminCommentParams } from 'src/app/models/helpModels/adminCommentParams';
 import { Pagination } from 'src/app/models/helpModels/pagination';
@@ -16,8 +17,10 @@ export class KomentareAdminComponent implements OnInit {
   commentParams = new AdminCommentParams();
   commentIdRepliesShown: number;
   showComment: number;
+  modalRefComment?: BsModalRef;
+  modalRefReply?: BsModalRef;
   
-  constructor(private adminService: AdminService,private toastr: ToastrService) { }
+  constructor(private adminService: AdminService,private toastr: ToastrService, private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.getComments();
@@ -29,6 +32,22 @@ export class KomentareAdminComponent implements OnInit {
         this.comments = response.result;
         this.pagination = response.pagination;
       })
+  }
+
+  openModalComment(template: TemplateRef<any>) {
+    this.modalRefComment = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefComment?.hide();
+  }
+
+  openModalReply(replyModal: TemplateRef<any>) {
+    this.modalRefReply = this.modalService.show(replyModal, {class: 'modal-sm'});
+  }
+
+  declineReplyDelete(): void {
+    this.modalRefReply?.hide();
   }
 
   filter(){
@@ -53,6 +72,7 @@ export class KomentareAdminComponent implements OnInit {
         this.pagination.currentPage = 1;
         this.getComments();
         this.toastr.success("Komentář smazán.");
+        this.modalRefComment?.hide();
       });
   }
 
@@ -62,6 +82,7 @@ export class KomentareAdminComponent implements OnInit {
       {
         this.toastr.success("Opdověď smazána.");
         this.getComments();
+        this.declineReplyDelete();
       })
   }
 

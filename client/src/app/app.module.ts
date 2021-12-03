@@ -32,6 +32,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { PredmetyAdminComponent } from './admin/predmety-admin/predmety-admin.component';
 import { PredmetyAddComponent } from './predmety-add/predmety-add.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { PredmetyAddComponent } from './predmety-add/predmety-add.component';
     ReactiveFormsModule,
     SharedModule,
     NgxSpinnerModule,
+    ModalModule.forRoot(),
     TabsModule.forRoot(),
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'

@@ -31,6 +31,13 @@
             <ul class="rounded-item">
                 <li *ngFor="let hodnoceno of hodnoceni" class="list-group-item rounded-item list-effect">
                     <div class="koment">
+                        <ng-template #template>
+                            <div class="modal-body text-center">
+                              <p>Opravdu chcete smazat toto hodnocení?</p>
+                              <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="decline()">Zrušit</button>
+                              <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteHodnoceni(hodnoceno.id)" >Smazat</button>
+                            </div>
+                        </ng-template>
                         <p *ngIf="showRating != hodnoceno.id && hodnoceno.text.length > 150" class="komentar">{{hodnoceno.text.substring(0,150)}} ...</p>
                         <p *ngIf="showRating == hodnoceno.id || hodnoceno.text.length <= 150" class="komentar">{{hodnoceno.text}}</p>
                         <div class="text-center">
@@ -39,7 +46,7 @@
                         </div>                        
                         <p class="info">Vytvořil: {{hodnoceno.accountName}} - {{hodnoceno.created}} | Předmět: {{hodnoceno.predmet.nazev}} | Hodnoceni: {{hodnoceno.rating}}/10</p>                        
                     </div>
-                    <button (click)='deleteHodnoceni(hodnoceno.id)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                    <button (click)='openModalRating(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
                 </li>  
             </ul>
         </div>

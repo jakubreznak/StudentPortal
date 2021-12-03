@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../Services/account.service';
 
@@ -13,8 +14,10 @@ export class ProfileComponent implements OnInit {
 
   profileForm: FormGroup;
   changePasswordForm: FormGroup;
+  modalRefProfile?: BsModalRef;
 
-  constructor(private accountService: AccountService, private toastr: ToastrService, private router: Router) { }
+  constructor(private accountService: AccountService, private toastr: ToastrService, private router: Router,
+    private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -48,7 +51,16 @@ export class ProfileComponent implements OnInit {
         this.accountService.logout();
         this.router.navigateByUrl('/');
         this.toastr.success("Účet byl úspěšně smazán.");
+        this.modalRefProfile?.hide();
       });
+  }
+
+  openModalProfile(template: TemplateRef<any>) {
+    this.modalRefProfile = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefProfile?.hide();
   }
 
   changePassword() {

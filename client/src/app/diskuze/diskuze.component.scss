@@ -5,26 +5,17 @@
   margin-top: 1em;
   }
 
-  a {
-      font-weight: 600;
-      font-size: 1.2em;
-      border: 30px;
-      color: black;
+  a {      
+    border: 30px;
+    color: black;
   }
 
   a:hover {
     text-decoration: none;
   }
 
-  p {
-      font-weight: 400;
-      font-size: .65em;
-  }
-
   span {
       float: right;
-      font-weight: 500;
-      font-size: 1em;
       padding: .7em;
       color: rgb(255, 255, 255);
   }

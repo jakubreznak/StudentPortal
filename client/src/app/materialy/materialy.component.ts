@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -31,10 +32,10 @@ export class MaterialyComponent implements OnInit {
   filtersToggle: boolean = false;
   filtersToggleText: string = 'Filtry';
   materialsLiked: number[] = [];
-
+  modalRefMaterial?: BsModalRef;
 
   constructor(private httpClient: HttpClient, private toastr: ToastrService, private predmetService: PredmetyService,
-     private accountService: AccountService, private route: ActivatedRoute) { 
+     private accountService: AccountService, private route: ActivatedRoute, private modalService: BsModalService) { 
     this.accountService.currentStudent$.pipe(take(1)).subscribe(student => this.student = student);
   }
   
@@ -76,6 +77,14 @@ export class MaterialyComponent implements OnInit {
     this.pagination.currentPage = 1;
     this.materialParams.pageNumber = 1;
     this.loadMaterials();
+  }
+
+  openModalMaterial(template: TemplateRef<any>) {
+    this.modalRefMaterial = this.modalService.show(template, {class: 'modal-sm'});
+  }
+
+  decline(): void {
+    this.modalRefMaterial?.hide();
   }
 
   filterToggle(){
@@ -163,6 +172,7 @@ export class MaterialyComponent implements OnInit {
         this.toastr.success("Studijní materiál úspěšně odebrán.");
         this.pagination.currentPage = 1;
         this.loadMaterials();
+        this.modalRefMaterial?.hide();
       });
   }
 }

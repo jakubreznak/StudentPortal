@@ -27,6 +27,7 @@ namespace API.HelpClass
                 var admin = new Student
                 {
                     UserName = "jakub",
+                    accountName = "jakub",
                     oborIdno = 45
                 };
 

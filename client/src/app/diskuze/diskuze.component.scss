@@ -1,46 +1,37 @@
 .list-group {
-	margin-left: auto; 
-	margin-right: auto; 
   grid-gap: 1rem;
-  margin-top: 1em;
-  }
+}
 
-  a {      
-    border: 30px;
-    color: black;
-  }
+a {      
+  border: 30px;
+  color: black;
+}
 
-  a:hover {
-    text-decoration: none;
-  }
+a:hover {
+  text-decoration: none;
+}
 
-  span {
-      float: right;
-      padding: .7em;
-      color: rgb(255, 255, 255);
-  }
+span {
+    float: right;
+    padding: .7em;
+    color: rgb(255, 255, 255);
+}
 
-  .nazev-rocnik {
-      word-wrap: break-word;
-  }
+.nazev-rocnik {
+    word-wrap: break-word;
+}
 
-  .form {
-    margin-left: auto; 
-	  margin-right: auto; 
-    width: 80%; 
-  }
+.nazev {
+  font-size: 1.3em;
+  font-weight: 500;
+}
 
-  .prvni {
-    width: 80%; 
-	  text-align: center;
-  }
+.container {
+  padding-left: 0;
+  padding-right: 0;
+}
 
-  .prvni p {
-    font-size: 1.6em;
-    font-weight: 600;
-  }
-
-  .pridat {
-    font-size: 1.6em;
-    font-weight: 600;
-  }
+.topic {
+  padding-left: 35px;
+  padding-right: 35px;
+}

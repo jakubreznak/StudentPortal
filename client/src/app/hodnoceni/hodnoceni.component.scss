@@ -31,15 +31,6 @@ button {
     font-size: 1.2em;
 }
 
-.info {
-    font-size: .9em;
-}
-
-.prvni p {
-    font-size: 1.6em;
-    font-weight: 600;
-}
-
 textarea{
     outline: none;
     resize: none;
@@ -50,12 +41,7 @@ textarea{
     margin-right: 1em;
 }
 
-.pridat {
-    font-size: 1.6em;
-    font-weight: 600;
-  }
-
-  .like{
+.like{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,4 +57,14 @@ textarea{
     font-weight: 500;
     font-size: 1.5em;
     vertical-align: middle;
+}
+
+.hodnoceni {
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+.row { 
+    margin-left: 0;
+    margin-right: 0;
 }

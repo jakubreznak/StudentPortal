@@ -41,10 +41,19 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<IEnumerable<Soubor>> GetMaterialy(int id, [FromQuery] MaterialParameters materialParameters)
         {
+            List<Soubor> soubory = new List<Soubor>(); 
+            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == id);
+            var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();            
+            foreach(var pred in predmety)
+            {
+                soubory.AddRange(_context.Soubor.Where(x => x.PredmetID == pred.ID).ToList());
+            }
+
+            soubory = soubory.Distinct().ToList();
+
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var student = _userManager.Users.FirstOrDefault(s => s.UserName == username);
            
-            var soubory = _context.Soubor.Where(x => x.PredmetID == id).ToList();
             int allItemsCount = soubory.Count();
 
             if(!string.IsNullOrEmpty(materialParameters.Nazev))

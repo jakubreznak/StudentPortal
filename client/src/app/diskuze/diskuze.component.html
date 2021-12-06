@@ -1,5 +1,4 @@
 <div class="container mt-2 mb-5">
-    <div class="form">
     <div *ngIf="topics != null">
         <div *ngIf="predmet == null">
             <h2>Obecná diskuze</h2>
@@ -7,7 +6,7 @@
             <p class="pridat">Přidat téma:</p>
             <form [formGroup]='diskuzeForm' (ngSubmit)="validateBeforeSubmit()" autocomplete="off">
                 <div class="row">
-                    <div class="form-group col-10">
+                    <div class="form-group col-md-10">
                         <input
                         [class.is-invalid]='diskuzeForm.get("topicName").errors && diskuzeForm.get("topicName").touched'
                         type="text" class="rounded-item form-control" formControlName="topicName" placeholder="nové téma" required >
@@ -16,26 +15,26 @@
                         <div *ngIf="diskuzeForm.get('topicName').hasError('maxlength')"
                         class="invalid-feedback">Název materiálu může mít maximálně 200 znaků.</div>
                     </div>
-                    <div class="form-group col-md-auto">
+                    <div class="form-group col text-right">
                         <button class="btn btn-success btn-rounded rounded-pill mr-2" type="submit">Přidat</button>
                     </div>
                 </div>       
             </form>
         </div>
 
-        <div class="d-flex justify-content-between flex-wrap">
-            <div class="d-flex mb-2">
+        <div class="d-flex justify-content-between flex-wrap mb-2">
+            <div class="d-flex">
                 <button (click)="filterToggle()" class="btn btn-outline-secondary btn-rounded rounded-pill" type="submit">{{filtersToggleText}}</button>
             </div>
         
-            <div class="btn-group float-right mb-2">
+            <div class="btn-group float-right">
                 <button type="button" class="btn btn-secondary btn-rounded btn-left" name='orderBy' (click)="loadTopics()" btnRadio='datum' [(ngModel)]="topicParams.orderBy">Datum</button>
                 <button type="button" class="btn btn-secondary btn-rounded" name='orderBy' (click)="loadTopics()" btnRadio='nazev' [(ngModel)]="topicParams.orderBy">Název</button>
                 <button type="button" class="btn btn-secondary btn-rounded btn-right" name='orderBy' (click)="loadTopics()" btnRadio='komentare' [(ngModel)]="topicParams.orderBy">Komentáře</button>
             </div>
         </div>
 
-        <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
+        <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-2 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
             <div class="form-group px-2">
                 <label>Název: </label>
                 <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="nazev" 
@@ -57,7 +56,7 @@
         
         <div *ngIf="topics?.length > 0">
             <div class="list-group rounded-item">
-                <div *ngFor="let topic of topics" class="list-group-item-action rounded-item list-effect list-group-item">
+                <div *ngFor="let topic of topics" class="topic list-group-item-action rounded-item list-effect list-group-item">
                     <ng-template #template>
                         <div class="modal-body text-center">
                           <p>Opravdu chcete smazat toto téma?</p>
@@ -98,7 +97,6 @@
         <div class="prvni" *ngIf="topics?.length == 0 && pagination.allItems > 0">
             <p>Žádné téma neodpovídá filtrům.</p>
         </div>
-    </div>
 </div>
 
 

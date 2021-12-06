@@ -1,20 +1,13 @@
 .list-group {
-    width: 80%; 
-	margin-left: auto; 
-	margin-right: auto; 
     grid-gap: 1rem;
   }
 
   ul {
-      padding: 0;
-  }
+    padding: 0;
+}
 
-  .hidden {
-      display: none;
-  }
-
-.btn-danger{
-    margin-left: 16px;
+.hidden {
+    display: none;
 }
 
 .inputfile {
@@ -24,11 +17,6 @@
 	overflow: hidden;
 	position: absolute;
 	z-index: -1;
-}
-
-.date {
-    font-size: 1em;
-    font-weight: 500;
 }
 
 li {
@@ -44,32 +32,18 @@ label{
     margin-bottom: 0;
 }
 
-.formulare{
-    width: 80%;
-    margin-left: auto; 
-	margin-right: auto; 
-}
-
-.prvni {
-    text-align: center;
-  }
-
 .like{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.5em;
+    align-content: center;
+    flex-direction: row;
+}
+
+.like p {
+    font-size: 1.5em;
+    margin: auto;
+}
+
+.nazev p {
     font-size: 1.3em;
-}
-
-.like p{
-    font-size: 1.1em;
-}
-
-.row {
-    height: 3em;
-}
-
-.list-group-item {
-    border: none;
+    font-weight: 500;
 }

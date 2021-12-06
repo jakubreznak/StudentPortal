@@ -1,59 +1,53 @@
-<div class="container mt-5">
-    
-    <div class="container mt-3">
-        <form #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
-            <div class="form-group px-2">
-                <label>Jméno: </label>
-                <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="nazev" 
-                    [(ngModel)]="studentsParams.nazev">
-            </div>
-    
-            <div>
-                <button class="btn btn-primary ml-1 btn-rounded rounded-pill" type="submit">Filtrovat</button>
-                <button (click)="resetFilters()" class="btn btn-info ml-1 btn-rounded rounded-pill" type="submit">Zrušit filtr</button>
-            </div>            
 
-        </form>
-
-    <hr>
-
-
-    <div *ngIf="studentNames">
-        <div class="list-group rounded-item">
-            <ul class="rounded-item">
-                <li *ngFor="let studentName of studentNames" class="list-group-item rounded-item list-effect">
-                    <ng-template #template>
-                        <div class="modal-body text-center">
-                          <p>Opravdu chcete smazat tohoto studenta?</p>
-                          <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="decline()">Zrušit</button>
-                          <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteStudent(studentName)" >Smazat</button>
-                        </div>
-                    </ng-template>
-                    <p class="komentar">{{studentName}}</p>
-                    <button (click)='openModalStudent(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
-                </li>  
-            </ul>
-        </div>
+<form #form="ngForm" class="form-inline mt-3 mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
+    <div class="form-group px-2">
+        <label>Jméno: </label>
+        <input type="text" class="form-control ml-1 rounded-item" style="width: 130px;" name="nazev" 
+            [(ngModel)]="studentsParams.nazev">
     </div>
 
-    <div class="d-flex justify-content-center" *ngIf="pagination && studentNames.length != 0">
-        <pagination 
-            [maxSize]="5"
-            [boundaryLinks]="true" 
-            [totalItems]="pagination.totalItems"
-            [itemsPerPage]="pagination.itemsPerPage"
-            [(ngModel)]="pagination.currentPage"
-            (pageChanged)="pageChanged($event)"
-            previousText="&lsaquo;" 
-            nextText="&rsaquo;" 
-            firstText="&laquo;" 
-            lastText="&raquo;">            
-        </pagination>
+    <div>
+        <button class="btn btn-primary ml-1 btn-rounded rounded-pill" type="submit">Filtrovat</button>
+        <button (click)="resetFilters()" class="btn btn-info ml-1 btn-rounded rounded-pill" type="submit">Zrušit filtr</button>
+    </div>            
+
+</form>
+
+<div *ngIf="studentNames">
+    <div class="list-group rounded-item">
+        <ul class="rounded-item">
+            <li *ngFor="let studentName of studentNames" class="list-group-item rounded-item list-effect">
+                <ng-template #template>
+                    <div class="modal-body text-center">
+                        <p>Opravdu chcete smazat tohoto studenta?</p>
+                        <button type="button" class="btn btn-dark mr-2 btn-rounded rounded-pill" (click)="decline()">Zrušit</button>
+                        <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteStudent(studentName)" >Smazat</button>
+                    </div>
+                </ng-template>
+                <p class="komentar">{{studentName}}</p>
+                <button (click)='openModalStudent(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+            </li>  
+        </ul>
     </div>
-    <div class="prvni" *ngIf="studentNames?.length == 0 && pagination.allItems == 0">
-        <p>V aplikaci se nenachází žádný student.</p>
-    </div>
-    <div class="prvni" *ngIf="studentNames?.length == 0 && pagination.allItems > 0">
-        <p>Žádný student neodpovídá filtrům.</p>
-    </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination && studentNames.length != 0">
+    <pagination 
+        [maxSize]="5"
+        [boundaryLinks]="true" 
+        [totalItems]="pagination.totalItems"
+        [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage"
+        (pageChanged)="pageChanged($event)"
+        previousText="&lsaquo;" 
+        nextText="&rsaquo;" 
+        firstText="&laquo;" 
+        lastText="&raquo;">            
+    </pagination>
+</div>
+<div class="prvni" *ngIf="studentNames?.length == 0 && pagination.allItems == 0">
+    <p>V aplikaci se nenachází žádný student.</p>
+</div>
+<div class="prvni" *ngIf="studentNames?.length == 0 && pagination.allItems > 0">
+    <p>Žádný student neodpovídá filtrům.</p>
 </div>

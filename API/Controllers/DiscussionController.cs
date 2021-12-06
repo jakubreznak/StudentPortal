@@ -43,10 +43,9 @@ namespace API.Controllers
                 var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();            
                 foreach(var pred in predmety)
                 {
-                    var topic = _context.Topics.Include(t => t.comments).Where(t => t.predmetID == pred.ID.ToString());
-                    topicsList.AddRange(topic);
+                    topicsList.AddRange(_context.Topics.Include(t => t.comments).Where(t => t.predmetID == pred.ID.ToString()));
                 }
-                topicsList = topicsList.OrderByDescending(x => x.createdDateTime).ToList();
+                topicsList = topicsList.Distinct().OrderByDescending(x => x.createdDateTime).ToList();                
             }
             else 
             {

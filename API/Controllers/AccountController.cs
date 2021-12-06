@@ -97,6 +97,7 @@ namespace API.Controllers
             return new StudentDTO
             {
                 name = student.UserName,
+                accountName = student.accountName,
                 token = await _tokenService.CreateToken(student)
             };
         }
@@ -115,6 +116,7 @@ namespace API.Controllers
             return new StudentDTO
             {
                 name = student.UserName,
+                accountName = student.accountName,
                 token = await _tokenService.CreateToken(student)
             };
         }

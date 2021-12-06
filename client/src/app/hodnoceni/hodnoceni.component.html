@@ -1,4 +1,4 @@
-<div class="container mt-1">
+<div class="main-container container mt-1">
     <div *ngIf="hodnoceni != null">
 
         <div *ngIf="cislo != null && cislo > 0" class="ohodnoceni">
@@ -29,7 +29,7 @@
         </div>
     
         <div class="d-flex justify-content-between">     
-            <div class="btn-group float-right mb-2">
+            <div class="btn-group float-right">
                 <button type="button" class="btn btn-secondary btn-rounded btn-left" name='orderBy' (click)="loadHodnoceni()" btnRadio='datum' [(ngModel)]="hodnoceniParams.orderBy">Datum</button>
                 <button type="button" class="btn btn-secondary btn-rounded" name='orderBy' (click)="loadHodnoceni()" btnRadio='ohodnoceni' [(ngModel)]="hodnoceniParams.orderBy">Ohodnocení</button>
                 <button type="button" class="btn btn-secondary btn-rounded btn-right" name='orderBy' (click)="loadHodnoceni()" btnRadio='oblibenost' [(ngModel)]="hodnoceniParams.orderBy">Oblíbenost</button>
@@ -37,8 +37,8 @@
         </div>
 
         <div *ngIf="hodnoceni.length > 0">
-            <div class="list-group rounded-item">
-                <ul class="rounded-item">
+            <div class="rounded-item">
+                <ul class="list-group rounded-item">
                     <ng-container *ngFor="let comment of hodnoceni">
                         <ng-template #template>
                             <div class="modal-body text-center">
@@ -47,8 +47,8 @@
                               <button type="button" class="btn btn-danger btn-rounded rounded-pill" (click)="deleteRating(comment.id)" >Smazat</button>
                             </div>
                         </ng-template>
-                         <li  class="list-group-item list-effect rounded-item"> <!-- *ngIf="comment.text.length != 0" -->
-                            <div *ngIf="this.idIsEditing != comment.id" class="koment container">
+                         <li  class="hodnoceni list-group-item list-effect rounded-item"> <!-- *ngIf="comment.text.length != 0" -->
+                            <div *ngIf="this.idIsEditing != comment.id" class="koment">
                                 <div class="row">
                                     <div class="col-10">
                                         <p *ngIf="showRating != comment.id && comment.text.length > 150" class="komentar">{{comment.text.substring(0,150)}} ...</p>
@@ -59,8 +59,8 @@
                                         </div>
                                     </div>
                                     <div class="likeCount col-sm d-flex justify-content-end">
-                                        <p>{{comment.studentsLikedBy.length}}</p>
-                                        <button class="like btn btn-light btn-rounded rounded-pill" (click)="likeOrRemoveLike(comment.id)"><i *ngIf="hodnoceniLiked.includes(comment.id)" class="fas fa-heart"></i>
+                                        <p class="mr-1">{{comment.studentsLikedBy.length}}</p>
+                                        <button class="like btn btn-light rounded-pill" (click)="likeOrRemoveLike(comment.id)"><i *ngIf="hodnoceniLiked.includes(comment.id)" class="fas fa-heart"></i>
                                             <i *ngIf="!hodnoceniLiked.includes(comment.id)" class="far fa-heart"></i></button>
                                     </div>
                                 </div>
@@ -68,8 +68,8 @@
                                     <p class="komentar">{{comment.rating}}/10</p>
                                 </div>
                                 <div class="row">
-                                    <p class="info" *ngIf="comment.edited == null">{{comment.accountName}} - {{comment.created}} </p>
-                                    <p class="info" *ngIf="comment.edited">{{comment.accountName}} - {{comment.created}} | Upraveno: {{comment.edited}}</p>
+                                    <p class="info" *ngIf="comment.edited == null">Vytvořeno: {{comment.created}} </p>
+                                    <p class="info" *ngIf="comment.edited">Vytvořeno: {{comment.created}} | Upraveno: {{comment.edited}}</p>
                                 </div>
                                 <div class="row" *ngIf="comment.studentName == student.name">
                                     <button (click)='editRating(comment.id, comment.text)' type="button" class="btn btn-dark btn-light-info rounded-pill mr-2 mt-0">Upravit</button>

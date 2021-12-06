@@ -36,8 +36,8 @@
         </form>
         
         <div *ngIf="pagedComments?.length > 0">
-            <div class="list-group rounded-item mt-0">
-                <ul *ngFor="let comment of pagedComments" class="rounded-item" >
+            <div class="rounded-item mt-0">
+                <ul *ngFor="let comment of pagedComments" class="list-group rounded-item" >
                     <ng-template #template>
                         <div class="modal-body text-center">
                           <p>Opravdu chcete smazat tento komentář?</p>
@@ -58,8 +58,8 @@
                                         </div>
                                     </div>
                                     <div class="likeCount col-sm d-flex justify-content-end">
-                                        <p>{{comment.studentsLikedBy.length}}</p>
-                                        <button class="like btn btn-light btn-rounded rounded-pill" (click)="likeOrRemoveLike(comment.id)"><i *ngIf="commentsLiked.includes(comment.id)" class="fas fa-heart"></i>
+                                        <p class="mr-1">{{comment.studentsLikedBy.length}}</p>
+                                        <button class="like btn btn-light rounded-pill" (click)="likeOrRemoveLike(comment.id)"><i *ngIf="commentsLiked.includes(comment.id)" class="fas fa-heart"></i>
                                             <i *ngIf="!commentsLiked.includes(comment.id)" class="far fa-heart"></i></button>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
         <div class="prvni" *ngIf="pagedComments?.length == 0 && pagination.allItems > 0">
             <p>Žádný komentář neodpovídá filtrům.</p>
         </div>
-        <h5>Přidat komentář:</h5>
+        <p class="pridat">Přidat komentář:</p>
         <div class="form">
             <form [formGroup]='commentForm' ngNativeValidate (ngSubmit)="postComment()" autocomplete="off">
                 <div class="row">
@@ -192,8 +192,8 @@
                         class="rounded-item form-control" formControlName='text'
                         placeholder="odpověď" ></textarea>
                     </div>
-                    <div class="form-group col-md-auto">
-                        <button [disabled]='!commentForm.valid' class="btn btn-success mr-2 btn-rounded rounded-pill" type="submit">Odpovědět</button>
+                    <div class="odpovedet form-group col text-right">
+                        <button [disabled]='!commentForm.valid' class="btn btn-success btn-rounded rounded-pill" type="submit">Odpovědět</button>
                     </div>
                 </div>       
             </form>

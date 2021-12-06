@@ -25,28 +25,37 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<List<Hodnoceni>> GetHodnoceniPredmetu(int idPredmet, [FromQuery] HodnoceniParams hodnoceniParams)
         {
-            var hodnoceni = _context.Hodnoceni.Where(x => x.predmetID == idPredmet).ToList();
-            foreach(var hod in hodnoceni)
+            List<Hodnoceni> hodnoceniList = new List<Hodnoceni>(); 
+            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == idPredmet);
+            var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();            
+            foreach(var pred in predmety)
+            {
+                hodnoceniList.AddRange(_context.Hodnoceni.Where(x => x.predmetID == pred.ID).ToList());
+            }
+
+            hodnoceniList = hodnoceniList.Distinct().ToList();
+            
+            foreach(var hod in hodnoceniList)
             {
                 hod.StudentsLikedBy = _context.HodnoceniLikes.Where(x => x.HodnoceniId == hod.ID).ToList();
                 hod.StudentsLikedBy.ForEach(x => x.Student = null);
             }
-            int allItemsCount = hodnoceni.Count(); 
+            int allItemsCount = hodnoceniList.Count(); 
 
             switch (hodnoceniParams.OrderBy)
             {
                 case "datum":
-                    hodnoceni = hodnoceni.OrderByDescending(x => x.ID).ToList();
+                    hodnoceniList = hodnoceniList.OrderByDescending(x => x.ID).ToList();
                     break;
                 case "ohodnoceni":
-                    hodnoceni = hodnoceni.OrderByDescending(x => x.rating).ToList();
+                    hodnoceniList = hodnoceniList.OrderByDescending(x => x.rating).ToList();
                     break;
                 case "oblibenost":
-                    hodnoceni = hodnoceni.OrderByDescending(x => x.StudentsLikedBy.Count()).ToList();
+                    hodnoceniList = hodnoceniList.OrderByDescending(x => x.StudentsLikedBy.Count()).ToList();
                     break;
             }
 
-            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceni, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
+            var pagedHodnoceni = PagedList<Hodnoceni>.CreateFromList(hodnoceniList, hodnoceniParams.PageNumber, hodnoceniParams.PageSize);
 
             Response.AddPaginationHeader(pagedHodnoceni.CurrentPage, pagedHodnoceni.PageSize, pagedHodnoceni.TotalCount, pagedHodnoceni.TotalPages, allItemsCount);
             return Ok(pagedHodnoceni);

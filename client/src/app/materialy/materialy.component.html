@@ -1,5 +1,5 @@
 <div class="formulare">
-    <p>Přidat materiál:</p>
+    <p class="pridat">Přidat materiál:</p>
     <form [formGroup]='materialForm' (ngSubmit)="materialForm.valid && postMaterial()" autocomplete="off" class="mt-2 mb-1">
         <div class="form-group">
             <input [class.is-invalid]='materialForm.get("name").errors && materialForm.get("name").touched'
@@ -20,19 +20,19 @@
             <button [disabled]='!materialForm.valid' class="btn btn-success btn-rounded rounded-pill mr-2" type="submit">Přídat</button>
         </div>
     </form>
-    <div class="d-flex justify-content-md-between flex-wrap">
-        <div class="d-flex mb-2">
+    <div class="d-flex justify-content-md-between flex-wrap mb-2">
+        <div class="d-flex">
             <button (click)="filterToggle()" class="btn btn-outline-secondary btn-rounded rounded-pill" type="submit">{{filtersToggleText}}</button>
         </div>
     
-        <div class="btn-group float-right mb-2">
+        <div class="btn-group float-right">
             <button type="button" class="btn btn-secondary btn-rounded btn-left" name='orderBy' (click)="loadMaterials()" btnRadio='datum' [(ngModel)]="materialParams.orderBy">Datum</button>
             <button type="button" class="btn btn-secondary btn-rounded" name='orderBy' (click)="loadMaterials()" btnRadio='nazev' [(ngModel)]="materialParams.orderBy">Název</button>
             <button type="button" class="btn btn-secondary btn-rounded btn-right" name='orderBy' (click)="loadMaterials()" btnRadio='likes' [(ngModel)]="materialParams.orderBy">Oblíbenost</button>
         </div>
     </div>
 
-    <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mb-3 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
+    <form *ngIf="filtersToggle" #form="ngForm" class="form-inline mt-2 mb-2 d-flex justify-content-center" (ngSubmit)="filter()" autocomplete="off">    
         <div class="form-group px-2">
             <label>Název: </label>
             <input type="text" class="rounded-item form-control ml-1" style="width: 130px;" name="nazev" 
@@ -65,8 +65,8 @@
     </div>
     
     <div *ngIf="pagedFiles && pagedFiles.length > 0">
-        <ul class="rounded-item">
-            <li *ngFor="let soubor of pagedFiles" class="list-group-item list-effect mt-3 rounded-item">
+        <ul class="list-group rounded-item">
+            <li *ngFor="let soubor of pagedFiles" class="list-group-item list-effect rounded-item">
                 <ng-template #template>
                     <div class="modal-body text-center">
                       <p>Opravdu chcete smazat tento materiál?</p>
@@ -76,25 +76,27 @@
                 </ng-template>
                 <div class="container">
                     <div class="row">
-                        <div class="col">
+                        <div class="col nazev">
                             <p>{{soubor.fileName}}</p>
                         </div>
                         <div class="col d-flex justify-content-end">
                             <span class="stahnout"><a class="btn btn-success btn-rounded rounded-pill" href="{{soubor.url}}" target="_blank">Stáhnout</a></span>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row  mt-1">
                         <div class="col">
                             <p class="date">Přidal: {{soubor.accountName}} | {{soubor.dateAdded}} - {{soubor.extension}}</p>
                         </div>
                         <div class="like col d-flex justify-content-end">
                             <p class="mr-1">{{soubor.studentsLikedBy.length}}</p>
-                            <button class="btn btn-light btn-rounded rounded-pill" (click)="likeOrRemoveLike(soubor.id)"><i *ngIf="materialsLiked.includes(soubor.id)" class="fas fa-heart"></i>
-                                <i *ngIf="!materialsLiked.includes(soubor.id)" class="far fa-heart"></i></button>
+                            <button class="btn btn-light rounded-pill" (click)="likeOrRemoveLike(soubor.id)"><i *ngIf="materialsLiked.includes(soubor.id)" class="fas fa-heart"></i>
+                            <i *ngIf="!materialsLiked.includes(soubor.id)" class="far fa-heart"></i></button>
                         </div>
                     </div>
                     <div class="row" *ngIf="soubor.studentName == student.name">
-                        <button (click)='openModalMaterial(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                        <div class="col">
+                            <button (click)='openModalMaterial(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
+                        </div>
                     </div>
                 </div>
             </li>  

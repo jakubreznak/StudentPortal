@@ -146,11 +146,11 @@ namespace API.Controllers
             var topic = new Topic
             {
                 predmetID = predmetID ?? String.Empty,
-                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                studentName = username,
                 name = topicName.Trim(),
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
                 createdDateTime = DateTime.Now,
-                accountName = student.accountName
+                accountName = String.IsNullOrEmpty(student.accountName) ? username : student.accountName
             };
 
             _context.Topics.Add(topic);
@@ -181,8 +181,8 @@ namespace API.Controllers
                 topicID = topicID.Value,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
                 text = text.Trim(),
-                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                accountName = student.accountName
+                studentName = username,
+                accountName = String.IsNullOrEmpty(student.accountName) ? username : student.accountName
             };
 
             topic.comments.Add(comment);
@@ -237,8 +237,8 @@ namespace API.Controllers
                 commentId = commentId.Value,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy HH:mm"),
                 text = text.Trim(),
-                studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                accountName = student.accountName
+                studentName = username,
+                accountName = String.IsNullOrEmpty(student.accountName) ? username : student.accountName
             };
 
             comment.Replies.Add(reply);

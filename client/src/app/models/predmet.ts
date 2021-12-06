@@ -34,6 +34,7 @@ export interface Predmet {
     id: number;
     text: string;
     rating: number;
+    accountName: string;
     created: string;
     edited: string;
     predmet: Predmet;

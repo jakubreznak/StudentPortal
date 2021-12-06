@@ -43,7 +43,7 @@
                         <button *ngIf="showRating != hodnoceno.id && hodnoceno.text.length > 150" (click)='showRating = hodnoceno.id' type="button" class="btn btn-dark btn-light-info rounded-pill">Celé hodnocení</button>
                         <button *ngIf="showRating == hodnoceno.id" (click)='showRating = NaN' type="button" class="btn btn-dark btn-light-info rounded-pill">Skrýt hodnocení</button>
                     </div>                        
-                    <p class="info">Vytvořil: {{hodnoceno.studentName}} - {{hodnoceno.created}} | Předmět: {{hodnoceno.predmet.nazev}} | Hodnoceni: {{hodnoceno.rating}}/10</p>                        
+                    <p class="info">Vytvořil: {{hodnoceno.accountName}} - {{hodnoceno.created}} | Předmět: {{hodnoceno.predmet.nazev}} | Hodnoceni: {{hodnoceno.rating}}/10</p>                        
                 </div>
                 <button (click)='openModalRating(template)' type="button" class="btn btn-dark btn-light-info rounded-pill">Smazat</button>
             </li>  

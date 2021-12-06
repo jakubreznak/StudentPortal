@@ -116,7 +116,7 @@ namespace API.Controllers
             return new StudentDTO
             {
                 name = student.UserName,
-                accountName = student.accountName,
+                accountName = String.IsNullOrEmpty(student.accountName) ? student.UserName : student.accountName,
                 token = await _tokenService.CreateToken(student)
             };
         }

@@ -13,6 +13,7 @@ namespace API.Entities
         public string text { get; set; }
         public int rating { get; set; }
         public string studentName { get; set; }
+        public string accountName { get; set; }
         public string created { get; set; }
         public string edited { get; set; }
         public int predmetID { get; set; }

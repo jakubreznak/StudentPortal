@@ -199,8 +199,8 @@ namespace API.Controllers
                     FileName = nazevMaterial,
                     Extension = extension,
                     DateAdded = DateTime.Now.ToString("dd'.'MM'.'yyyy"),
-                    studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                    accountName = student.accountName
+                    studentName = username,
+                    accountName = String.IsNullOrEmpty(student.accountName) ? username : student.accountName
                 };
 
                 predmet.Files.Add(soubor);

@@ -8,6 +8,7 @@ using API.Entities;
 using API.Extensions;
 using API.HelpClass;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +17,11 @@ namespace API.Controllers
     public class HodnoceniController : BaseApiController
     {
         private readonly DataContext _context;
-        public HodnoceniController(DataContext context)
+        private readonly UserManager<Student> _userManager;
+        public HodnoceniController(DataContext context, UserManager<Student> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet("{idPredmet}")]
@@ -65,14 +68,22 @@ namespace API.Controllers
         [Authorize]
         public ActionResult<int> GetRatingNumber(int idPredmet)
         {
-            var hodnoceni = _context.Hodnoceni.Where(x => x.predmetID == idPredmet);
+            List<Hodnoceni> hodnoceniList = new List<Hodnoceni>(); 
+            var predmet = _context.Predmets.FirstOrDefault(p => p.ID == idPredmet);
+            var predmety = _context.Predmets.Where(p => p.katedra == predmet.katedra && p.zkratka == predmet.zkratka).ToList();            
+            foreach(var pred in predmety)
+            {
+                hodnoceniList.AddRange(_context.Hodnoceni.Where(x => x.predmetID == pred.ID).ToList());
+            }
+
+            hodnoceniList = hodnoceniList.Distinct().ToList();
             int ratingNumber = 0;
-            foreach(var hod in hodnoceni)
+            foreach(var hod in hodnoceniList)
             {
                 ratingNumber += hod.rating;
             }
 
-            return Ok(Math.Ceiling((double) ratingNumber / hodnoceni.Count()));
+            return Ok(Math.Ceiling((double) ratingNumber / hodnoceniList.Count()));
         }
 
         [HttpPost("{idPredmet}/{cislo}")]
@@ -86,6 +97,7 @@ namespace API.Controllers
 
             var predmet = await  _context.Predmets.Include(x => x.Hodnocenis).FirstOrDefaultAsync(x => x.ID == idPredmet);
             var studentName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = _userManager.Users.FirstOrDefault(s => s.UserName == studentName);
 
             if(predmet.Hodnocenis.Any(x => x.studentName == studentName))
             {
@@ -95,6 +107,7 @@ namespace API.Controllers
             var hodnoceni = new Hodnoceni
             {
                 studentName = studentName,
+                accountName = String.IsNullOrEmpty(student.accountName) ? studentName : student.accountName,
                 text = text.Trim(),
                 rating = cislo,
                 created = DateTime.Now.ToString("dd'.'MM'.'yyyy")
